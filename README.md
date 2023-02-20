@@ -4,10 +4,10 @@
 Tasky is a simple todo list app built with Material 3 and Jetpack Compose.
 
 ## Features ⭐️
-- Modern Design
-- Material You Dynamic theming
-- Add and Delete Sounds
-- Minimal
+- Modern Design.
+- Material You Dynamic theming.
+- Add and Delete Sounds.
+- Minimal Design.
 - Completely Offline making it privacy first.
 
 ## Technologies 🛠️
@@ -36,5 +36,5 @@ Go to releases page and download the latest `app-release.apk` from the latest re
 
 ## Contribute 🤝🏻
 
-You can contribute to this app by creating pull requests. Thank you 🙏🏻.
+You can contribute to this app by creating pull requests. Thank you.
 

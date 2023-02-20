@@ -2,7 +2,6 @@ package com.thatsmanmeet.tasky
 
 import android.app.Activity
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
@@ -137,18 +136,17 @@ fun MyApp() {
                                 TodoItemCard(
                                     todo = item,
                                     viewModel = todoViewModel,
-                                    modifier = Modifier.clickable {
-                                        selectedItem.value = index
-                                        openEditDialog.value = true
-                                        Log.d("index", "MyApp: $index ")
-                                    })
+                                    modifier = Modifier
+                                        .clickable {
+                                            selectedItem.value = index
+                                            openEditDialog.value = true
+                                        })
                             }
                             movableContent()
                         }
                     }
                 }
                 // LazyColumn ends here
-
                 if (openEditDialog.value){
                     val currentTodoTitle = remember {
                         mutableStateOf(todosList.value[selectedItem.value].title)

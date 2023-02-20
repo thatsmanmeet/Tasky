@@ -16,6 +16,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.thatsmanmeet.tasky.room.Todo
 import com.thatsmanmeet.tasky.room.TodoViewModel
 
@@ -38,6 +39,7 @@ fun TodoItemCard(
             .heightIn(min = 60.dp)
             .padding(5.dp),
         verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Start
     ) {
         Checkbox(
             checked = currentCheckBoxState.value,
@@ -50,8 +52,9 @@ fun TodoItemCard(
         })
         Spacer(modifier = Modifier.width(10.dp))
         Text(text = todo.title!!,
-            textDecoration = if (currentCheckBoxState.value) TextDecoration.LineThrough else TextDecoration.None
+            textDecoration = if (currentCheckBoxState.value) TextDecoration.LineThrough else TextDecoration.None,
+            fontSize = 18.sp
         )
     }
-    Spacer(modifier = Modifier.height(10.dp))
+    Spacer(modifier = Modifier.height(12.dp))
 }
