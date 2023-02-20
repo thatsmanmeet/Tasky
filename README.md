@@ -28,8 +28,8 @@ This app uses [***MVVM (Model View View-Model)***](https://developer.android.com
 
 ## Screenshots 🌠
 
-<img src="./screenshots/tasky1.jpg" height="400px" width="200px"/> <img src="./screenshots/tasky4.png" height="400px" width="200px"/> 
-<img src="./screenshots/tasky2.png" height="400px" width="200px"/> <img src="./screenshots/tasky3.png" height="400px" width="200px"/>
+<img src="./screenshots/tasky1.jpg" height="430px" width="200px"/> <img src="./screenshots/tasky4.png" height="430px" width="200px"/> 
+<img src="./screenshots/tasky2.png" height="430px" width="200px"/> <img src="./screenshots/tasky3.png" height="430px" width="200px"/>
 
 ## Download ⬇️
 
