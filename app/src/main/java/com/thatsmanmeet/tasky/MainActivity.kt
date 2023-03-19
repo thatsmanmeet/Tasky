@@ -1,18 +1,25 @@
 package com.thatsmanmeet.tasky
 
 import android.app.Activity
+import android.app.AlarmManager
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Context.NOTIFICATION_SERVICE
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -24,14 +31,20 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.thatsmanmeet.tasky.notification.Notification
+import com.thatsmanmeet.tasky.notification.channelID
+import com.thatsmanmeet.tasky.notification.notificationID
 import com.thatsmanmeet.tasky.room.Todo
 import com.thatsmanmeet.tasky.room.TodoViewModel
 import com.thatsmanmeet.tasky.ui.theme.TaskyTheme
+import java.text.SimpleDateFormat
+import java.util.*
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen()
+        applicationContext
         setContent {
             MyApp()
         }
@@ -59,10 +72,26 @@ fun MyApp() {
     var enteredText by remember {
         mutableStateOf("")
     }
+    val dateText = remember {
+        mutableStateOf("")
+    }
+    val isDateDialogShowing = remember {
+        mutableStateOf(false)
+    }
+
+    val timeText = remember {
+        mutableStateOf("")
+    }
+    val isTimeDialogShowing = remember {
+        mutableStateOf(false)
+    }
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        createNotificationChannel(context)
+    }
     TaskyTheme {
         Scaffold(
             topBar = {
-                SmallTopAppBar(
+                TopAppBar(
                     title = { Text(text = stringResource(id = R.string.app_name))},
                     colors = topAppBarColors.smallTopAppBarColors(
                         containerColor = MaterialTheme.colorScheme.primary,
@@ -83,22 +112,87 @@ fun MyApp() {
                 AlertDialog(
                     onDismissRequest = {
                         openDialog.value = false
+                        enteredText = ""
                     },
                     title = { Text(text = "Add Task")},
                     text = {
-                        OutlinedTextField(
-                            value = enteredText,
-                            placeholder = { Text(text = "what's on your mind?")},
-                            onValueChange = {textChange ->
-                                enteredText = textChange
-                            } )
+                        Column {
+                            OutlinedTextField(
+                                value = enteredText,
+                                placeholder = { Text(text = "what's on your mind?")},
+                                onValueChange = {textChange ->
+                                    enteredText = textChange
+                                },
+                                maxLines = 1
+                            )
+                            Spacer(modifier = Modifier.height(10.dp))
+                            Row (
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                Row (
+                                    verticalAlignment = Alignment.CenterVertically
+                                        ){
+                                    Icon(imageVector = Icons.Default.DateRange, contentDescription = null)
+                                    Spacer(modifier = Modifier.width(5.dp))
+                                    Text(text = dateText.value)
+                                }
+                                OutlinedButton(modifier = Modifier.height(35.dp)
+                                    ,onClick = {
+                                    isDateDialogShowing.value = true
+                                }) {
+                                    Text(text = "Select Date", fontSize = 10.sp)
+                                    val date = showDatePicker(context = context,isDateDialogShowing)
+                                    dateText.value = date
+                                    isDateDialogShowing.value = false
+                                }
+                            }
+                            // time
+                            Spacer(modifier = Modifier.height(10.dp))
+                            Row (
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Row (
+                                    verticalAlignment = Alignment.CenterVertically
+                                ){
+                                    Icon(imageVector = Icons.Default.Notifications, contentDescription = null)
+                                    Spacer(modifier = Modifier.width(5.dp))
+                                    Text(text = timeText.value)
+                                }
+                                OutlinedButton(modifier = Modifier.height(35.dp)
+                                    ,onClick = {
+                                        isTimeDialogShowing.value = true
+                                    }) {
+                                    Text(text = "Select Time", fontSize = 10.sp)
+                                    val date = showTimePickerDialog(context = context,isTimeDialogShowing)
+                                    timeText.value = date
+                                    isTimeDialogShowing.value = false
+                                }
+                            }
+                        }
                     },
                     confirmButton = {
                         Button(onClick = {
                             openDialog.value = false
                             todoViewModel.insertTodo(
-                                Todo(null,enteredText,false)
+                                Todo(
+                                    ID= null,
+                                    enteredText,
+                                    isCompleted = false,
+                                    dateText.value,
+                                    timeText.value)
                             )
+                            if(dateText.value.isNotEmpty() && timeText.value.isNotEmpty()){
+                                scheduleNotification(
+                                    context,
+                                    titleText = enteredText,
+                                    messageText = "Did you complete your Task ?",
+                                    time="${dateText.value}/${timeText.value}"
+                                )
+                            }
                             enteredText = ""
                         }) {
                             Text(text = "Add")
@@ -122,6 +216,7 @@ fun MyApp() {
                 if(todosList.value.isEmpty()){
                     Box(modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center) {
+                        //TODO
                         Text(
                             text = "No Tasks",
                             fontSize = 30.sp)
@@ -158,24 +253,77 @@ fun MyApp() {
                     val currentTodoChecked = remember {
                         mutableStateOf(todosList.value[selectedItem.value].isCompleted)
                     }
+
+                    val currentTodoDateValue = remember {
+                        mutableStateOf(todosList.value[selectedItem.value].date)
+                    }
+
+                    val currentTodoTimeValue = remember {
+                        mutableStateOf(todosList.value[selectedItem.value].time)
+                    }
+
                     AlertDialog(
                         onDismissRequest = {
                             openEditDialog.value = false
                         },
                         title = { Text(text = "Edit Task")},
                         text = {
-                            OutlinedTextField(
-                                value = currentTodoTitle.value!!,
-                                placeholder = { Text(text = "what do you want to accomplish ?")},
-                                onValueChange = {textChange ->
-                                    currentTodoTitle.value = textChange
-                                } )
+                            Column {
+                                OutlinedTextField(
+                                    value = currentTodoTitle.value!!,
+                                    placeholder = { Text(text = "what's on your mind?")},
+                                    onValueChange = {textChange ->
+                                        currentTodoTitle.value = textChange
+                                    }
+                                )
+                                Spacer(modifier = Modifier.height(10.dp))
+                                Row (
+                                    modifier = Modifier.fillMaxWidth(),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Row (
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ){
+                                        Icon(imageVector = Icons.Default.DateRange, contentDescription = null)
+                                        Spacer(modifier = Modifier.width(5.dp))
+                                        Text(text = todosList.value[selectedItem.value].date!!)
+                                    }
+                                }
+                                // time
+                                Spacer(modifier = Modifier.height(10.dp))
+                                Row (
+                                    modifier = Modifier.fillMaxWidth(),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Row (
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ){
+                                        Icon(imageVector = Icons.Default.Notifications, contentDescription = null)
+                                        Spacer(modifier = Modifier.width(5.dp))
+                                        Text(text = todosList.value[selectedItem.value].time!!)
+                                    }
+                                }
+                            }
                         },
                         confirmButton = {
                             Button(onClick = {
                                 openEditDialog.value = false
+                                if(currentTodoDateValue.value.isNullOrEmpty()){
+                                    currentTodoDateValue.value = todosList.value[selectedItem.value].date
+                                }
+                                if(currentTodoTimeValue.value.isNullOrEmpty()){
+                                    currentTodoTimeValue.value = todosList.value[selectedItem.value].time
+                                }
                                 todoViewModel.updateTodo(
-                                    Todo(currentTodoID.value,currentTodoTitle.value,currentTodoChecked.value)
+                                    Todo(
+                                        currentTodoID.value,
+                                        currentTodoTitle.value,
+                                        currentTodoChecked.value,
+                                        currentTodoDateValue.value,
+                                        currentTodoTimeValue.value
+                                    )
                                 )
                                 enteredText = ""
                             }) {
@@ -186,7 +334,13 @@ fun MyApp() {
                             Button(onClick = {
                                 openEditDialog.value = false
                                 todoViewModel.deleteTodo(
-                                    Todo(currentTodoID.value,currentTodoTitle.value,currentTodoChecked.value)
+                                    Todo(
+                                        currentTodoID.value,
+                                        currentTodoTitle.value,
+                                        currentTodoChecked.value,
+                                        currentTodoDateValue.value,
+                                        currentTodoTimeValue.value
+                                    )
                                 )
                                 enteredText = ""
                                 todoViewModel.playDeletedSound(context)
@@ -203,4 +357,46 @@ fun MyApp() {
 
         }
     }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun createNotificationChannel(context: Context){
+    val name = "Reminder"
+    val desc = "Sends Notifications of the tasks added to the list"
+    val importance = NotificationManager.IMPORTANCE_HIGH
+    val channel = NotificationChannel(channelID,name,importance)
+    channel.description = desc
+    val notificationManager = context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+    notificationManager.createNotificationChannel(channel)
+}
+fun scheduleNotification(
+    context: Context,
+    titleText:String?,
+    messageText:String?,
+    time:String?
+) {
+
+    val intent = Intent(context,Notification::class.java)
+    intent.putExtra("titleExtra", titleText)
+    intent.putExtra("messageExtra", messageText)
+
+    val pendingIntent = PendingIntent.getBroadcast(
+        context,
+        notificationID,
+        intent,
+        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+    )
+
+    val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+    val currTime = getTimeInMillis(time!!)
+    alarmManager.setAndAllowWhileIdle(
+        AlarmManager.RTC_WAKEUP,
+        currTime,
+        pendingIntent
+    )
+}
+fun getTimeInMillis(date: String): Long {
+    val sdf = SimpleDateFormat("dd/MM/yyyy/HH:mm", Locale.ENGLISH)
+    val mDate = sdf.parse(date)
+    return mDate!!.time
 }

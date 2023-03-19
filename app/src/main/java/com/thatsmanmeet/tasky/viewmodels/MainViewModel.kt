@@ -1,0 +1,23 @@
+package com.thatsmanmeet.tasky.viewmodels
+
+import androidx.compose.runtime.mutableStateListOf
+import androidx.lifecycle.ViewModel
+
+class MainViewModel : ViewModel() {
+
+    val permissionDialogQueue = mutableStateListOf<String>()
+
+    fun dismissDialog(){
+        permissionDialogQueue.removeFirst()
+    }
+
+    fun onPermissionResult(
+        permission:String,
+        isGranted:Boolean
+    ){
+        if(!isGranted){
+            permissionDialogQueue.add(0,permission)
+        }
+    }
+
+}

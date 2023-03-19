@@ -12,8 +12,8 @@ android {
         applicationId "com.thatsmanmeet.tasky"
         minSdk 25
         targetSdk 33
-        versionCode 2
-        versionName "1.1"
+        versionCode 3
+        versionName "1.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -42,7 +42,7 @@ android {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion '1.2.0'
+        kotlinCompilerExtensionVersion '1.4.3'
     }
     packagingOptions {
         resources {
@@ -54,7 +54,7 @@ android {
 dependencies {
 
     implementation 'androidx.core:core-ktx:1.9.0'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.0'
     implementation 'androidx.activity:activity-compose:1.6.1'
     implementation "androidx.compose.ui:ui:$compose_version"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
@@ -72,4 +72,8 @@ dependencies {
     annotationProcessor "androidx.room:room-compiler:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
     implementation 'androidx.core:core-splashscreen:1.0.0'
+    // Calendar dependency
+    implementation "com.maxkeppeler.sheets-compose-dialogs:core:1.1.1"
+    implementation "com.maxkeppeler.sheets-compose-dialogs:calendar:1.1.1"
+    implementation "com.maxkeppeler.sheets-compose-dialogs:state:1.1.1"
 }
