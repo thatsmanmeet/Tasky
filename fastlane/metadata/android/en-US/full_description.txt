@@ -1,0 +1,1 @@
+<p><i>Tasky</i> is a simple task management tool – an app to organize your ToDo lists. It lets you manage your work and arrange your time properly.</p><p><b>Features:</b></p><ul><li>Modern Design.</li><li>Material You Dynamic theming.</li><li>Add and Delete Sounds.</li><li>Minimal Design.</li><li>Completely Offline making it privacy first.</li></ul>
