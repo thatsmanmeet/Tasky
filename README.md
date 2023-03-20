@@ -34,9 +34,9 @@ This app uses [***MVVM (Model View View-Model)***](https://developer.android.com
 
 ## Download ⬇️
 
-![[Izzyondroid download](https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png)](https://apt.izzysoft.de/fdroid/index/apk/com.thatsmanmeet.tasky)
+<a href="https://apt.izzysoft.de/fdroid/index/apk/com.thatsmanmeet.tasky" target="_blank"><img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" width="180px" height="80px"/></a>
 
-Go to releases page and download the latest `app-release.apk` from the latest release tag.
+Or Go to releases page and download the latest `app-release.apk` from the latest release tag.
 
 ## Contribute 🤝🏻
 
