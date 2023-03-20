@@ -1,4 +1,4 @@
-package com.thatsmanmeet.tasky
+package com.thatsmanmeet.tasky.components
 
 import android.app.DatePickerDialog
 import android.content.Context

@@ -5,6 +5,7 @@ Tasky is a simple todo list app built with Material 3 and Jetpack Compose.
 
 ## Features ⭐️
 - Modern Design.
+- Notifications for tasks
 - Material You Dynamic theming.
 - Add and Delete Sounds.
 - Minimal Design.
@@ -32,6 +33,8 @@ This app uses [***MVVM (Model View View-Model)***](https://developer.android.com
 <img src="./screenshots/tasky2.png" height="430px" width="200px"/> <img src="./screenshots/tasky3.png" height="430px" width="200px"/>
 
 ## Download ⬇️
+
+![[Izzyondroid download](https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png)](https://apt.izzysoft.de/fdroid/index/apk/com.thatsmanmeet.tasky)
 
 Go to releases page and download the latest `app-release.apk` from the latest release tag.
 

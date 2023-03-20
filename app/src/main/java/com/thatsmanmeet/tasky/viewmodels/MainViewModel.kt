@@ -5,12 +5,8 @@ import androidx.lifecycle.ViewModel
 
 class MainViewModel : ViewModel() {
 
-    val permissionDialogQueue = mutableStateListOf<String>()
-
-    fun dismissDialog(){
-        permissionDialogQueue.removeFirst()
-    }
-
+    private val permissionDialogQueue = mutableStateListOf<String>()
+    
     fun onPermissionResult(
         permission:String,
         isGranted:Boolean
@@ -19,5 +15,4 @@ class MainViewModel : ViewModel() {
             permissionDialogQueue.add(0,permission)
         }
     }
-
 }

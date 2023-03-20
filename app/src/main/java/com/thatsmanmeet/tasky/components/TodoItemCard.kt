@@ -1,4 +1,4 @@
-package com.thatsmanmeet.tasky
+package com.thatsmanmeet.tasky.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.sp
 import com.thatsmanmeet.tasky.room.Todo
 import com.thatsmanmeet.tasky.room.TodoViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TodoItemCard(
     todo: Todo,
