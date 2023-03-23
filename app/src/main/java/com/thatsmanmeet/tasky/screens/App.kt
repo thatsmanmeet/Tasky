@@ -75,9 +75,9 @@ fun MyApp() {
     TaskyTheme {
         Scaffold(
             topBar = {
-                SmallTopAppBar(
+                TopAppBar(
                     title = { Text(text = stringResource(id = R.string.app_name)) },
-                    colors = topAppBarColors.smallTopAppBarColors(
+                    colors = topAppBarColors.topAppBarColors(
                         containerColor = MaterialTheme.colorScheme.primary,
                         titleContentColor = MaterialTheme.colorScheme.onPrimary
                     )
@@ -400,7 +400,7 @@ fun scheduleNotification(
 
     val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     val currTime = getTimeInMillis(time!!)
-    alarmManager.setAndAllowWhileIdle(
+    alarmManager.setExactAndAllowWhileIdle(
         AlarmManager.RTC_WAKEUP,
         currTime,
         pendingIntent
