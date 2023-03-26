@@ -1,4 +1,4 @@
-package com.thatsmanmeet.tasky.room
+package com.thatsmanmeet.taskyapp.room
 
 import android.content.Context
 import androidx.room.Database
@@ -14,7 +14,7 @@ abstract class TodoDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: TodoDatabase? = null
 
-        fun getInstance(context:Context) : TodoDatabase{
+        fun getInstance(context:Context) : TodoDatabase {
             synchronized(this){
                 var instance = INSTANCE
                 if(instance == null){

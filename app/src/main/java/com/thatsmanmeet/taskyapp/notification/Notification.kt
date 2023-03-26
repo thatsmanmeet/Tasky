@@ -1,14 +1,13 @@
-package com.thatsmanmeet.tasky.notification
+package com.thatsmanmeet.taskyapp.notification
 
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import androidx.core.app.NotificationCompat
-import com.thatsmanmeet.tasky.MainActivity
-import com.thatsmanmeet.tasky.R
+import com.thatsmanmeet.taskyapp.MainActivity
+import com.thatsmanmeet.taskyapp.R
 
 const val notificationID = 1
 const val channelID = "Remainder Channel"

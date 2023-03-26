@@ -1,4 +1,4 @@
-package com.thatsmanmeet.tasky.components
+package com.thatsmanmeet.taskyapp.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -16,8 +16,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.thatsmanmeet.tasky.room.Todo
-import com.thatsmanmeet.tasky.room.TodoViewModel
+import com.thatsmanmeet.taskyapp.room.Todo
+import com.thatsmanmeet.taskyapp.room.TodoViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,13 +48,15 @@ fun TodoItemCard(
                 checked = currentCheckBoxState.value,
                 onCheckedChange = {
                     currentCheckBoxState.value = it
-                    viewModel.updateTodo(Todo(
+                    viewModel.updateTodo(
+                        Todo(
                         todo.ID,
                         todo.title,
                         currentCheckBoxState.value,
                         todo.date,
                         todo.time
-                    ))
+                    )
+                    )
                     if(currentCheckBoxState.value){
                         viewModel.playCompletedSound(context)
                     }

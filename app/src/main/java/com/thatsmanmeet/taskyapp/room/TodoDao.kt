@@ -1,4 +1,4 @@
-package com.thatsmanmeet.tasky.room
+package com.thatsmanmeet.taskyapp.room
 
 import androidx.lifecycle.LiveData
 import androidx.room.*

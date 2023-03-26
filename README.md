@@ -11,6 +11,17 @@ Tasky is a highly intuitive and easy-to-use todo list application designed for t
 - Minimal Design
 - Completely Offline making it privacy first
 
+## Disclaimer ⚠️
+
+Starting from version 1.5, Tasky package name is being changed to `com.thatsmanmeet.taskyapp` 
+from `com.thatsmanmeet.tasky` because someone have uploaded my app to Play Store without changing
+package name and hence I have to rename my app to upload it to Play Store.
+
+So, please remove your old version of tasky and download the new one as this will also be available
+on Play Store.
+
+I am really sorry for this inconvenience.
+
 ## Technologies 🛠️
 - [Kotlin](https://kotlinlang.org/) - First class and official programming language for Android development.
 - [Jetpack Compose](https://developer.android.com/jetpack/compose?gclid=CjwKCAiArOqOBhBmEiwAsgeLmUlv4dbl6KV3yBs7SXOpYReSF8DaG5yWJipHnkO-OEWgyMHgjn1BixoC8bUQAvD_BwE&gclsrc=aw.ds) - Jetpack Compose is Android’s modern toolkit for building native UI.

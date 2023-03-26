@@ -1,4 +1,4 @@
-package com.thatsmanmeet.tasky.screens
+package com.thatsmanmeet.taskyapp.screens
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController

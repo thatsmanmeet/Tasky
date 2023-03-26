@@ -1,4 +1,4 @@
-package com.thatsmanmeet.tasky.screens
+package com.thatsmanmeet.taskyapp.screens
 
 import android.app.*
 import android.content.Context
@@ -22,16 +22,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.thatsmanmeet.tasky.R
-import com.thatsmanmeet.tasky.components.TodoItemCard
-import com.thatsmanmeet.tasky.components.showDatePicker
-import com.thatsmanmeet.tasky.components.showTimePickerDialog
-import com.thatsmanmeet.tasky.notification.Notification
-import com.thatsmanmeet.tasky.notification.channelID
-import com.thatsmanmeet.tasky.notification.notificationID
-import com.thatsmanmeet.tasky.room.Todo
-import com.thatsmanmeet.tasky.room.TodoViewModel
-import com.thatsmanmeet.tasky.ui.theme.TaskyTheme
+import com.thatsmanmeet.taskyapp.R
+import com.thatsmanmeet.taskyapp.components.TodoItemCard
+import com.thatsmanmeet.taskyapp.components.showDatePicker
+import com.thatsmanmeet.taskyapp.components.showTimePickerDialog
+import com.thatsmanmeet.taskyapp.notification.Notification
+import com.thatsmanmeet.taskyapp.notification.channelID
+import com.thatsmanmeet.taskyapp.notification.notificationID
+import com.thatsmanmeet.taskyapp.room.Todo
+import com.thatsmanmeet.taskyapp.room.TodoViewModel
+import com.thatsmanmeet.taskyapp.ui.theme.TaskyTheme
 import java.text.SimpleDateFormat
 import java.util.*
 

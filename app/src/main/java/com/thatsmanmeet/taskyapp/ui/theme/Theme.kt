@@ -1,4 +1,4 @@
-package com.thatsmanmeet.tasky.ui.theme
+package com.thatsmanmeet.taskyapp.ui.theme
 
 import android.app.Activity
 import android.os.Build

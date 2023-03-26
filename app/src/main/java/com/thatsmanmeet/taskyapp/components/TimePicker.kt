@@ -1,4 +1,4 @@
-package com.thatsmanmeet.tasky.components
+package com.thatsmanmeet.taskyapp.components
 
 import android.app.TimePickerDialog
 import android.content.Context

@@ -1,4 +1,4 @@
-package com.thatsmanmeet.tasky.viewmodels
+package com.thatsmanmeet.taskyapp.viewmodels
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel

@@ -1,4 +1,4 @@
-package com.thatsmanmeet.tasky
+package com.thatsmanmeet.taskyapp
 
 
 import android.Manifest
@@ -17,10 +17,10 @@ import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.thatsmanmeet.tasky.screens.PermissionRequestScreen
-import com.thatsmanmeet.tasky.screens.Screen
-import com.thatsmanmeet.tasky.screens.SetupNavGraph
-import com.thatsmanmeet.tasky.viewmodels.MainViewModel
+import com.thatsmanmeet.taskyapp.screens.PermissionRequestScreen
+import com.thatsmanmeet.taskyapp.screens.Screen
+import com.thatsmanmeet.taskyapp.screens.SetupNavGraph
+import com.thatsmanmeet.taskyapp.viewmodels.MainViewModel
 
 class MainActivity : ComponentActivity() {
     private lateinit var navController : NavHostController

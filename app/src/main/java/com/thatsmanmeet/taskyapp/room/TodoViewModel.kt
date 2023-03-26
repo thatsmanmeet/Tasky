@@ -1,4 +1,4 @@
-package com.thatsmanmeet.tasky.room
+package com.thatsmanmeet.taskyapp.room
 
 
 import android.app.Application
@@ -7,13 +7,13 @@ import android.media.MediaPlayer
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.thatsmanmeet.tasky.R
+import com.thatsmanmeet.taskyapp.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class TodoViewModel(application: Application) : ViewModel() {
 
-    private var repository:TodoRepository
+    private var repository: TodoRepository
     val getAllTodos : LiveData<List<Todo>>
 
     init {

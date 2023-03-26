@@ -1,4 +1,4 @@
-package com.thatsmanmeet.tasky.screens
+package com.thatsmanmeet.taskyapp.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons

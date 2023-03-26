@@ -1,4 +1,4 @@
-package com.thatsmanmeet.tasky.ui.theme
+package com.thatsmanmeet.taskyapp.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
