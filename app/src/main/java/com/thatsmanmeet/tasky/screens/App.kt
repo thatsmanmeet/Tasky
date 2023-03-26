@@ -110,6 +110,8 @@ fun MyApp() {
                                 maxLines = 1
                             )
                             Spacer(modifier = Modifier.height(10.dp))
+                            Text(text = "Set Reminder (optional)")
+                            Spacer(modifier = Modifier.height(10.dp))
                             Row (
                                 modifier = Modifier.fillMaxWidth(),
                                 verticalAlignment = Alignment.CenterVertically,
@@ -280,6 +282,8 @@ fun MyApp() {
                                         currentTodoTitle.value = textChange
                                     }
                                 )
+                                Spacer(modifier = Modifier.height(10.dp))
+                                Text(text = "Reminder")
                                 Spacer(modifier = Modifier.height(10.dp))
                                 Row (
                                     modifier = Modifier.fillMaxWidth(),
