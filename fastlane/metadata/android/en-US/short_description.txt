@@ -1,1 +1,1 @@
-Task management tool
+Tasky is a simple task management tool to organize your ToDo lists.

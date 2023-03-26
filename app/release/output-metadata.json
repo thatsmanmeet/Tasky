@@ -4,7 +4,7 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "com.thatsmanmeet.tasky",
+  "applicationId": "com.thatsmanmeet.taskyapp",
   "variantName": "release",
   "elements": [
     {
