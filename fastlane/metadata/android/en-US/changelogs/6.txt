@@ -1,0 +1,4 @@
+What's New:
+1. Added Material 3 themed Icon
+2. General text optimizations
+3. Moved package name from com.thatsmanmeet.tasky to com.thatsmanmeet.taskyapp*
