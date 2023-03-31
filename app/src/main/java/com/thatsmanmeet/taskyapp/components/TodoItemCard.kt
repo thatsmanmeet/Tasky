@@ -19,7 +19,6 @@ import androidx.compose.ui.unit.sp
 import com.thatsmanmeet.taskyapp.room.Todo
 import com.thatsmanmeet.taskyapp.room.TodoViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TodoItemCard(
     todo: Todo,

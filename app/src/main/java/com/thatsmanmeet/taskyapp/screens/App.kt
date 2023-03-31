@@ -17,9 +17,11 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.thatsmanmeet.taskyapp.R
@@ -76,7 +78,12 @@ fun MyApp() {
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text(text = stringResource(id = R.string.app_name)) },
+                    title = {
+                        Text(
+                            text = stringResource(id = R.string.app_name),
+                            fontSize = 20.sp
+                        )
+                            },
                     colors = topAppBarColors.topAppBarColors(
                         containerColor = MaterialTheme.colorScheme.primary,
                         titleContentColor = MaterialTheme.colorScheme.onPrimary
@@ -172,9 +179,13 @@ fun MyApp() {
                             todoViewModel.insertTodo(
                                 Todo(
                                     ID= null,
-                                    enteredText,
+                                    enteredText.ifEmpty { "No Name" },
                                     isCompleted = false,
-                                    dateText.value,
+                                    dateText.value.ifEmpty {
+                                        SimpleDateFormat("dd/MM/yyyy",Locale.ENGLISH).format(
+                                            Calendar.getInstance().time
+                                        ).toString()
+                                    },
                                     timeText.value)
                             )
                             if(dateText.value.isNotEmpty() && timeText.value.isNotEmpty()){
@@ -215,7 +226,9 @@ fun MyApp() {
                             verticalArrangement = Arrangement.Center
                         ) {
                             Icon(
-                                modifier = Modifier.size(50.dp),
+                                modifier = Modifier
+                                    .size(50.dp)
+                                    .alpha(0.8f),
                                 imageVector = Icons.Filled.Check,
                                 contentDescription = null,
                                 tint = MaterialTheme.colorScheme.primary
@@ -223,7 +236,8 @@ fun MyApp() {
                             Text(
                                 text = "No Tasks",
                                 fontSize = 30.sp,
-                                color = MaterialTheme.colorScheme.primary
+                                color = MaterialTheme.colorScheme.primary,
+                                fontWeight = FontWeight.Light
                             )
                         }
                     }
@@ -334,7 +348,9 @@ fun MyApp() {
                                 todoViewModel.updateTodo(
                                     Todo(
                                         currentTodoID.value,
-                                        currentTodoTitle.value,
+                                        currentTodoTitle.value?.ifEmpty {
+                                            "No Name"
+                                        },
                                         currentTodoChecked.value,
                                         currentTodoDateValue.value,
                                         currentTodoTimeValue.value

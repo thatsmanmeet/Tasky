@@ -62,7 +62,7 @@ fun TaskyTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
+        typography = Poppins,
         content = content
     )
 }
