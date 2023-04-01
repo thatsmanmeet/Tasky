@@ -5,11 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -18,20 +15,18 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.thatsmanmeet.taskyapp.R
-import com.thatsmanmeet.taskyapp.components.TodoItemCard
-import com.thatsmanmeet.taskyapp.components.showDatePicker
-import com.thatsmanmeet.taskyapp.components.showTimePickerDialog
+import com.thatsmanmeet.taskyapp.components.OpenEditTodoDialog
+import com.thatsmanmeet.taskyapp.components.TaskList
+import com.thatsmanmeet.taskyapp.components.addTodoDialog
 import com.thatsmanmeet.taskyapp.notification.Notification
 import com.thatsmanmeet.taskyapp.notification.channelID
 import com.thatsmanmeet.taskyapp.notification.notificationID
-import com.thatsmanmeet.taskyapp.room.Todo
 import com.thatsmanmeet.taskyapp.room.TodoViewModel
 import com.thatsmanmeet.taskyapp.ui.theme.TaskyTheme
 import java.text.SimpleDateFormat
@@ -99,118 +94,16 @@ fun MyApp() {
                     })
             }
         ) { paddingValues ->
-            if(openDialog.value){
-                AlertDialog(
-                    onDismissRequest = {
-                        openDialog.value = false
-                        enteredText = ""
-                    },
-                    title = { Text(text = "Add Task") },
-                    text = {
-                        Column {
-                            OutlinedTextField(
-                                value = enteredText,
-                                placeholder = { Text(text = "what's on your mind?") },
-                                onValueChange = {textChange ->
-                                    enteredText = textChange
-                                },
-                                maxLines = 1
-                            )
-                            Spacer(modifier = Modifier.height(10.dp))
-                            Text(text = "Set Reminder (optional)")
-                            Spacer(modifier = Modifier.height(10.dp))
-                            Row (
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Row (
-                                    verticalAlignment = Alignment.CenterVertically
-                                ){
-                                    Icon(imageVector = Icons.Default.DateRange,
-                                        contentDescription = null,
-                                        tint = MaterialTheme.colorScheme.primary
-                                    )
-                                    Spacer(modifier = Modifier.width(5.dp))
-                                    Text(text = dateText.value)
-                                }
-                                OutlinedButton(modifier = Modifier.height(35.dp)
-                                    ,onClick = {
-                                        isDateDialogShowing.value = true
-                                    }) {
-                                    Text(text = "Select Date", fontSize = 10.sp)
-                                    val date = showDatePicker(context = context,isDateDialogShowing)
-                                    dateText.value = date
-                                    isDateDialogShowing.value = false
-                                }
-                            }
-                            // time
-                            Spacer(modifier = Modifier.height(10.dp))
-                            Row (
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Row (
-                                    verticalAlignment = Alignment.CenterVertically
-                                ){
-                                    Icon(imageVector = Icons.Default.Notifications,
-                                        contentDescription = null,
-                                        tint = MaterialTheme.colorScheme.primary
-                                    )
-                                    Spacer(modifier = Modifier.width(5.dp))
-                                    Text(text = timeText.value)
-                                }
-                                OutlinedButton(modifier = Modifier.height(35.dp)
-                                    ,onClick = {
-                                        isTimeDialogShowing.value = true
-                                    }) {
-                                    Text(text = "Select Time", fontSize = 10.sp)
-                                    val date = showTimePickerDialog(context = context,isTimeDialogShowing)
-                                    timeText.value = date
-                                    isTimeDialogShowing.value = false
-                                }
-                            }
-                        }
-                    },
-                    confirmButton = {
-                        Button(onClick = {
-                            openDialog.value = false
-                            todoViewModel.insertTodo(
-                                Todo(
-                                    ID= null,
-                                    enteredText.ifEmpty { "No Name" },
-                                    isCompleted = false,
-                                    dateText.value.ifEmpty {
-                                        SimpleDateFormat("dd/MM/yyyy",Locale.ENGLISH).format(
-                                            Calendar.getInstance().time
-                                        ).toString()
-                                    },
-                                    timeText.value)
-                            )
-                            if(dateText.value.isNotEmpty() && timeText.value.isNotEmpty()){
-                                // SCHEDULE NOTIFICATION
-                                scheduleNotification(
-                                    context,
-                                    titleText = enteredText,
-                                    messageText = "Did you complete your Task ?",
-                                    time="${dateText.value} ${timeText.value}"
-                                )
-                            }
-                            enteredText = ""
-                        }) {
-                            Text(text = "Add")
-                        }
-                    },
-                    dismissButton = {
-                        Button(onClick = {
-                            openDialog.value = false
-                            enteredText = ""
-                        }) {
-                            Text(text = "Cancel")
-                        }
-                    })
-            }
+            enteredText = addTodoDialog(
+                openDialog,
+                enteredText,
+                dateText,
+                isDateDialogShowing,
+                context,
+                timeText,
+                isTimeDialogShowing,
+                todoViewModel
+            )
             Surface(
                 modifier = Modifier
                     .fillMaxSize()
@@ -242,147 +135,25 @@ fun MyApp() {
                         }
                     }
                 }else {
-                    LazyColumn(
+                    TaskList(
                         state = listState,
-                        modifier = Modifier.padding(16.dp)
-                    ) {
-                        itemsIndexed(todosList.value) { index, item ->
-                            val movableContent = movableContentOf {
-                                TodoItemCard(
-                                    todo = item,
-                                    viewModel = todoViewModel,
-                                    modifier = Modifier
-                                        .clickable {
-                                            selectedItem.value = index
-                                            openEditDialog.value = true
-                                        })
-                            }
-                            movableContent()
+                        list = todosList.value.toMutableStateList(),
+                        todoViewModel = todoViewModel,
+                        onClick = {index->
+                            selectedItem.value = index
+                            openEditDialog.value = true
                         }
-                    }
+                    )
                 }
-                // LazyColumn ends here
                 if (openEditDialog.value){
-                    val currentTodoTitle = remember {
-                        mutableStateOf(todosList.value[selectedItem.value].title)
-                    }
-                    val currentTodoID = remember {
-                        mutableStateOf(todosList.value[selectedItem.value].ID)
-                    }
-
-                    val currentTodoChecked = remember {
-                        mutableStateOf(todosList.value[selectedItem.value].isCompleted)
-                    }
-
-                    val currentTodoDateValue = remember {
-                        mutableStateOf(todosList.value[selectedItem.value].date)
-                    }
-
-                    val currentTodoTimeValue = remember {
-                        mutableStateOf(todosList.value[selectedItem.value].time)
-                    }
-
-                    AlertDialog(
-                        onDismissRequest = {
-                            openEditDialog.value = false
-                        },
-                        title = { Text(text = "Edit Task") },
-                        text = {
-                            Column {
-                                OutlinedTextField(
-                                    value = currentTodoTitle.value!!,
-                                    placeholder = { Text(text = "what's on your mind?") },
-                                    onValueChange = {textChange ->
-                                        currentTodoTitle.value = textChange
-                                    }
-                                )
-                                Spacer(modifier = Modifier.height(10.dp))
-                                Text(text = "Reminder")
-                                Spacer(modifier = Modifier.height(10.dp))
-                                Row (
-                                    modifier = Modifier.fillMaxWidth(),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.SpaceBetween
-                                ) {
-                                    Row (
-                                        verticalAlignment = Alignment.CenterVertically
-                                    ){
-                                        Icon(
-                                            imageVector = Icons.Default.DateRange,
-                                            contentDescription = null,
-                                            tint = MaterialTheme.colorScheme.primary
-                                        )
-                                        Spacer(modifier = Modifier.width(5.dp))
-                                        Text(text = todosList.value[selectedItem.value].date!!)
-                                    }
-                                }
-                                // time
-                                Spacer(modifier = Modifier.height(10.dp))
-                                Row (
-                                    modifier = Modifier.fillMaxWidth(),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.SpaceBetween
-                                ) {
-                                    Row (
-                                        verticalAlignment = Alignment.CenterVertically
-                                    ){
-                                        Icon(imageVector = Icons.Default.Notifications,
-                                            contentDescription = null,
-                                            tint = MaterialTheme.colorScheme.primary
-                                        )
-                                        Spacer(modifier = Modifier.width(5.dp))
-                                        Text(text = todosList.value[selectedItem.value].time!!)
-                                    }
-                                }
-                            }
-                        },
-                        confirmButton = {
-                            Button(onClick = {
-                                openEditDialog.value = false
-                                if(currentTodoDateValue.value.isNullOrEmpty()){
-                                    currentTodoDateValue.value = todosList.value[selectedItem.value].date
-                                }
-                                if(currentTodoTimeValue.value.isNullOrEmpty()){
-                                    currentTodoTimeValue.value = todosList.value[selectedItem.value].time
-                                }
-                                todoViewModel.updateTodo(
-                                    Todo(
-                                        currentTodoID.value,
-                                        currentTodoTitle.value?.ifEmpty {
-                                            "No Name"
-                                        },
-                                        currentTodoChecked.value,
-                                        currentTodoDateValue.value,
-                                        currentTodoTimeValue.value
-                                    )
-                                )
-                                enteredText = ""
-                            }) {
-                                Text(text = "Save")
-                            }
-                        },
-                        dismissButton = {
-                            Button(onClick = {
-                                openEditDialog.value = false
-                                todoViewModel.deleteTodo(
-                                    Todo(
-                                        currentTodoID.value,
-                                        currentTodoTitle.value,
-                                        currentTodoChecked.value,
-                                        currentTodoDateValue.value,
-                                        currentTodoTimeValue.value
-                                    )
-                                )
-                                enteredText = ""
-                                todoViewModel.playDeletedSound(context)
-                            },
-                                colors = ButtonDefaults.buttonColors(containerColor = Color(
-                                    0xFFF1574C
-                                ), contentColor = Color.White)
-                            ) {
-                                Text(text = "Delete")
-                            }
-                        })
+                    OpenEditTodoDialog(
+                        todosList,
+                        selectedItem,
+                        openEditDialog,
+                        todoViewModel,
+                        enteredText,
+                        context
+                    )
                 }
             }
 
