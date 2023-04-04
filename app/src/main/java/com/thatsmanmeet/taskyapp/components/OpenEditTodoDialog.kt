@@ -22,8 +22,6 @@ fun OpenEditTodoDialog(
     todosList: State<List<Todo>>,
     selectedItem: MutableState<Int>,
     openEditDialog: MutableState<Boolean>,
-    isTimeDialogShowing: MutableState<Boolean>,
-    isDateDialogShowing: MutableState<Boolean>,
     todoViewModel: TodoViewModel,
     enteredText: String,
     context: Context
@@ -48,6 +46,13 @@ fun OpenEditTodoDialog(
 
     val currentTodoTimeValue = remember {
         mutableStateOf(todosList.value[selectedItem.value].time)
+    }
+    val isDateDialogShowing = remember {
+        mutableStateOf(false)
+    }
+
+    val isTimeDialogShowing = remember {
+        mutableStateOf(false)
     }
 
     AlertDialog(

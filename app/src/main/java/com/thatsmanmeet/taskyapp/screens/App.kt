@@ -150,8 +150,6 @@ fun MyApp() {
                         todosList,
                         selectedItem,
                         openEditDialog,
-                        isTimeDialogShowing,
-                        isDateDialogShowing,
                         todoViewModel,
                         enteredText,
                         context
