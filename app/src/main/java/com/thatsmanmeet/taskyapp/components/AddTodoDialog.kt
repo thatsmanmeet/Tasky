@@ -9,6 +9,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.thatsmanmeet.taskyapp.room.Todo
@@ -108,18 +109,19 @@ fun addTodoDialog(
             confirmButton = {
                 Button(onClick = {
                     openDialog.value = false
+                    val todo = Todo(
+                        ID = null,
+                        enteredText1.ifEmpty { "No Name" },
+                        isCompleted = false,
+                        dateText.value.ifEmpty {
+                            SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH).format(
+                                Calendar.getInstance().time
+                            ).toString()
+                        },
+                        timeText.value
+                    )
                     todoViewModel.insertTodo(
-                        Todo(
-                            ID = null,
-                            enteredText1.ifEmpty { "No Name" },
-                            isCompleted = false,
-                            dateText.value.ifEmpty {
-                                SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH).format(
-                                    Calendar.getInstance().time
-                                ).toString()
-                            },
-                            timeText.value
-                        )
+                        todo
                     )
                     if (dateText.value.isNotEmpty() && timeText.value.isNotEmpty()) {
                         // SCHEDULE NOTIFICATION
@@ -127,11 +129,13 @@ fun addTodoDialog(
                             context,
                             titleText = enteredText1,
                             messageText = "Did you complete your Task ?",
-                            time = "${dateText.value} ${timeText.value}"
+                            time = "${dateText.value} ${timeText.value}",
+                            todo = todo
                         )
                     }
                     enteredText1 = ""
-                }) {
+                }
+                ) {
                     Text(text = "Add")
                 }
             },
@@ -139,7 +143,11 @@ fun addTodoDialog(
                 Button(onClick = {
                     openDialog.value = false
                     enteredText1 = ""
-                }) {
+                },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFF1574C),
+                        contentColor = Color.White
+                    )) {
                     Text(text = "Cancel")
                 }
             })

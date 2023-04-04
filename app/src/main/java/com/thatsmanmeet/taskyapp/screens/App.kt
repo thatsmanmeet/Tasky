@@ -26,7 +26,7 @@ import com.thatsmanmeet.taskyapp.components.TaskList
 import com.thatsmanmeet.taskyapp.components.addTodoDialog
 import com.thatsmanmeet.taskyapp.notification.Notification
 import com.thatsmanmeet.taskyapp.notification.channelID
-import com.thatsmanmeet.taskyapp.notification.notificationID
+import com.thatsmanmeet.taskyapp.room.Todo
 import com.thatsmanmeet.taskyapp.room.TodoViewModel
 import com.thatsmanmeet.taskyapp.ui.theme.TaskyTheme
 import java.text.SimpleDateFormat
@@ -150,6 +150,8 @@ fun MyApp() {
                         todosList,
                         selectedItem,
                         openEditDialog,
+                        isTimeDialogShowing,
+                        isDateDialogShowing,
                         todoViewModel,
                         enteredText,
                         context
@@ -175,7 +177,8 @@ fun scheduleNotification(
     context: Context,
     titleText:String?,
     messageText:String?,
-    time:String?
+    time:String?,
+    todo: Todo
 ) {
 
     val intent = Intent(context, Notification::class.java)
@@ -184,7 +187,7 @@ fun scheduleNotification(
 
     val pendingIntent = PendingIntent.getBroadcast(
         context,
-        notificationID,
+        todo.hashCode(),
         intent,
         PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
     )
@@ -196,6 +199,26 @@ fun scheduleNotification(
         currTime,
         pendingIntent
     )
+}
+
+fun cancelNotification(
+    context: Context,
+    titleText:String?,
+    messageText:String?,
+    time:String?,
+    todo: Todo
+){
+    val intent = Intent(context, Notification::class.java)
+    intent.putExtra("titleExtra", titleText)
+    intent.putExtra("messageExtra", messageText)
+    val pendingIntent = PendingIntent.getBroadcast(
+        context,
+        todo.hashCode(),
+        intent,
+        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+    )
+    val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+    alarmManager.cancel(pendingIntent)
 }
 fun getTimeInMillis(date: String): Long {
     val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.ENGLISH)

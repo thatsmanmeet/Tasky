@@ -69,7 +69,7 @@ fun TodoItemCard(
         }
         if(todo.time!!.isNotEmpty()){
             Icon(
-                modifier = Modifier.size(24.dp),
+                modifier = Modifier.padding(end = 5.dp).size(24.dp),
                 imageVector = Icons.Default.Notifications,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.primary

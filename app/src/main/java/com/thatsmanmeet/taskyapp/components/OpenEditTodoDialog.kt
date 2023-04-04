@@ -11,14 +11,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.thatsmanmeet.taskyapp.room.Todo
 import com.thatsmanmeet.taskyapp.room.TodoViewModel
+import com.thatsmanmeet.taskyapp.screens.cancelNotification
+import com.thatsmanmeet.taskyapp.screens.scheduleNotification
 
 @Composable
 fun OpenEditTodoDialog(
     todosList: State<List<Todo>>,
     selectedItem: MutableState<Int>,
     openEditDialog: MutableState<Boolean>,
+    isTimeDialogShowing: MutableState<Boolean>,
+    isDateDialogShowing: MutableState<Boolean>,
     todoViewModel: TodoViewModel,
     enteredText: String,
     context: Context
@@ -59,8 +64,8 @@ fun OpenEditTodoDialog(
                         currentTodoTitle.value = textChange
                     }
                 )
-                Spacer(modifier = Modifier.height(10.dp))
-                Text(text = "Reminder")
+                Spacer(modifier = Modifier.height(12.dp))
+                Text(text = "Edit Reminder")
                 Spacer(modifier = Modifier.height(10.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -76,10 +81,22 @@ fun OpenEditTodoDialog(
                             tint = MaterialTheme.colorScheme.primary
                         )
                         Spacer(modifier = Modifier.width(5.dp))
-                        Text(text = todosList.value[selectedItem.value].date!!)
+                        if(currentTodoDateValue.value.isNullOrEmpty()){
+                            Text(text = todosList.value[selectedItem.value].date!!)
+                        }else{
+                            Text(text = currentTodoDateValue.value!!)
+                        }
+                    }
+                    // TODO - Modify select date
+                    OutlinedButton(modifier = Modifier.height(35.dp), onClick = {
+                        isDateDialogShowing.value = true
+                    }) {
+                        Text(text = "Select Date", fontSize = 10.sp)
+                        val date = showDatePicker(context = context, isShowing = isDateDialogShowing)
+                        currentTodoDateValue.value = date
+                        isTimeDialogShowing.value = false
                     }
                 }
-                // time
                 Spacer(modifier = Modifier.height(10.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -95,7 +112,23 @@ fun OpenEditTodoDialog(
                             tint = MaterialTheme.colorScheme.primary
                         )
                         Spacer(modifier = Modifier.width(5.dp))
-                        Text(text = todosList.value[selectedItem.value].time!!)
+                        if(currentTodoTimeValue.value.isNullOrEmpty()){
+                            Text(text = todosList.value[selectedItem.value].time!!)
+                        }else{
+                            Text(text = currentTodoTimeValue.value!!)
+                        }
+                    }
+                    // TODO - Modify select time
+                    OutlinedButton(
+                        modifier = Modifier.height(35.dp),
+                        onClick = {
+                            isTimeDialogShowing.value = true
+                        }
+                    ) {
+                        Text(text = "Select Time", fontSize = 10.sp)
+                        val time = showTimePickerDialog(context = context, isShowing = isTimeDialogShowing)
+                        currentTodoTimeValue.value = time
+                        isTimeDialogShowing.value = false
                     }
                 }
             }
@@ -109,16 +142,24 @@ fun OpenEditTodoDialog(
                 if (currentTodoTimeValue.value.isNullOrEmpty()) {
                     currentTodoTimeValue.value = todosList.value[selectedItem.value].time
                 }
+                val todo = Todo(
+                    currentTodoID.value,
+                    currentTodoTitle.value?.ifEmpty {
+                        "No Name"
+                    },
+                    currentTodoChecked.value,
+                    currentTodoDateValue.value,
+                    currentTodoTimeValue.value
+                )
                 todoViewModel.updateTodo(
-                    Todo(
-                        currentTodoID.value,
-                        currentTodoTitle.value?.ifEmpty {
-                            "No Name"
-                        },
-                        currentTodoChecked.value,
-                        currentTodoDateValue.value,
-                        currentTodoTimeValue.value
-                    )
+                    todo
+                )
+                scheduleNotification(
+                    context = context,
+                    titleText = currentTodoTitle.value,
+                    messageText = "Did you complete your Task ?",
+                    time = "${currentTodoDateValue.value} ${currentTodoTimeValue.value}",
+                    todo = todo
                 )
                 enteredText1 = ""
             }) {
@@ -129,14 +170,22 @@ fun OpenEditTodoDialog(
             Button(
                 onClick = {
                     openEditDialog.value = false
+                    val currentTodo = Todo(
+                        currentTodoID.value,
+                        currentTodoTitle.value,
+                        currentTodoChecked.value,
+                        currentTodoDateValue.value,
+                        currentTodoTimeValue.value
+                    )
                     todoViewModel.deleteTodo(
-                        Todo(
-                            currentTodoID.value,
-                            currentTodoTitle.value,
-                            currentTodoChecked.value,
-                            currentTodoDateValue.value,
-                            currentTodoTimeValue.value
-                        )
+                        currentTodo
+                    )
+                    cancelNotification(
+                        context = context,
+                        titleText = currentTodoTitle.value,
+                        messageText = "Did you complete your Task ?",
+                        time = "${currentTodoDateValue.value} ${currentTodoTimeValue.value}",
+                        todo = currentTodo
                     )
                     enteredText1 = ""
                     todoViewModel.playDeletedSound(context)
