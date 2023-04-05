@@ -42,10 +42,10 @@ This app uses [***MVVM (Model View View-Model)***](https://developer.android.com
 
 <table>
   <tr>
-    <td> <img src="./screenshots/tasky1.jpg" height="300px" width="150px" /></td>
-    <td><img src="./screenshots/tasky4.png" height="300px" width="150px"/> </td>
-    <td><img src="./screenshots/tasky2.png" height="300px" width="150px"/></td>
-      <td><img src="./screenshots/tasky3.png" height="300px" width="150px"/></td>
+    <td> <img src="./screenshots/tasky1.jpg" height="215px" width="100px" /></td>
+    <td><img src="./screenshots/tasky4.png" height="215px" width="100px"/> </td>
+    <td><img src="./screenshots/tasky2.png" height="215px" width="100px"/></td>
+      <td><img src="./screenshots/tasky3.png" height="215px" width="100px"/></td>
    </tr> 
 </table>
 
