@@ -26,7 +26,7 @@ I am really sorry for this inconvenience.
 - [Kotlin](https://kotlinlang.org/) - First class and official programming language for Android development.
 - [Jetpack Compose](https://developer.android.com/jetpack/compose?gclid=CjwKCAiArOqOBhBmEiwAsgeLmUlv4dbl6KV3yBs7SXOpYReSF8DaG5yWJipHnkO-OEWgyMHgjn1BixoC8bUQAvD_BwE&gclsrc=aw.ds) - Jetpack Compose is Android’s modern toolkit for building native UI.
 - [Material 3](https://m3.material.io) - Material Design 3, Google’s most expressive and adaptable design system
-- [Coroutines](https://kotlinlang.org/docs/reference/coroutines-overview.html) - For asynchronous and more..
+- [Coroutines](https://kotlinlang.org/docs/reference/coroutines-overview.html) - For asynchronous and more.
 - [Android Architecture Components](https://developer.android.com/topic/libraries/architecture) - Collection of libraries that help you design robust, testable, and maintainable apps.
     - [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel) - Stores UI-related data that isn't destroyed on UI changes.
     - [Room](https://developer.android.com/training/data-storage/room) - Room is an android library which is an ORM which wraps android's native SQLite database
@@ -40,8 +40,14 @@ This app uses [***MVVM (Model View View-Model)***](https://developer.android.com
 
 ## Screenshots 🌠
 
-<img src="./screenshots/tasky1.jpg" height="430px" width="200px"/> <img src="./screenshots/tasky4.png" height="430px" width="200px"/> 
-<img src="./screenshots/tasky2.png" height="430px" width="200px"/> <img src="./screenshots/tasky3.png" height="430px" width="200px"/>
+<table>
+  <tr>
+    <td> <img src="./screenshots/tasky1.jpg" height="300px" width="150px" /></td>
+    <td><img src="./screenshots/tasky4.png" height="300px" width="150px"/> </td>
+    <td><img src="./screenshots/tasky2.png" height="300px" width="150px"/></td>
+      <td><img src="./screenshots/tasky3.png" height="300px" width="150px"/></td>
+   </tr> 
+</table>
 
 ## Download ⬇️
 
