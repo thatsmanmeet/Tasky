@@ -55,6 +55,8 @@ fun OpenEditTodoDialog(
         mutableStateOf(false)
     }
 
+    var todo : Todo = Todo()
+
     AlertDialog(
         onDismissRequest = {
             openEditDialog.value = false
@@ -147,7 +149,7 @@ fun OpenEditTodoDialog(
                 if (currentTodoTimeValue.value.isNullOrEmpty()) {
                     currentTodoTimeValue.value = todosList.value[selectedItem.value].time
                 }
-                val todo = Todo(
+                todo = Todo(
                     currentTodoID.value,
                     currentTodoTitle.value?.ifEmpty {
                         "No Name"
@@ -159,13 +161,19 @@ fun OpenEditTodoDialog(
                 todoViewModel.updateTodo(
                     todo
                 )
-                scheduleNotification(
-                    context = context,
-                    titleText = currentTodoTitle.value,
-                    messageText = "Did you complete your Task ?",
-                    time = "${currentTodoDateValue.value} ${currentTodoTimeValue.value}",
-                    todo = todo
-                )
+                if(!currentTodoTimeValue.value.isNullOrEmpty()){
+                    try {
+                        scheduleNotification(
+                            context = context,
+                            titleText = currentTodoTitle.value,
+                            messageText = "Did you complete your Task ?",
+                            time = "${currentTodoDateValue.value} ${currentTodoTimeValue.value}",
+                            todo = todo
+                        )
+                    }catch (e:Exception){
+                        e.printStackTrace()
+                    }
+                }
                 enteredText1 = ""
             }) {
                 Text(text = "Save")
@@ -175,7 +183,7 @@ fun OpenEditTodoDialog(
             Button(
                 onClick = {
                     openEditDialog.value = false
-                    val currentTodo = Todo(
+                    todo = Todo(
                         currentTodoID.value,
                         currentTodoTitle.value,
                         currentTodoChecked.value,
@@ -183,14 +191,14 @@ fun OpenEditTodoDialog(
                         currentTodoTimeValue.value
                     )
                     todoViewModel.deleteTodo(
-                        currentTodo
+                        todo
                     )
                     cancelNotification(
                         context = context,
                         titleText = currentTodoTitle.value,
                         messageText = "Did you complete your Task ?",
                         time = "${currentTodoDateValue.value} ${currentTodoTimeValue.value}",
-                        todo = currentTodo
+                        todo = todo
                     )
                     enteredText1 = ""
                     todoViewModel.playDeletedSound(context)
