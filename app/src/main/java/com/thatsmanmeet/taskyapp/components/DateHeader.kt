@@ -1,5 +1,6 @@
 package com.thatsmanmeet.taskyapp.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
@@ -19,8 +20,9 @@ fun DateHeader(
 ) {
     Row(
         modifier = modifier
-            .padding(bottom = 8.dp, top = 2.dp)
-            .fillMaxWidth(),
+            .padding(bottom = 8.dp, top = 0.dp)
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.surface),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
