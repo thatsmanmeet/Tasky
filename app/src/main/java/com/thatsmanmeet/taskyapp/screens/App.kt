@@ -16,14 +16,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.thatsmanmeet.taskyapp.R
+import com.thatsmanmeet.taskyapp.components.LegacyTaskList
 import com.thatsmanmeet.taskyapp.components.OpenEditTodoDialog
 import com.thatsmanmeet.taskyapp.components.TaskList
 import com.thatsmanmeet.taskyapp.components.addTodoDialog
+import com.thatsmanmeet.taskyapp.datastore.SettingsStore
 import com.thatsmanmeet.taskyapp.notification.Notification
 import com.thatsmanmeet.taskyapp.notification.channelID
 import com.thatsmanmeet.taskyapp.room.Todo
@@ -34,7 +38,7 @@ import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyApp() {
+fun MyApp(navHostController: NavHostController) {
     val activity = LocalContext.current as Activity
     val context = LocalContext.current
     val todoViewModel = TodoViewModel(activity.application)
@@ -69,15 +73,33 @@ fun MyApp() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         createNotificationChannel(context)
     }
+    // setup settings store
+    val settingsStore = SettingsStore(context)
+    val savedTaskKey = settingsStore.getTaskListKey.collectAsState(initial = true)
     TaskyTheme {
         Scaffold(
             topBar = {
                 TopAppBar(
                     title = {
-                        Text(
-                            text = stringResource(id = R.string.app_name),
-                            fontSize = 20.sp
-                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = stringResource(id = R.string.app_name),
+                                fontSize = 30.sp
+                            )
+                            IconButton(onClick = {
+                                // Implement Navigation to settings
+                                navHostController.navigate(route = Screen.SettingsScreen.route)
+                            }) {
+                                Icon(
+                                    imageVector = Icons.Default.Settings,
+                                    contentDescription = null
+                                )
+                            }
+                        }
                             },
                     colors = topAppBarColors.topAppBarColors(
                         containerColor = MaterialTheme.colorScheme.primary,
@@ -88,7 +110,7 @@ fun MyApp() {
             floatingActionButton = {
                 ExtendedFloatingActionButton(
                     text = { Text(text = "Add Task") },
-                    icon = { Icon(imageVector = Icons.Default.Add, contentDescription = null) },
+                    icon = { Icon(painter = painterResource(id = R.drawable.ic_add_task), contentDescription = null) },
                     onClick = {
                         openDialog.value = true
                     })
@@ -135,15 +157,28 @@ fun MyApp() {
                         }
                     }
                 }else {
-                    TaskList(
-                        state = listState,
-                        list = todosList.value.toMutableStateList(),
-                        todoViewModel = todoViewModel,
-                        onClick = {index->
-                            selectedItem.value = index
-                            openEditDialog.value = true
-                        }
-                    )
+                    if(savedTaskKey.value == null || savedTaskKey.value == true){
+                        TaskList(
+                            state = listState,
+                            list = todosList.value.toMutableStateList(),
+                            todoViewModel = todoViewModel,
+                            onClick = {index->
+                                selectedItem.value = index
+                                openEditDialog.value = true
+                            }
+                        )
+                    }else{
+                        LegacyTaskList(
+                            state = listState,
+                            list = todosList.value.toMutableStateList(),
+                            todoViewModel = todoViewModel,
+                            onClick = {index->
+                                selectedItem.value = index
+                                openEditDialog.value = true
+                            }
+                        )
+                    }
+
                 }
                 if (openEditDialog.value){
                     OpenEditTodoDialog(
@@ -185,7 +220,7 @@ fun scheduleNotification(
 
     val pendingIntent = PendingIntent.getBroadcast(
         context,
-        todo.hashCode(),
+        todo.ID!!.toInt(),
         intent,
         PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
     )

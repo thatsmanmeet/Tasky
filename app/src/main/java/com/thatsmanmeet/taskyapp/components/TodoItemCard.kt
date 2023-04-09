@@ -61,7 +61,8 @@ fun TodoItemCard(
                     }
                 })
             Spacer(modifier = Modifier.width(3.dp))
-            Text(modifier = Modifier.fillMaxWidth(0.9f),
+            Text(
+                modifier = Modifier.fillMaxWidth(0.9f),
                 text = todo.title!!,
                 textDecoration = if (currentCheckBoxState.value) TextDecoration.LineThrough else TextDecoration.None,
                 fontSize = 16.sp
@@ -69,7 +70,9 @@ fun TodoItemCard(
         }
         if(todo.time!!.isNotEmpty()){
             Icon(
-                modifier = Modifier.padding(end = 5.dp).size(24.dp),
+                modifier = Modifier
+                    .padding(end = 5.dp)
+                    .size(24.dp),
                 imageVector = Icons.Default.Notifications,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.primary

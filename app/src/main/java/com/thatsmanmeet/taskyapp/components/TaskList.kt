@@ -52,21 +52,29 @@ fun TaskList(
     }
 }
 
-// Legacy Lazy List
-//    LazyColumn(
-//        state = state,
-//        modifier = modifier.padding(16.dp)
-//    ){
-//        itemsIndexed(list) { index, item ->
-//            val movableContent = movableContentOf {
-//                TodoItemCard(
-//                    todo = item,
-//                    viewModel = todoViewModel,
-//                    modifier = Modifier
-//                        .clickable {
-//                            onClick(index)
-//                        })
-//            }
-//            movableContent()
-//        }
-//    }
+@Composable
+fun LegacyTaskList(
+    modifier: Modifier = Modifier,
+    state: LazyListState,
+    list: MutableList<Todo>,
+    todoViewModel: TodoViewModel,
+    onClick: (Int) -> Unit
+) {
+    LazyColumn(
+        state = state,
+        modifier = modifier.padding(16.dp)
+    ){
+        itemsIndexed(list) { index, item ->
+            val movableContent = movableContentOf {
+                TodoItemCard(
+                    todo = item,
+                    viewModel = todoViewModel,
+                    modifier = Modifier
+                        .clickable {
+                            onClick(index)
+                        })
+            }
+            movableContent()
+        }
+    }
+}
