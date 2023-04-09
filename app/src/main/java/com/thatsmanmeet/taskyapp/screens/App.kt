@@ -220,7 +220,7 @@ fun scheduleNotification(
 
     val pendingIntent = PendingIntent.getBroadcast(
         context,
-        todo.ID!!.toInt(),
+        todo.hashCode(),
         intent,
         PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
     )
