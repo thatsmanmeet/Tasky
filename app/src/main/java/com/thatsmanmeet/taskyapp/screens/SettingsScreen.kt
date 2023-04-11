@@ -1,6 +1,7 @@
 package com.thatsmanmeet.taskyapp.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -10,12 +11,16 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.thatsmanmeet.taskyapp.R
 import com.thatsmanmeet.taskyapp.datastore.SettingsStore
 import com.thatsmanmeet.taskyapp.ui.theme.TaskyTheme
+import com.thatsmanmeet.taskyapp.viewmodels.MainViewModel
 import kotlinx.coroutines.launch
 
 
@@ -32,6 +37,7 @@ fun SettingsScreen(
     val isCheckedState = remember {
         mutableStateOf(isChecked.value)
     }
+    val mainViewModel = MainViewModel()
     TaskyTheme{
         Scaffold(
             modifier = modifier.fillMaxSize(),
@@ -63,7 +69,9 @@ fun SettingsScreen(
             }
         ) {
             Surface(
-                modifier = modifier.fillMaxSize().padding(16.dp)
+                modifier = modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
             ) {
                 Column(modifier = modifier
                     .fillMaxSize()
@@ -109,9 +117,104 @@ fun SettingsScreen(
                             }
                         }
                     }
+                    Spacer(modifier = modifier.height(12.dp))
+                    // Auto Start card
+                    Card(
+                        modifier = modifier
+                            .heightIn(56.dp)
+                            .clip(RoundedCornerShape(15.dp))
+                            .fillMaxWidth()
+                            .background(MaterialTheme.colorScheme.inverseOnSurface)
+                            .clickable {
+                                mainViewModel.enableAutoStartIntent(context)
+                            },
+                        elevation = CardDefaults.cardElevation(0.dp)
+                    ) {
+                        Row(
+                            modifier = modifier
+                                .padding(10.dp)
+                                .fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Column (
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.Start,
+                                modifier = modifier
+                                    .weight(1f)
+                                    .padding(10.dp)
+                            ){
+                                Text(
+                                    text = "Enable Autostart",
+                                    fontSize = 18.sp,
+
+                                )
+
+                                Text(
+                                    text = "For some devices notifications might not receive on time or may not work after reboot. Click here to enable autostart",
+                                    fontSize = 10.sp,
+                                )
+                            }
+
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_battery),
+                                contentDescription = "Battery Icon",
+                                modifier = modifier
+                                    .size(35.dp)
+                                    .weight(0.1f),
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                    }
+                    // Visit Github Card
+                    Spacer(modifier = modifier.height(12.dp))
+                    Card(
+                        modifier = modifier
+                            .heightIn(56.dp)
+                            .clip(RoundedCornerShape(15.dp))
+                            .fillMaxWidth()
+                            .background(MaterialTheme.colorScheme.inverseOnSurface)
+                            .clickable {
+                                mainViewModel.openGithubPage(context)
+                            },
+                        elevation = CardDefaults.cardElevation(0.dp)
+                    ) {
+                        Row(
+                            modifier = modifier
+                                .padding(10.dp)
+                                .fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Column (
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.Start,
+                                modifier = modifier
+                                    .weight(1f)
+                                    .padding(10.dp)
+                            ){
+                                Text(
+                                    text = "View Source",
+                                    fontSize = 18.sp,
+
+                                    )
+
+                                Text(
+                                    text = "Tasky is completely open source. Have a feedback or want to get into development ? visit Github! Oh and don't forget to give a ⭐️ ;)",
+                                    fontSize = 10.sp,
+                                )
+                            }
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_code),
+                                contentDescription = "code icon",
+                                modifier = modifier.size(35.dp).weight(0.1f),
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                     }
                 }
             }
-
         }
+
     }
 }
