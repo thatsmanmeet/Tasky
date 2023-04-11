@@ -1,11 +1,19 @@
 package com.thatsmanmeet.taskyapp.room
 
 import android.content.Context
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [Todo::class], version = 2, exportSchema = false)
+@Database(
+    entities = [Todo::class],
+    version = 3,
+    exportSchema = true,
+    autoMigrations = [
+        AutoMigration(from = 2, to = 3)
+    ]
+)
 abstract class TodoDatabase : RoomDatabase() {
 
     abstract fun todoDao() : TodoDao
@@ -24,7 +32,6 @@ abstract class TodoDatabase : RoomDatabase() {
                         "todo_database"
                     )
                         .allowMainThreadQueries()
-                        .fallbackToDestructiveMigration()
                         .build()
                     INSTANCE = instance
                 }
