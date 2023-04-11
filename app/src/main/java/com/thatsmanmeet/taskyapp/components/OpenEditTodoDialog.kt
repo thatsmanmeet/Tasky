@@ -47,6 +47,11 @@ fun OpenEditTodoDialog(
     val currentTodoTimeValue = remember {
         mutableStateOf(todosList.value[selectedItem.value].time)
     }
+
+    val currentTodoNotificationId = remember {
+        mutableStateOf(todosList.value[selectedItem.value].notificationID)
+    }
+
     val isDateDialogShowing = remember {
         mutableStateOf(false)
     }
@@ -156,7 +161,9 @@ fun OpenEditTodoDialog(
                     },
                     currentTodoChecked.value,
                     currentTodoDateValue.value,
-                    currentTodoTimeValue.value
+                    currentTodoTimeValue.value,
+                    currentTodoNotificationId.value,
+                    isRecurring = false
                 )
                 todoViewModel.updateTodo(
                     todo
@@ -188,7 +195,9 @@ fun OpenEditTodoDialog(
                         currentTodoTitle.value,
                         currentTodoChecked.value,
                         currentTodoDateValue.value,
-                        currentTodoTimeValue.value
+                        currentTodoTimeValue.value,
+                        currentTodoNotificationId.value,
+                        false
                     )
                     todoViewModel.deleteTodo(
                         todo

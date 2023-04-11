@@ -113,12 +113,14 @@ fun addTodoDialog(
                         ID = null,
                         enteredText1.ifEmpty { "No Name" },
                         isCompleted = false,
-                        dateText.value.ifEmpty {
+                        date = dateText.value.ifEmpty {
                             SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH).format(
                                 Calendar.getInstance().time
                             ).toString()
                         },
-                        timeText.value
+                        time = timeText.value,
+                        notificationID = (0..1000).random(),
+                        isRecurring = false
                     )
                     todoViewModel.insertTodo(
                         todo

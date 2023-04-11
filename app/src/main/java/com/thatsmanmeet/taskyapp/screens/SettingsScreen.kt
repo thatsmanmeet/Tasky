@@ -10,6 +10,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -79,23 +80,28 @@ fun SettingsScreen(
                 ) {
                     Card(
                         modifier = modifier
+                            .clip(RoundedCornerShape(15.dp))
                             .fillMaxWidth()
                             .background(MaterialTheme.colorScheme.inverseOnSurface),
-                        elevation = CardDefaults.cardElevation(2.dp)
+                        elevation = CardDefaults.cardElevation(0.dp)
                     ) {
                         Row(
                             modifier = modifier
-                                .fillMaxWidth()
-                                .padding(10.dp),
+                                .padding(10.dp)
+                                .fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(
                                 text = "Separate tasks using dates",
-                                fontSize = 20.sp
+                                fontSize = 18.sp,
+                                modifier = modifier.weight(1f)
                             )
                             isCheckedState.value?.let { it1 ->
-                                Switch(checked = it1, onCheckedChange = { isToggleChecked->
+                                Switch(
+                                    modifier = modifier.weight(0.2f),
+                                    checked = it1,
+                                    onCheckedChange = { isToggleChecked->
                                     isCheckedState.value = isToggleChecked
                                     scope.launch {
                                         settingStore.saveTaskListKey(isToggleChecked)

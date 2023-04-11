@@ -220,7 +220,7 @@ fun scheduleNotification(
 
     val pendingIntent = PendingIntent.getBroadcast(
         context,
-        todo.hashCode(),
+        todo.notificationID,
         intent,
         PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
     )
@@ -246,7 +246,7 @@ fun cancelNotification(
     intent.putExtra("messageExtra", messageText)
     val pendingIntent = PendingIntent.getBroadcast(
         context,
-        todo.hashCode(),
+        todo.notificationID,
         intent,
         PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
     )
