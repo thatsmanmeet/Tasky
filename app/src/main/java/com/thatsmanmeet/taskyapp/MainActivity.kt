@@ -60,9 +60,9 @@ class MainActivity : ComponentActivity() {
                 if (checkPermission) {
                     pageState.value = true
                 } else {
-                    PermissionRequestScreen(navHostController = navController) {
+                    PermissionRequestScreen(navHostController = navController, requestOnClick = {
                         notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-                    }
+                    })
                 }
             }
             // If permissions are already accepted.

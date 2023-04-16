@@ -16,6 +16,9 @@ import com.thatsmanmeet.taskyapp.room.Todo
 import com.thatsmanmeet.taskyapp.room.TodoViewModel
 import com.thatsmanmeet.taskyapp.screens.cancelNotification
 import com.thatsmanmeet.taskyapp.screens.scheduleNotification
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 @Composable
 fun OpenEditTodoDialog(
@@ -24,7 +27,8 @@ fun OpenEditTodoDialog(
     openEditDialog: MutableState<Boolean>,
     todoViewModel: TodoViewModel,
     enteredText: String,
-    context: Context
+    context: Context,
+    modifier: Modifier = Modifier
 ) {
     var enteredText1 by remember {
         mutableStateOf(enteredText)
@@ -59,9 +63,12 @@ fun OpenEditTodoDialog(
     val isTimeDialogShowing = remember {
         mutableStateOf(false)
     }
-
-    var todo : Todo = Todo()
-
+    val currentDate = Calendar.getInstance().apply {
+        set(Calendar.HOUR_OF_DAY, 0)
+        set(Calendar.MINUTE, 0)
+        set(Calendar.SECOND, 0)
+    }
+    var todo : Todo
     AlertDialog(
         onDismissRequest = {
             openEditDialog.value = false
@@ -76,11 +83,11 @@ fun OpenEditTodoDialog(
                         currentTodoTitle.value = textChange
                     }
                 )
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = modifier.height(12.dp))
                 Text(text = "Edit Reminder")
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = modifier.height(10.dp))
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
@@ -92,7 +99,7 @@ fun OpenEditTodoDialog(
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.primary
                         )
-                        Spacer(modifier = Modifier.width(5.dp))
+                        Spacer(modifier = modifier.width(5.dp))
                         if(currentTodoDateValue.value.isNullOrEmpty()){
                             Text(text = todosList.value[selectedItem.value].date!!)
                         }else{
@@ -100,7 +107,7 @@ fun OpenEditTodoDialog(
                         }
                     }
                     // TODO - Modify select date
-                    OutlinedButton(modifier = Modifier.height(35.dp), onClick = {
+                    OutlinedButton(modifier = modifier.height(35.dp), onClick = {
                         isDateDialogShowing.value = true
                     }) {
                         Text(text = "Select Date", fontSize = 10.sp)
@@ -109,9 +116,9 @@ fun OpenEditTodoDialog(
                         isTimeDialogShowing.value = false
                     }
                 }
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = modifier.height(10.dp))
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
@@ -123,7 +130,7 @@ fun OpenEditTodoDialog(
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.primary
                         )
-                        Spacer(modifier = Modifier.width(5.dp))
+                        Spacer(modifier = modifier.width(5.dp))
                         if(currentTodoTimeValue.value.isNullOrEmpty()){
                             Text(text = todosList.value[selectedItem.value].time!!)
                         }else{
@@ -132,7 +139,7 @@ fun OpenEditTodoDialog(
                     }
                     // TODO - Modify select time
                     OutlinedButton(
-                        modifier = Modifier.height(35.dp),
+                        modifier = modifier.height(35.dp),
                         onClick = {
                             isTimeDialogShowing.value = true
                         }
@@ -170,13 +177,24 @@ fun OpenEditTodoDialog(
                 )
                 if(!currentTodoTimeValue.value.isNullOrEmpty()){
                     try {
-                        scheduleNotification(
-                            context = context,
-                            titleText = currentTodoTitle.value,
-                            messageText = "Did you complete your Task ?",
-                            time = "${currentTodoDateValue.value} ${currentTodoTimeValue.value}",
-                            todo = todo
-                        )
+                        val format = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                        val parsedDate = format.parse(currentTodoDateValue.value!!)
+                        val calendar = Calendar.getInstance().apply {
+                            time = parsedDate!!
+                            set(Calendar.HOUR_OF_DAY, todo.time!!.substringBefore(":").toInt())
+                            set(Calendar.MINUTE, todo.time!!.substringAfter(":").toInt())
+                            set(Calendar.SECOND, 0)
+                        }
+                        val currentTime = Calendar.getInstance().timeInMillis
+                        if(!currentTodoChecked.value && (calendar >= currentDate && calendar.timeInMillis >= currentTime)){
+                            scheduleNotification(
+                                context = context,
+                                titleText = currentTodoTitle.value,
+                                messageText = "Did you complete your Task ?",
+                                time = "${currentTodoDateValue.value} ${currentTodoTimeValue.value}",
+                                todo = todo
+                            )
+                        }
                     }catch (e:Exception){
                         e.printStackTrace()
                     }

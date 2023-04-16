@@ -29,13 +29,17 @@ import kotlinx.coroutines.launch
 fun SettingsScreen(
     navHostController: NavHostController,
     modifier: Modifier = Modifier,
-    isChecked:State<Boolean?>
+    isChecked:State<Boolean?>,
+    shouldShowAnimation:State<Boolean?>
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val settingStore = SettingsStore(context)
     val isCheckedState = remember {
         mutableStateOf(isChecked.value)
+    }
+    val shouldShowAnimationState = remember {
+        mutableStateOf(shouldShowAnimation.value)
     }
     val mainViewModel = MainViewModel()
     TaskyTheme{
@@ -114,6 +118,40 @@ fun SettingsScreen(
                                         settingStore.saveTaskListKey(isToggleChecked)
                                     }
                                 })
+                            }
+                        }
+                    }
+                    Spacer(modifier = modifier.height(12.dp))
+                    // Use Animations Toggle
+                    Card(
+                        modifier = modifier
+                            .clip(RoundedCornerShape(15.dp))
+                            .fillMaxWidth()
+                            .background(MaterialTheme.colorScheme.inverseOnSurface),
+                        elevation = CardDefaults.cardElevation(0.dp)
+                    ) {
+                        Row(
+                            modifier = modifier
+                                .padding(10.dp)
+                                .fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = "Use task complete animations",
+                                fontSize = 18.sp,
+                                modifier = modifier.weight(1f)
+                            )
+                            shouldShowAnimationState.value?.let { it1 ->
+                                Switch(
+                                    modifier = modifier.weight(0.2f),
+                                    checked = it1,
+                                    onCheckedChange = { isToggleChecked->
+                                        shouldShowAnimationState.value = isToggleChecked
+                                        scope.launch {
+                                            settingStore.saveAnimationShowKey(isToggleChecked)
+                                        }
+                                    })
                             }
                         }
                     }

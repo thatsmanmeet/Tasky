@@ -4,6 +4,8 @@ package com.thatsmanmeet.taskyapp.room
 import android.app.Application
 import android.content.Context
 import android.media.MediaPlayer
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -15,6 +17,8 @@ class TodoViewModel(application: Application) : ViewModel() {
 
     private var repository: TodoRepository
     val getAllTodos : LiveData<List<Todo>>
+
+    val isAnimationPlayingState = mutableStateOf(false)
 
     init {
         val dao = TodoDatabase.getInstance(application).todoDao()

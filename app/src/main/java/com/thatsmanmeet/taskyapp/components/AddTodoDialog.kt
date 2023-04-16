@@ -27,7 +27,8 @@ fun addTodoDialog(
     context: Context,
     timeText: MutableState<String>,
     isTimeDialogShowing: MutableState<Boolean>,
-    todoViewModel: TodoViewModel
+    todoViewModel: TodoViewModel,
+    modifier: Modifier = Modifier
 ): String {
     var enteredText1 by remember {
         mutableStateOf(enteredText)
@@ -49,11 +50,11 @@ fun addTodoDialog(
                         },
                         maxLines = 1
                     )
-                    Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = modifier.height(10.dp))
                     Text(text = "Set Reminder (optional)")
-                    Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = modifier.height(10.dp))
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
@@ -65,10 +66,10 @@ fun addTodoDialog(
                                 contentDescription = null,
                                 tint = MaterialTheme.colorScheme.primary
                             )
-                            Spacer(modifier = Modifier.width(5.dp))
+                            Spacer(modifier = modifier.width(5.dp))
                             Text(text = dateText.value)
                         }
-                        OutlinedButton(modifier = Modifier.height(35.dp), onClick = {
+                        OutlinedButton(modifier = modifier.height(35.dp), onClick = {
                             isDateDialogShowing.value = true
                         }) {
                             Text(text = "Select Date", fontSize = 10.sp)
@@ -78,9 +79,9 @@ fun addTodoDialog(
                         }
                     }
                     // time
-                    Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = modifier.height(10.dp))
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
@@ -92,10 +93,10 @@ fun addTodoDialog(
                                 contentDescription = null,
                                 tint = MaterialTheme.colorScheme.primary
                             )
-                            Spacer(modifier = Modifier.width(5.dp))
+                            Spacer(modifier = modifier.width(5.dp))
                             Text(text = timeText.value)
                         }
-                        OutlinedButton(modifier = Modifier.height(35.dp), onClick = {
+                        OutlinedButton(modifier = modifier.height(35.dp), onClick = {
                             isTimeDialogShowing.value = true
                         }) {
                             Text(text = "Select Time", fontSize = 10.sp)
@@ -119,7 +120,7 @@ fun addTodoDialog(
                             ).toString()
                         },
                         time = timeText.value,
-                        notificationID = (0..1000).random(),
+                        notificationID = ((0..2000).random() - (0..50).random()),
                         isRecurring = false
                     )
                     todoViewModel.insertTodo(
@@ -127,13 +128,24 @@ fun addTodoDialog(
                     )
                     if (dateText.value.isNotEmpty() && timeText.value.isNotEmpty()) {
                         // SCHEDULE NOTIFICATION
-                        scheduleNotification(
-                            context,
-                            titleText = enteredText1,
-                            messageText = "Did you complete your Task ?",
-                            time = "${dateText.value} ${timeText.value}",
-                            todo = todo
-                        )
+                        val format = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                        val parsedDate = format.parse(dateText.value)
+                        val calendar = Calendar.getInstance().apply {
+                            time = parsedDate!!
+                            set(Calendar.HOUR_OF_DAY, todo.time!!.substringBefore(":").toInt())
+                            set(Calendar.MINUTE, todo.time!!.substringAfter(":").toInt())
+                            set(Calendar.SECOND, 0)
+                        }
+                        val currentTime = Calendar.getInstance().timeInMillis
+                        if(calendar.timeInMillis >= currentTime){
+                            scheduleNotification(
+                                context,
+                                titleText = enteredText1,
+                                messageText = "Did you complete your Task ?",
+                                time = "${dateText.value} ${timeText.value}",
+                                todo = todo
+                            )
+                        }
                     }
                     enteredText1 = ""
                 }

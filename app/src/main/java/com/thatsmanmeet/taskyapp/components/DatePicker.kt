@@ -30,6 +30,7 @@ fun showDatePicker(
             isShowing.value = false
         }, year, month, day
     )
+    datePickerDialog.datePicker.minDate = calendar.timeInMillis
     if(isShowing.value){
         datePickerDialog.show()
     }

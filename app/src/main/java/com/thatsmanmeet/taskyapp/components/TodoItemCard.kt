@@ -18,6 +18,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.thatsmanmeet.taskyapp.room.Todo
 import com.thatsmanmeet.taskyapp.room.TodoViewModel
+import com.thatsmanmeet.taskyapp.screens.cancelNotification
+import com.thatsmanmeet.taskyapp.screens.scheduleNotification
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 @Composable
 fun TodoItemCard(
@@ -29,6 +34,11 @@ fun TodoItemCard(
         mutableStateOf(todo.isCompleted)
     }
     val context = LocalContext.current
+    val currentDate = Calendar.getInstance().apply {
+        set(Calendar.HOUR_OF_DAY, 0)
+        set(Calendar.MINUTE, 0)
+        set(Calendar.SECOND, 0)
+    }
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -47,17 +57,47 @@ fun TodoItemCard(
                 checked = currentCheckBoxState.value,
                 onCheckedChange = {
                     currentCheckBoxState.value = it
-                    viewModel.updateTodo(
-                        Todo(
+                    val currentTodo = Todo(
                         todo.ID,
                         todo.title,
                         currentCheckBoxState.value,
                         todo.date,
                         todo.time
                     )
+                    viewModel.updateTodo(
+                        currentTodo
                     )
                     if(currentCheckBoxState.value){
                         viewModel.playCompletedSound(context)
+                        viewModel.isAnimationPlayingState.value = true
+                            cancelNotification(
+                                context = context,
+                                titleText = currentTodo.title,
+                                messageText = "Have you completed your task today ?",
+                                time = "${currentTodo.date} ${currentTodo.time}",
+                                todo = currentTodo
+                            )
+                    }else{
+                        if (currentTodo.date!!.isNotEmpty() && currentTodo.time!!.isNotEmpty()){
+                            val format = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                            val parsedDate = format.parse(currentTodo.date!!)
+                            val calendar = Calendar.getInstance().apply {
+                                time = parsedDate!!
+                                set(Calendar.HOUR_OF_DAY, currentTodo.time!!.substringBefore(":").toInt())
+                                set(Calendar.MINUTE, currentTodo.time!!.substringAfter(":").toInt())
+                                set(Calendar.SECOND, 0)
+                            }
+                            val currentTime = Calendar.getInstance().timeInMillis
+                            if(calendar >= currentDate && calendar.timeInMillis >= currentTime){
+                                scheduleNotification(
+                                    context = context,
+                                    titleText = currentTodo.title,
+                                    messageText = "Have you completed your task today ?",
+                                    time = "${currentTodo.date} ${currentTodo.time}",
+                                    todo = currentTodo
+                                )
+                            }
+                        }
                     }
                 })
             Spacer(modifier = Modifier.width(3.dp))

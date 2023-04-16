@@ -15,6 +15,7 @@ fun SetupNavGraph(
     val context = LocalContext.current
     val settingsStore = SettingsStore(context)
     val isEnabledState = settingsStore.getTaskListKey.collectAsState(initial = false)
+    val isAnimationShowingState = settingsStore.getAnimationKey.collectAsState(initial = false)
     NavHost(
         navController = navController,
         startDestination = Screen.PermissionScreen.route
@@ -22,9 +23,9 @@ fun SetupNavGraph(
         composable(
             route = Screen.PermissionScreen.route
         ){
-            PermissionRequestScreen(navController) {
+            PermissionRequestScreen(navController, requestOnClick = {
 
-            }
+            })
         }
 
         composable(
@@ -32,7 +33,8 @@ fun SetupNavGraph(
         ){
             SettingsScreen(
                 navController,
-                isChecked = isEnabledState
+                isChecked = isEnabledState,
+                shouldShowAnimation = isAnimationShowingState
             )
         }
         composable(

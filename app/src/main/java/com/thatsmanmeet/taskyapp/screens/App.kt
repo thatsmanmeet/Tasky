@@ -25,6 +25,7 @@ import androidx.navigation.NavHostController
 import com.thatsmanmeet.taskyapp.R
 import com.thatsmanmeet.taskyapp.components.LegacyTaskList
 import com.thatsmanmeet.taskyapp.components.OpenEditTodoDialog
+import com.thatsmanmeet.taskyapp.components.TaskCompleteAnimations
 import com.thatsmanmeet.taskyapp.components.TaskList
 import com.thatsmanmeet.taskyapp.components.addTodoDialog
 import com.thatsmanmeet.taskyapp.datastore.SettingsStore
@@ -33,12 +34,18 @@ import com.thatsmanmeet.taskyapp.notification.channelID
 import com.thatsmanmeet.taskyapp.room.Todo
 import com.thatsmanmeet.taskyapp.room.TodoViewModel
 import com.thatsmanmeet.taskyapp.ui.theme.TaskyTheme
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyApp(navHostController: NavHostController) {
+fun MyApp(
+    navHostController: NavHostController,
+    modifier: Modifier = Modifier
+) {
     val activity = LocalContext.current as Activity
     val context = LocalContext.current
     val todoViewModel = TodoViewModel(activity.application)
@@ -70,19 +77,23 @@ fun MyApp(navHostController: NavHostController) {
     val isTimeDialogShowing = remember {
         mutableStateOf(false)
     }
+    val isLottiePlaying = remember {
+        mutableStateOf(true)
+    }
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         createNotificationChannel(context)
     }
     // setup settings store
     val settingsStore = SettingsStore(context)
     val savedTaskKey = settingsStore.getTaskListKey.collectAsState(initial = true)
+    val savedAnimationKey = settingsStore.getAnimationKey.collectAsState(initial = true)
     TaskyTheme {
         Scaffold(
             topBar = {
                 TopAppBar(
                     title = {
                         Row(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
@@ -127,21 +138,21 @@ fun MyApp(navHostController: NavHostController) {
                 todoViewModel
             )
             Surface(
-                modifier = Modifier
+                modifier = modifier
                     .fillMaxSize()
                     .padding(paddingValues),
                 color = MaterialTheme.colorScheme.background
             ) {
                 if(todosList.value.isEmpty()){
-                    Box(modifier = Modifier.fillMaxSize(),
+                    Box(modifier = modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center) {
                         Column(
-                            modifier = Modifier,
+                            modifier = modifier,
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center
                         ) {
                             Icon(
-                                modifier = Modifier
+                                modifier = modifier
                                     .size(50.dp)
                                     .alpha(0.8f),
                                 imageVector = Icons.Filled.Check,
@@ -192,6 +203,21 @@ fun MyApp(navHostController: NavHostController) {
                 }
             }
 
+        }
+        if(todoViewModel.isAnimationPlayingState.value && (savedAnimationKey.value == true || savedAnimationKey.value == null)){
+            Column(modifier = modifier.fillMaxSize()) {
+                TaskCompleteAnimations(
+                    isLottiePlaying = isLottiePlaying,
+                    modifier = modifier.fillMaxSize()
+                )
+                LaunchedEffect(Unit){
+                    delay(2200)
+                    withContext(Dispatchers.Main){
+                        todoViewModel.isAnimationPlayingState.value = false
+                    }
+
+                }
+            }
         }
     }
 }
