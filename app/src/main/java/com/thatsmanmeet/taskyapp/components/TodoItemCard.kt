@@ -62,7 +62,9 @@ fun TodoItemCard(
                         todo.title,
                         currentCheckBoxState.value,
                         todo.date,
-                        todo.time
+                        todo.time,
+                        notificationID = todo.notificationID,
+                        isRecurring = todo.isRecurring
                     )
                     viewModel.updateTodo(
                         currentTodo

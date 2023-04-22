@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -12,17 +13,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.thatsmanmeet.taskyapp.constants.Constants
 import com.thatsmanmeet.taskyapp.room.Todo
 import com.thatsmanmeet.taskyapp.room.TodoViewModel
 import com.thatsmanmeet.taskyapp.screens.cancelNotification
 import com.thatsmanmeet.taskyapp.screens.scheduleNotification
+import com.thatsmanmeet.taskyapp.screens.setRepeatingAlarm
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
 @Composable
 fun OpenEditTodoDialog(
-    todosList: State<List<Todo>>,
+    todosList: List<Todo>,
     selectedItem: MutableState<Int>,
     openEditDialog: MutableState<Boolean>,
     todoViewModel: TodoViewModel,
@@ -34,26 +37,26 @@ fun OpenEditTodoDialog(
         mutableStateOf(enteredText)
     }
     val currentTodoTitle = remember {
-        mutableStateOf(todosList.value[selectedItem.value].title)
+        mutableStateOf(todosList[selectedItem.value].title)
     }
     val currentTodoID = remember {
-        mutableStateOf(todosList.value[selectedItem.value].ID)
+        mutableStateOf(todosList[selectedItem.value].ID)
     }
 
     val currentTodoChecked = remember {
-        mutableStateOf(todosList.value[selectedItem.value].isCompleted)
+        mutableStateOf(todosList[selectedItem.value].isCompleted)
     }
 
     val currentTodoDateValue = remember {
-        mutableStateOf(todosList.value[selectedItem.value].date)
+        mutableStateOf(todosList[selectedItem.value].date)
     }
 
     val currentTodoTimeValue = remember {
-        mutableStateOf(todosList.value[selectedItem.value].time)
+        mutableStateOf(todosList[selectedItem.value].time)
     }
 
     val currentTodoNotificationId = remember {
-        mutableStateOf(todosList.value[selectedItem.value].notificationID)
+        mutableStateOf(todosList[selectedItem.value].notificationID)
     }
 
     val isDateDialogShowing = remember {
@@ -62,6 +65,9 @@ fun OpenEditTodoDialog(
 
     val isTimeDialogShowing = remember {
         mutableStateOf(false)
+    }
+    var isRepeating by remember {
+        mutableStateOf(todosList[selectedItem.value].isRecurring)
     }
     val currentDate = Calendar.getInstance().apply {
         set(Calendar.HOUR_OF_DAY, 0)
@@ -78,7 +84,7 @@ fun OpenEditTodoDialog(
             Column {
                 OutlinedTextField(
                     value = currentTodoTitle.value!!,
-                    placeholder = { Text(text = "what's on your mind?") },
+                    placeholder = { Text(text = Constants.PLACEHOLDER) },
                     onValueChange = { textChange ->
                         currentTodoTitle.value = textChange
                     }
@@ -99,9 +105,9 @@ fun OpenEditTodoDialog(
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.primary
                         )
-                        Spacer(modifier = modifier.width(5.dp))
+                        Spacer(modifier = modifier.width(8.dp))
                         if(currentTodoDateValue.value.isNullOrEmpty()){
-                            Text(text = todosList.value[selectedItem.value].date!!)
+                            Text(text = todosList[selectedItem.value].date!!)
                         }else{
                             Text(text = currentTodoDateValue.value!!)
                         }
@@ -130,9 +136,9 @@ fun OpenEditTodoDialog(
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.primary
                         )
-                        Spacer(modifier = modifier.width(5.dp))
+                        Spacer(modifier = modifier.width(8.dp))
                         if(currentTodoTimeValue.value.isNullOrEmpty()){
-                            Text(text = todosList.value[selectedItem.value].time!!)
+                            Text(text = todosList[selectedItem.value].time!!)
                         }else{
                             Text(text = currentTodoTimeValue.value!!)
                         }
@@ -150,16 +156,30 @@ fun OpenEditTodoDialog(
                         isTimeDialogShowing.value = false
                     }
                 }
+                // Repeating Notifications
+                Row (
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ){
+                    Row(verticalAlignment = Alignment.CenterVertically,modifier = modifier.weight(0.8f)) {
+                        Icon(imageVector = Icons.Default.Refresh, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                        Spacer(modifier = modifier.width(8.dp))
+                        Text(text = "Repeat Everyday [Beta]", fontSize = 12.sp)
+                    }
+                    Checkbox(checked = isRepeating, onCheckedChange = {
+                        isRepeating = it
+                    },modifier = modifier.weight(0.2f))
+                }
             }
         },
         confirmButton = {
             Button(onClick = {
                 openEditDialog.value = false
                 if (currentTodoDateValue.value.isNullOrEmpty()) {
-                    currentTodoDateValue.value = todosList.value[selectedItem.value].date
+                    currentTodoDateValue.value = todosList[selectedItem.value].date
                 }
                 if (currentTodoTimeValue.value.isNullOrEmpty()) {
-                    currentTodoTimeValue.value = todosList.value[selectedItem.value].time
+                    currentTodoTimeValue.value = todosList[selectedItem.value].time
                 }
                 todo = Todo(
                     currentTodoID.value,
@@ -170,7 +190,7 @@ fun OpenEditTodoDialog(
                     currentTodoDateValue.value,
                     currentTodoTimeValue.value,
                     currentTodoNotificationId.value,
-                    isRecurring = false
+                    isRecurring = isRepeating
                 )
                 todoViewModel.updateTodo(
                     todo
@@ -190,10 +210,13 @@ fun OpenEditTodoDialog(
                             scheduleNotification(
                                 context = context,
                                 titleText = currentTodoTitle.value,
-                                messageText = "Did you complete your Task ?",
+                                messageText = Constants.MESSAGE,
                                 time = "${currentTodoDateValue.value} ${currentTodoTimeValue.value}",
                                 todo = todo
                             )
+                        }
+                        if(isRepeating){
+                            setRepeatingAlarm(context)
                         }
                     }catch (e:Exception){
                         e.printStackTrace()
@@ -215,7 +238,7 @@ fun OpenEditTodoDialog(
                         currentTodoDateValue.value,
                         currentTodoTimeValue.value,
                         currentTodoNotificationId.value,
-                        false
+                        isRepeating
                     )
                     todoViewModel.deleteTodo(
                         todo
@@ -223,7 +246,7 @@ fun OpenEditTodoDialog(
                     cancelNotification(
                         context = context,
                         titleText = currentTodoTitle.value,
-                        messageText = "Did you complete your Task ?",
+                        messageText = Constants.MESSAGE,
                         time = "${currentTodoDateValue.value} ${currentTodoTimeValue.value}",
                         todo = todo
                     )

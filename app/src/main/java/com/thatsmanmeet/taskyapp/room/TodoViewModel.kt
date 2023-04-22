@@ -5,25 +5,24 @@ import android.app.Application
 import android.content.Context
 import android.media.MediaPlayer
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.thatsmanmeet.taskyapp.R
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class TodoViewModel(application: Application) : ViewModel() {
 
     private var repository: TodoRepository
-    val getAllTodos : LiveData<List<Todo>>
+    val getAllTodosFlow : Flow<List<Todo>>
 
     val isAnimationPlayingState = mutableStateOf(false)
 
     init {
         val dao = TodoDatabase.getInstance(application).todoDao()
         repository = TodoRepository(dao)
-        getAllTodos = repository.getAllTodos()
+        getAllTodosFlow = repository.getAllTodosFlow()
     }
 
     fun insertTodo(todo: Todo){

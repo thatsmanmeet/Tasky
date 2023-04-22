@@ -1,4 +1,4 @@
-package com.thatsmanmeet.taskyapp.reciever
+package com.thatsmanmeet.taskyapp.receiver
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -6,6 +6,7 @@ import android.content.Intent
 import androidx.room.Room
 import com.thatsmanmeet.taskyapp.room.TodoDatabase
 import com.thatsmanmeet.taskyapp.screens.scheduleNotification
+import com.thatsmanmeet.taskyapp.screens.setRepeatingAlarm
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -28,8 +29,7 @@ class BootCompletedReceiver : BroadcastReceiver() {
                     set(Calendar.SECOND, 0)
                 }
                 todos.forEach {todo->
-                    if(!todo.isCompleted){
-                        if(todo.date!!.isNotEmpty() && todo.time!!.isNotEmpty()){
+                    if(!todo.isCompleted && (todo.date!!.isNotEmpty() && todo.time!!.isNotEmpty())){
                             val format = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
                             val parsedDate = format.parse(todo.date!!)
                             val calendar = Calendar.getInstance().apply {
@@ -44,7 +44,7 @@ class BootCompletedReceiver : BroadcastReceiver() {
                                 time = parsedTime!!
                             }
                             val currentTime = Calendar.getInstance().timeInMillis
-                                if(calendar >= currentDate && notificationTime.timeInMillis >= currentTime){
+                            if(calendar >= currentDate && notificationTime.timeInMillis >= currentTime){
                                     scheduleNotification(
                                         context = context,
                                         titleText = todo.title,
@@ -53,14 +53,12 @@ class BootCompletedReceiver : BroadcastReceiver() {
                                         todo = todo
                                     )
                                     println("Todo ${todo.title} set!")
-                                }
-                        }
+                            }
                     }
                 }
             }
-            todoList.removeObserver{
-
-            }
+            setRepeatingAlarm(context = context)
+            todoList.removeObserver{}
         }
     }
 }

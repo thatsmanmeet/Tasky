@@ -21,7 +21,7 @@ import java.util.*
 fun TaskList(
     modifier: Modifier = Modifier,
     state: LazyListState,
-    list : MutableList<Todo>,
+    list : List<Todo>,
     todoViewModel: TodoViewModel,
     onClick : (Int) -> Unit
 ) {
@@ -56,7 +56,7 @@ fun TaskList(
 fun LegacyTaskList(
     modifier: Modifier = Modifier,
     state: LazyListState,
-    list: MutableList<Todo>,
+    list: List<Todo>,
     todoViewModel: TodoViewModel,
     onClick: (Int) -> Unit
 ) {

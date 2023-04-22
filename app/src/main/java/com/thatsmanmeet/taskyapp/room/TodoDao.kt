@@ -19,4 +19,7 @@ interface TodoDao {
     @Query("SELECT * FROM todo_table ORDER BY ID ASC")
      fun getAllTodos() : LiveData<List<Todo>>
 
+     @Query("SELECT * FROM todo_table ORDER BY ID ASC")
+     fun getAllTodosFlow() : Flow<List<Todo>>
+
 }

@@ -27,10 +27,16 @@
             </intent-filter>
         </activity>
         <receiver
-            android:name=".reciever.BootCompletedReceiver"
+            android:name=".receiver.BootCompletedReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".receiver.RepeatingTasksReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.DATE_CHANGED"/>
             </intent-filter>
         </receiver>
     </application>

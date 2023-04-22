@@ -11,7 +11,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -28,9 +27,11 @@ import com.thatsmanmeet.taskyapp.components.OpenEditTodoDialog
 import com.thatsmanmeet.taskyapp.components.TaskCompleteAnimations
 import com.thatsmanmeet.taskyapp.components.TaskList
 import com.thatsmanmeet.taskyapp.components.addTodoDialog
+import com.thatsmanmeet.taskyapp.constants.Constants
 import com.thatsmanmeet.taskyapp.datastore.SettingsStore
 import com.thatsmanmeet.taskyapp.notification.Notification
 import com.thatsmanmeet.taskyapp.notification.channelID
+import com.thatsmanmeet.taskyapp.receiver.RepeatingTasksReceiver
 import com.thatsmanmeet.taskyapp.room.Todo
 import com.thatsmanmeet.taskyapp.room.TodoViewModel
 import com.thatsmanmeet.taskyapp.ui.theme.TaskyTheme
@@ -53,7 +54,7 @@ fun MyApp(
     val selectedItem = remember {
         mutableStateOf(0)
     }
-    val todosList = todoViewModel.getAllTodos.observeAsState(initial = listOf())
+    val todoListFromFlow by todoViewModel.getAllTodosFlow.collectAsState(initial = emptyList())
     val topAppBarColors = TopAppBarDefaults
     val openDialog = remember {
         mutableStateOf(false)
@@ -70,7 +71,9 @@ fun MyApp(
     val isDateDialogShowing = remember {
         mutableStateOf(false)
     }
-
+    val isRepeatingState = remember{
+        mutableStateOf(false)
+    }
     val timeText = remember {
         mutableStateOf("")
     }
@@ -135,7 +138,8 @@ fun MyApp(
                 context,
                 timeText,
                 isTimeDialogShowing,
-                todoViewModel
+                todoViewModel,
+                isRepeatingState.value
             )
             Surface(
                 modifier = modifier
@@ -143,7 +147,7 @@ fun MyApp(
                     .padding(paddingValues),
                 color = MaterialTheme.colorScheme.background
             ) {
-                if(todosList.value.isEmpty()){
+                if(todoListFromFlow.isEmpty()){
                     Box(modifier = modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center) {
                         Column(
@@ -171,7 +175,7 @@ fun MyApp(
                     if(savedTaskKey.value == null || savedTaskKey.value == true){
                         TaskList(
                             state = listState,
-                            list = todosList.value.toMutableStateList(),
+                            list = todoListFromFlow,
                             todoViewModel = todoViewModel,
                             onClick = {index->
                                 selectedItem.value = index
@@ -181,7 +185,7 @@ fun MyApp(
                     }else{
                         LegacyTaskList(
                             state = listState,
-                            list = todosList.value.toMutableStateList(),
+                            list = todoListFromFlow,
                             todoViewModel = todoViewModel,
                             onClick = {index->
                                 selectedItem.value = index
@@ -193,7 +197,7 @@ fun MyApp(
                 }
                 if (openEditDialog.value){
                     OpenEditTodoDialog(
-                        todosList,
+                        todoListFromFlow,
                         selectedItem,
                         openEditDialog,
                         todoViewModel,
@@ -257,6 +261,24 @@ fun scheduleNotification(
         AlarmManager.RTC_WAKEUP,
         currTime,
         pendingIntent
+    )
+}
+fun setRepeatingAlarm(context: Context){
+    val calendar = Calendar.getInstance()
+    calendar.add(Calendar.DAY_OF_YEAR, 1)
+    calendar.set(Calendar.HOUR_OF_DAY, 0)
+    calendar.set(Calendar.MINUTE, 0)
+    calendar.set(Calendar.SECOND, 0)
+    calendar.set(Calendar.MILLISECOND, 0)
+    val tomorrowTimestamp = calendar.timeInMillis
+    val alarmManager = context.getSystemService(AlarmManager::class.java)
+    val intent = Intent(context.applicationContext,RepeatingTasksReceiver::class.java).also {
+        it.action = "repeating_tasks"
+    }
+    alarmManager.setExactAndAllowWhileIdle(
+        AlarmManager.RTC_WAKEUP,
+        tomorrowTimestamp,
+        PendingIntent.getBroadcast(context.applicationContext,Constants.BROADCAST_ID,intent,PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
     )
 }
 

@@ -1,6 +1,5 @@
 package com.thatsmanmeet.taskyapp.room
 
-import androidx.lifecycle.LiveData
 import kotlinx.coroutines.flow.Flow
 
 
@@ -18,6 +17,6 @@ class TodoRepository(private val todoDao: TodoDao) {
         todoDao.deleteTodo(todo)
     }
 
-    fun getAllTodos() : LiveData<List<Todo>> = todoDao.getAllTodos()
+    fun getAllTodosFlow() : Flow<List<Todo>> = todoDao.getAllTodosFlow()
 
 }

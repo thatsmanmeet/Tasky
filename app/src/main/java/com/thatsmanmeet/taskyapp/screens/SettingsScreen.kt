@@ -189,8 +189,14 @@ fun SettingsScreen(
                                 )
 
                                 Text(
-                                    text = "For some devices notifications might not receive on time or may not work after reboot. Click here to enable autostart",
+                                    text = "For some devices notifications might not receive on time or may not work after reboot. Click here to enable autostart.",
                                     fontSize = 10.sp,
+                                )
+
+                                Text(
+                                    text = "(Useful for Xiaomi, vivo, Oppo like devices running stock rom)",
+                                    fontSize = 9.sp,
+                                    color = Color.Red
                                 )
                             }
 
@@ -245,7 +251,9 @@ fun SettingsScreen(
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_code),
                                 contentDescription = "code icon",
-                                modifier = modifier.size(35.dp).weight(0.1f),
+                                modifier = modifier
+                                    .size(35.dp)
+                                    .weight(0.1f),
                                 tint = MaterialTheme.colorScheme.primary
                             )
                         }

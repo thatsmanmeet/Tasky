@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -12,9 +13,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.thatsmanmeet.taskyapp.constants.Constants
 import com.thatsmanmeet.taskyapp.room.Todo
 import com.thatsmanmeet.taskyapp.room.TodoViewModel
 import com.thatsmanmeet.taskyapp.screens.scheduleNotification
+import com.thatsmanmeet.taskyapp.screens.setRepeatingAlarm
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -28,10 +31,17 @@ fun addTodoDialog(
     timeText: MutableState<String>,
     isTimeDialogShowing: MutableState<Boolean>,
     todoViewModel: TodoViewModel,
+    isRepeatingAttribute : Boolean,
     modifier: Modifier = Modifier
 ): String {
     var enteredText1 by remember {
         mutableStateOf(enteredText)
+    }
+    var isRepeating by remember {
+        mutableStateOf(isRepeatingAttribute)
+    }
+    var timeTextState by remember {
+        mutableStateOf(timeText.value)
     }
     if (openDialog.value) {
         AlertDialog(
@@ -41,10 +51,10 @@ fun addTodoDialog(
             },
             title = { Text(text = "Add Task") },
             text = {
-                Column {
+                Column(modifier = modifier.heightIn(min = 240.dp)) {
                     OutlinedTextField(
                         value = enteredText1,
-                        placeholder = { Text(text = "what's on your mind?") },
+                        placeholder = { Text(text = Constants.PLACEHOLDER) },
                         onValueChange = { textChange ->
                             enteredText1 = textChange
                         },
@@ -66,7 +76,7 @@ fun addTodoDialog(
                                 contentDescription = null,
                                 tint = MaterialTheme.colorScheme.primary
                             )
-                            Spacer(modifier = modifier.width(5.dp))
+                            Spacer(modifier = modifier.width(8.dp))
                             Text(text = dateText.value)
                         }
                         OutlinedButton(modifier = modifier.height(35.dp), onClick = {
@@ -93,7 +103,7 @@ fun addTodoDialog(
                                 contentDescription = null,
                                 tint = MaterialTheme.colorScheme.primary
                             )
-                            Spacer(modifier = modifier.width(5.dp))
+                            Spacer(modifier = modifier.width(8.dp))
                             Text(text = timeText.value)
                         }
                         OutlinedButton(modifier = modifier.height(35.dp), onClick = {
@@ -102,7 +112,35 @@ fun addTodoDialog(
                             Text(text = "Select Time", fontSize = 10.sp)
                             val date = showTimePickerDialog(context = context, isTimeDialogShowing)
                             timeText.value = date
+                            timeTextState = date
                             isTimeDialogShowing.value = false
+                        }
+                    }
+                    // Repeating Notifications
+                    Spacer(modifier = modifier.height(5.dp))
+                    if (timeTextState.isNotEmpty()) {
+                        Box(modifier = modifier.fillMaxWidth()) {
+                            Row(
+                                modifier = modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = modifier.weight(0.8f)
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Refresh,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.primary
+                                    )
+                                    Spacer(modifier = modifier.width(8.dp))
+                                    Text(text = "Repeat Everyday [Beta]", fontSize = 12.sp)
+                                }
+                                Checkbox(checked = isRepeating, onCheckedChange = {
+                                    isRepeating = it
+                                }, modifier = modifier.weight(0.2f))
+                            }
                         }
                     }
                 }
@@ -121,7 +159,7 @@ fun addTodoDialog(
                         },
                         time = timeText.value,
                         notificationID = ((0..2000).random() - (0..50).random()),
-                        isRecurring = false
+                        isRecurring = isRepeating
                     )
                     todoViewModel.insertTodo(
                         todo
@@ -138,16 +176,20 @@ fun addTodoDialog(
                         }
                         val currentTime = Calendar.getInstance().timeInMillis
                         if(calendar.timeInMillis >= currentTime){
-                            scheduleNotification(
-                                context,
-                                titleText = enteredText1,
-                                messageText = "Did you complete your Task ?",
-                                time = "${dateText.value} ${timeText.value}",
-                                todo = todo
-                            )
+                                scheduleNotification(
+                                    context,
+                                    titleText = enteredText1,
+                                    messageText = Constants.MESSAGE,
+                                    time = "${dateText.value} ${timeText.value}",
+                                    todo = todo
+                                )
+                        }
+                        if(isRepeating){
+                            setRepeatingAlarm(context = context)
                         }
                     }
                     enteredText1 = ""
+                    isRepeating = false
                 }
                 ) {
                     Text(text = "Add")
@@ -165,6 +207,7 @@ fun addTodoDialog(
                     Text(text = "Cancel")
                 }
             })
+         isRepeating = false
     }
     return enteredText1
 }
