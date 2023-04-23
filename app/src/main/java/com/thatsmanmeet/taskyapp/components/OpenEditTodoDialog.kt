@@ -69,6 +69,9 @@ fun OpenEditTodoDialog(
     var isRepeating by remember {
         mutableStateOf(todosList[selectedItem.value].isRecurring)
     }
+    var timeTextState by remember {
+        mutableStateOf(currentTodoTimeValue.value)
+    }
     val currentDate = Calendar.getInstance().apply {
         set(Calendar.HOUR_OF_DAY, 0)
         set(Calendar.MINUTE, 0)
@@ -81,7 +84,7 @@ fun OpenEditTodoDialog(
         },
         title = { Text(text = "Edit Task") },
         text = {
-            Column {
+            Column(modifier = modifier.heightIn(min=240.dp)) {
                 OutlinedTextField(
                     value = currentTodoTitle.value!!,
                     placeholder = { Text(text = Constants.PLACEHOLDER) },
@@ -153,22 +156,37 @@ fun OpenEditTodoDialog(
                         Text(text = "Select Time", fontSize = 10.sp)
                         val time = showTimePickerDialog(context = context, isShowing = isTimeDialogShowing)
                         currentTodoTimeValue.value = time
+                        if(time.isNotEmpty()){
+                            timeTextState = time
+                        }
                         isTimeDialogShowing.value = false
                     }
                 }
                 // Repeating Notifications
-                Row (
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ){
-                    Row(verticalAlignment = Alignment.CenterVertically,modifier = modifier.weight(0.8f)) {
-                        Icon(imageVector = Icons.Default.Refresh, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
-                        Spacer(modifier = modifier.width(8.dp))
-                        Text(text = "Repeat Everyday [Beta]", fontSize = 12.sp)
+                if (!timeTextState.isNullOrEmpty()) {
+                    Box(modifier = modifier.fillMaxWidth()) {
+                        Row(
+                            modifier = modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = modifier.weight(0.8f)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Refresh,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
+                                Spacer(modifier = modifier.width(8.dp))
+                                Text(text = "Repeat Everyday [Beta]", fontSize = 12.sp)
+                            }
+                            Checkbox(checked = isRepeating, onCheckedChange = {
+                                isRepeating = it
+                            }, modifier = modifier.weight(0.2f))
+                        }
                     }
-                    Checkbox(checked = isRepeating, onCheckedChange = {
-                        isRepeating = it
-                    },modifier = modifier.weight(0.2f))
                 }
             }
         },
