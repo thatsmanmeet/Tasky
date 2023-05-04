@@ -135,7 +135,7 @@ fun addTodoDialog(
                                         tint = MaterialTheme.colorScheme.primary
                                     )
                                     Spacer(modifier = modifier.width(8.dp))
-                                    Text(text = "Repeat Everyday [Beta]", fontSize = 12.sp)
+                                    Text(text = "Repeat Everyday", fontSize = 12.sp)
                                 }
                                 Checkbox(checked = isRepeating, onCheckedChange = {
                                     isRepeating = it

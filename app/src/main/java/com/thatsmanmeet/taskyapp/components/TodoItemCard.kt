@@ -70,6 +70,7 @@ fun TodoItemCard(
                         currentTodo
                     )
                     if(currentCheckBoxState.value){
+
                         viewModel.playCompletedSound(context)
                         viewModel.isAnimationPlayingState.value = true
                             cancelNotification(

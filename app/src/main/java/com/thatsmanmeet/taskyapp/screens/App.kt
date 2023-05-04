@@ -11,6 +11,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -51,7 +52,7 @@ fun MyApp(
     val context = LocalContext.current
     val todoViewModel = TodoViewModel(activity.application)
     val listState = rememberLazyListState()
-    val selectedItem = remember {
+    val selectedItem = rememberSaveable {
         mutableStateOf(0)
     }
     val todoListFromFlow by todoViewModel.getAllTodosFlow.collectAsState(initial = emptyList())
@@ -127,7 +128,9 @@ fun MyApp(
                     icon = { Icon(painter = painterResource(id = R.drawable.ic_add_task), contentDescription = null) },
                     onClick = {
                         openDialog.value = true
-                    })
+                    },
+                    expanded = listState.isScrollingUp()
+                )
             }
         ) { paddingValues ->
             enteredText = addTodoDialog(
@@ -305,4 +308,22 @@ fun getTimeInMillis(date: String): Long {
     val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.ENGLISH)
     val mDate = sdf.parse(date)
     return mDate!!.time
+}
+
+@Composable
+private fun LazyListState.isScrollingUp(): Boolean {
+    var previousIndex by remember(this) { mutableStateOf(firstVisibleItemIndex) }
+    var previousScrollOffset by remember(this) { mutableStateOf(firstVisibleItemScrollOffset) }
+    return remember(this) {
+        derivedStateOf {
+            if (previousIndex != firstVisibleItemIndex) {
+                previousIndex > firstVisibleItemIndex
+            } else {
+                previousScrollOffset >= firstVisibleItemScrollOffset
+            }.also {
+                previousIndex = firstVisibleItemIndex
+                previousScrollOffset = firstVisibleItemScrollOffset
+            }
+        }
+    }.value
 }

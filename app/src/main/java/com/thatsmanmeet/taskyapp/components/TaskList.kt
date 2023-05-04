@@ -27,13 +27,13 @@ fun TaskList(
 ) {
     val grouped = list.groupBy {
         SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(it.date!!)
-    }.toSortedMap()
+    }.entries.sortedByDescending { it.key }
     LazyColumn(
         state = state,
         modifier = modifier.padding(16.dp)
     ){
         grouped.forEach { (date, grouped_list) ->
-            stickyHeader(DateFormat.getDateInstance(DateFormat.MEDIUM).format(date)) {
+            stickyHeader(DateFormat.getDateInstance(DateFormat.MEDIUM).format(date!!)) {
                 DateHeader(date = DateFormat.getDateInstance(DateFormat.MEDIUM).format(date))
             }
             itemsIndexed(grouped_list){_,item->
