@@ -18,15 +18,15 @@ fun TaskCompleteAnimations(
     isLottiePlaying: MutableState<Boolean>,
     modifier: Modifier = Modifier
 ) {
-    val lottieComposition by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.confetti))
-    val progressAnimation by animateLottieCompositionAsState(composition = lottieComposition, isPlaying = isLottiePlaying.value, speed = 2f)
+    val lottieComposition by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.side))
+    val progressAnimation by animateLottieCompositionAsState(composition = lottieComposition, isPlaying = isLottiePlaying.value, speed = 1.4f)
     LottieAnimation(
         composition = lottieComposition,
         progress = {
             progressAnimation
         },
         modifier = modifier.fillMaxSize(),
-        contentScale = ContentScale.FillBounds
+        contentScale = ContentScale.Fit
     )
 
 }

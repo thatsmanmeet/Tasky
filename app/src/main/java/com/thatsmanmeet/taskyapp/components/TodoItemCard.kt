@@ -77,7 +77,6 @@ fun TodoItemCard(
                                 context = context,
                                 titleText = currentTodo.title,
                                 messageText = "Have you completed your task today ?",
-                                time = "${currentTodo.date} ${currentTodo.time}",
                                 todo = currentTodo
                             )
                     }else{

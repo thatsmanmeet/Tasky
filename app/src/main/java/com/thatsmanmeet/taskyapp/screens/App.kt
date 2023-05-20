@@ -1,5 +1,6 @@
 package com.thatsmanmeet.taskyapp.screens
 
+import android.annotation.SuppressLint
 import android.app.*
 import android.content.Context
 import android.content.Intent
@@ -42,6 +43,7 @@ import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.*
 
+@SuppressLint("AutoboxingStateValueProperty")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyApp(
@@ -53,7 +55,7 @@ fun MyApp(
     val todoViewModel = TodoViewModel(activity.application)
     val listState = rememberLazyListState()
     val selectedItem = rememberSaveable {
-        mutableStateOf(0)
+        mutableStateOf(-1)
     }
     val todoListFromFlow by todoViewModel.getAllTodosFlow.collectAsState(initial = emptyList())
     val topAppBarColors = TopAppBarDefaults
@@ -289,7 +291,6 @@ fun cancelNotification(
     context: Context,
     titleText:String?,
     messageText:String?,
-    time:String?,
     todo: Todo
 ){
     val intent = Intent(context, Notification::class.java)

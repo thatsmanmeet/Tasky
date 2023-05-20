@@ -16,8 +16,8 @@ class TodoViewModel(application: Application) : ViewModel() {
 
     private var repository: TodoRepository
     val getAllTodosFlow : Flow<List<Todo>>
-
     val isAnimationPlayingState = mutableStateOf(false)
+    private var mediaPlayer : MediaPlayer? = null
 
     init {
         val dao = TodoDatabase.getInstance(application).todoDao()
@@ -42,22 +42,22 @@ class TodoViewModel(application: Application) : ViewModel() {
     }
 
     fun playCompletedSound(context: Context){
-        val mp:MediaPlayer = MediaPlayer.create(context, R.raw.completed)
-        mp.start()
-        mp.setOnCompletionListener {
-            mp.stop()
-            mp.reset()
-            mp.release()
+        mediaPlayer?.release()
+        mediaPlayer = MediaPlayer.create(context,R.raw.completed)
+        mediaPlayer?.start()
+        mediaPlayer?.setOnCompletionListener {
+            mediaPlayer?.release()
+            mediaPlayer = null
         }
     }
 
-    fun playDeletedSound(context: Context){
-        val mp:MediaPlayer = MediaPlayer.create(context, R.raw.deleted)
-        mp.start()
-        mp.setOnCompletionListener {
-            mp.stop()
-            mp.reset()
-            mp.release()
+    fun playDeletedSound(context: Context) {
+        mediaPlayer?.release()
+        mediaPlayer = MediaPlayer.create(context, R.raw.deleted)
+        mediaPlayer?.start()
+        mediaPlayer?.setOnCompletionListener {
+            mediaPlayer?.release()
+            mediaPlayer = null
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.thatsmanmeet.taskyapp.components
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -23,6 +24,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
+@SuppressLint("AutoboxingStateValueProperty")
 @Composable
 fun OpenEditTodoDialog(
     todosList: List<Todo>,
@@ -265,7 +267,6 @@ fun OpenEditTodoDialog(
                         context = context,
                         titleText = currentTodoTitle.value,
                         messageText = Constants.MESSAGE,
-                        time = "${currentTodoDateValue.value} ${currentTodoTimeValue.value}",
                         todo = todo
                     )
                     enteredText1 = ""
