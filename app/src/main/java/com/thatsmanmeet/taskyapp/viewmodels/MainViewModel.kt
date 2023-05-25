@@ -7,7 +7,6 @@ import android.net.Uri
 import android.os.Build
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
-
 class MainViewModel : ViewModel() {
 
     private val permissionDialogQueue = mutableStateListOf<String>()

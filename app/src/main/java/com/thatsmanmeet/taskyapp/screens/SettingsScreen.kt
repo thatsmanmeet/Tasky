@@ -1,9 +1,11 @@
 package com.thatsmanmeet.taskyapp.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
@@ -11,13 +13,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.thatsmanmeet.taskyapp.R
+import com.thatsmanmeet.taskyapp.components.SettingsComponent
 import com.thatsmanmeet.taskyapp.datastore.SettingsStore
 import com.thatsmanmeet.taskyapp.ui.theme.TaskyTheme
 import com.thatsmanmeet.taskyapp.viewmodels.MainViewModel
@@ -30,7 +32,8 @@ fun SettingsScreen(
     navHostController: NavHostController,
     modifier: Modifier = Modifier,
     isChecked:State<Boolean?>,
-    shouldShowAnimation:State<Boolean?>
+    shouldShowAnimation:State<Boolean?>,
+    is24HourClockKey:State<Boolean?>
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -40,6 +43,9 @@ fun SettingsScreen(
     }
     val shouldShowAnimationState = remember {
         mutableStateOf(shouldShowAnimation.value)
+    }
+    val is24HourClockState = remember {
+        mutableStateOf(is24HourClockKey.value)
     }
     val mainViewModel = MainViewModel()
     TaskyTheme{
@@ -62,7 +68,7 @@ fun SettingsScreen(
                         }
                     },
                     title = {
-                        Text(text = "Settings")
+                        Text(text = stringResource(R.string.settings_screen_appbar_title))
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = MaterialTheme.colorScheme.primary,
@@ -77,17 +83,19 @@ fun SettingsScreen(
                     .fillMaxSize()
                     .padding(16.dp)
             ) {
-                Column(modifier = modifier
-                    .fillMaxSize()
-                    .padding(it)
-                    .clip(
-                        RoundedCornerShape(
-                            topStart = 15.dp,
-                            bottomStart = 30.dp,
-                            bottomEnd = 30.dp,
-                            topEnd = 15.dp
+                Column(
+                    modifier = modifier
+                        .fillMaxSize()
+                        .padding(it)
+                        .clip(
+                            RoundedCornerShape(
+                                topStart = 15.dp,
+                                bottomStart = 30.dp,
+                                bottomEnd = 30.dp,
+                                topEnd = 15.dp
+                            )
                         )
-                    ),
+                        .verticalScroll(rememberScrollState()),
                 ) {
                     Card(
                         modifier = modifier
@@ -104,7 +112,7 @@ fun SettingsScreen(
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(
-                                text = "Separate tasks using dates",
+                                text = stringResource(R.string.separate_tasks_using_dates_title),
                                 fontSize = 18.sp,
                                 modifier = modifier.weight(1f)
                             )
@@ -138,7 +146,7 @@ fun SettingsScreen(
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(
-                                text = "Use task complete animations",
+                                text = stringResource(R.string.use_task_complete_animations_title),
                                 fontSize = 18.sp,
                                 modifier = modifier.weight(1f)
                             )
@@ -156,16 +164,12 @@ fun SettingsScreen(
                         }
                     }
                     Spacer(modifier = modifier.height(12.dp))
-                    // Auto Start card
+                    // 24 Hour Clock
                     Card(
                         modifier = modifier
-                            .heightIn(56.dp)
                             .clip(RoundedCornerShape(15.dp))
                             .fillMaxWidth()
-                            .background(MaterialTheme.colorScheme.inverseOnSurface)
-                            .clickable {
-                                mainViewModel.enableAutoStartIntent(context)
-                            },
+                            .background(MaterialTheme.colorScheme.inverseOnSurface),
                         elevation = CardDefaults.cardElevation(0.dp)
                     ) {
                         Row(
@@ -175,89 +179,46 @@ fun SettingsScreen(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Column (
-                                verticalArrangement = Arrangement.Center,
-                                horizontalAlignment = Alignment.Start,
-                                modifier = modifier
-                                    .weight(1f)
-                                    .padding(10.dp)
-                            ){
-                                Text(
-                                    text = "Enable Autostart",
-                                    fontSize = 18.sp,
-
-                                )
-
-                                Text(
-                                    text = "For some devices notifications might not receive on time or may not work after reboot. Click here to enable autostart.",
-                                    fontSize = 10.sp,
-                                )
-
-                                Text(
-                                    text = "(Useful for Xiaomi, vivo, Oppo like devices running stock rom)",
-                                    fontSize = 9.sp,
-                                    color = Color.Red
-                                )
-                            }
-
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_battery),
-                                contentDescription = "Battery Icon",
-                                modifier = modifier
-                                    .size(35.dp)
-                                    .weight(0.1f),
-                                tint = MaterialTheme.colorScheme.primary
+                            Text(
+                                text = "Use 24 Hour Clock",
+                                fontSize = 18.sp,
+                                modifier = modifier.weight(1f)
                             )
+                            is24HourClockState.value?.let { it1 ->
+                                Switch(
+                                    modifier = modifier.weight(0.2f),
+                                    checked = it1,
+                                    onCheckedChange = { isToggleChecked->
+                                        is24HourClockState.value = isToggleChecked
+                                        scope.launch {
+                                            settingStore.saveClockKey(isToggleChecked)
+                                        }
+                                    })
+                            }
                         }
                     }
+                    // Auto Start card
+                    SettingsComponent(
+                        settingHeaderText = stringResource(R.string.enable_autostart_title),
+                        settingText = stringResource(R.string.enable_autostart_information_text),
+                        painterResourceID = R.drawable.ic_battery) {
+                        mainViewModel.enableAutoStartIntent(context = context)
+                    }
+                    // Backup/Restore card
+//                    SettingsComponent(
+//                        settingHeaderText = "Backup/Restore",
+//                        settingText = "Backup your tasks to a local file or restore it from already backed up file.",
+//                        painterResourceID = R.drawable.ic_history
+//                    ) {
+//                        Toast.makeText(context.applicationContext,"This feature will be available in future.",Toast.LENGTH_SHORT).show()
+//                    }
                     // Visit Github Card
-                    Spacer(modifier = modifier.height(12.dp))
-                    Card(
-                        modifier = modifier
-                            .heightIn(56.dp)
-                            .clip(RoundedCornerShape(15.dp))
-                            .fillMaxWidth()
-                            .background(MaterialTheme.colorScheme.inverseOnSurface)
-                            .clickable {
-                                mainViewModel.openGithubPage(context)
-                            },
-                        elevation = CardDefaults.cardElevation(0.dp)
-                    ) {
-                        Row(
-                            modifier = modifier
-                                .padding(10.dp)
-                                .fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Column (
-                                verticalArrangement = Arrangement.Center,
-                                horizontalAlignment = Alignment.Start,
-                                modifier = modifier
-                                    .weight(1f)
-                                    .padding(10.dp)
-                            ){
-                                Text(
-                                    text = "View Source",
-                                    fontSize = 18.sp,
-
-                                    )
-
-                                Text(
-                                    text = "Tasky is completely open source. Have a feedback or want to get into development ? visit Github! Oh and don't forget to give a ⭐️ ;)",
-                                    fontSize = 10.sp,
-                                )
-                            }
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_code),
-                                contentDescription = "code icon",
-                                modifier = modifier
-                                    .size(35.dp)
-                                    .weight(0.1f),
-                                tint = MaterialTheme.colorScheme.primary
-                            )
-                        }
-                     }
+                    SettingsComponent(
+                        settingHeaderText = stringResource(R.string.view_source_title),
+                        settingText = stringResource(R.string.view_source_information_text),
+                        painterResourceID = R.drawable.ic_code) {
+                        mainViewModel.openGithubPage(context)
+                    }
                 }
             }
         }

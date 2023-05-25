@@ -1,5 +1,6 @@
 package com.thatsmanmeet.taskyapp.components
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -11,8 +12,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.thatsmanmeet.taskyapp.R
 import com.thatsmanmeet.taskyapp.constants.Constants
 import com.thatsmanmeet.taskyapp.room.Todo
 import com.thatsmanmeet.taskyapp.room.TodoViewModel
@@ -23,6 +26,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
+@SuppressLint("AutoboxingStateValueProperty")
 @Composable
 fun OpenEditTodoDialog(
     todosList: List<Todo>,
@@ -82,18 +86,18 @@ fun OpenEditTodoDialog(
         onDismissRequest = {
             openEditDialog.value = false
         },
-        title = { Text(text = "Edit Task") },
+        title = { Text(text = stringResource(R.string.edit_task_dialog_title)) },
         text = {
             Column(modifier = modifier.heightIn(min=240.dp)) {
                 OutlinedTextField(
                     value = currentTodoTitle.value!!,
-                    placeholder = { Text(text = Constants.PLACEHOLDER) },
+                    placeholder = { Text(text = stringResource(id = R.string.add_edit_text_placeholder)) },
                     onValueChange = { textChange ->
                         currentTodoTitle.value = textChange
                     }
                 )
                 Spacer(modifier = modifier.height(12.dp))
-                Text(text = "Edit Reminder")
+                Text(text = stringResource(R.string.add_edit_dialog_edit_reminder_title))
                 Spacer(modifier = modifier.height(10.dp))
                 Row(
                     modifier = modifier.fillMaxWidth(),
@@ -115,11 +119,11 @@ fun OpenEditTodoDialog(
                             Text(text = currentTodoDateValue.value!!)
                         }
                     }
-                    // TODO - Modify select date
+                    // Modify select date
                     OutlinedButton(modifier = modifier.height(35.dp), onClick = {
                         isDateDialogShowing.value = true
                     }) {
-                        Text(text = "Select Date", fontSize = 10.sp)
+                        Text(text = stringResource(id = R.string.add_edit_dialog_select_date_button), fontSize = 10.sp)
                         val date = showDatePicker(context = context, isShowing = isDateDialogShowing)
                         currentTodoDateValue.value = date
                         isTimeDialogShowing.value = false
@@ -146,14 +150,14 @@ fun OpenEditTodoDialog(
                             Text(text = currentTodoTimeValue.value!!)
                         }
                     }
-                    // TODO - Modify select time
+                    //Modify select time
                     OutlinedButton(
                         modifier = modifier.height(35.dp),
                         onClick = {
                             isTimeDialogShowing.value = true
                         }
                     ) {
-                        Text(text = "Select Time", fontSize = 10.sp)
+                        Text(text = stringResource(id = R.string.add_edit_dialog_select_time_button), fontSize = 10.sp)
                         val time = showTimePickerDialog(context = context, isShowing = isTimeDialogShowing)
                         currentTodoTimeValue.value = time
                         if(time.isNotEmpty()){
@@ -180,7 +184,7 @@ fun OpenEditTodoDialog(
                                     tint = MaterialTheme.colorScheme.primary
                                 )
                                 Spacer(modifier = modifier.width(8.dp))
-                                Text(text = "Repeat Everyday", fontSize = 12.sp)
+                                Text(text = stringResource(id = R.string.add_edit_dialog_repeat_everyday), fontSize = 12.sp)
                             }
                             Checkbox(checked = isRepeating, onCheckedChange = {
                                 isRepeating = it
@@ -228,7 +232,7 @@ fun OpenEditTodoDialog(
                             scheduleNotification(
                                 context = context,
                                 titleText = currentTodoTitle.value,
-                                messageText = Constants.MESSAGE,
+                                messageText = context.getString(R.string.task_complete_notification_message),
                                 time = "${currentTodoDateValue.value} ${currentTodoTimeValue.value}",
                                 todo = todo
                             )
@@ -242,7 +246,7 @@ fun OpenEditTodoDialog(
                 }
                 enteredText1 = ""
             }) {
-                Text(text = "Save")
+                Text(text = stringResource(R.string.add_edit_dialog_save_button_text))
             }
         },
         dismissButton = {
@@ -264,8 +268,7 @@ fun OpenEditTodoDialog(
                     cancelNotification(
                         context = context,
                         titleText = currentTodoTitle.value,
-                        messageText = Constants.MESSAGE,
-                        time = "${currentTodoDateValue.value} ${currentTodoTimeValue.value}",
+                        messageText = context.getString(R.string.task_complete_notification_message),
                         todo = todo
                     )
                     enteredText1 = ""
@@ -277,7 +280,7 @@ fun OpenEditTodoDialog(
                     ), contentColor = Color.White
                 )
             ) {
-                Text(text = "Delete")
+                Text(text = stringResource(R.string.add_edit_dialog_delete_button_text))
             }
         }
     )

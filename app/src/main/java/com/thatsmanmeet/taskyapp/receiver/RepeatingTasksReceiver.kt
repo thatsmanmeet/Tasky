@@ -22,7 +22,7 @@ import java.util.Locale
 class RepeatingTasksReceiver : BroadcastReceiver() {
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
     override fun onReceive(context: Context?, intent: Intent?) {
-        if(intent!!.action == Intent.ACTION_DATE_CHANGED || intent!!.action == "repeating_tasks") {
+        if(intent!!.action == Intent.ACTION_DATE_CHANGED || intent.action == "repeating_tasks") {
             val todoDatabase = Room.databaseBuilder(
                 context!!.applicationContext,
                 TodoDatabase::class.java,

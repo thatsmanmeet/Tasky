@@ -11,8 +11,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.thatsmanmeet.taskyapp.R
 import com.thatsmanmeet.taskyapp.constants.Constants
 import com.thatsmanmeet.taskyapp.room.Todo
 import com.thatsmanmeet.taskyapp.room.TodoViewModel
@@ -49,19 +51,19 @@ fun addTodoDialog(
                 openDialog.value = false
                 enteredText1 = ""
             },
-            title = { Text(text = "Add Task") },
+            title = { Text(text = stringResource(R.string.add_task_dialog_title)) },
             text = {
                 Column(modifier = modifier.heightIn(min = 240.dp)) {
                     OutlinedTextField(
                         value = enteredText1,
-                        placeholder = { Text(text = Constants.PLACEHOLDER) },
+                        placeholder = { Text(text = stringResource(id = R.string.add_edit_text_placeholder)) },
                         onValueChange = { textChange ->
                             enteredText1 = textChange
                         },
                         maxLines = 1
                     )
                     Spacer(modifier = modifier.height(10.dp))
-                    Text(text = "Set Reminder (optional)")
+                    Text(text = stringResource(R.string.add_edit_dialog_set_reminder_title))
                     Spacer(modifier = modifier.height(10.dp))
                     Row(
                         modifier = modifier.fillMaxWidth(),
@@ -82,7 +84,7 @@ fun addTodoDialog(
                         OutlinedButton(modifier = modifier.height(35.dp), onClick = {
                             isDateDialogShowing.value = true
                         }) {
-                            Text(text = "Select Date", fontSize = 10.sp)
+                            Text(text = stringResource(R.string.add_edit_dialog_select_date_button), fontSize = 10.sp)
                             val date = showDatePicker(context = context, isDateDialogShowing)
                             dateText.value = date
                             isDateDialogShowing.value = false
@@ -109,7 +111,7 @@ fun addTodoDialog(
                         OutlinedButton(modifier = modifier.height(35.dp), onClick = {
                             isTimeDialogShowing.value = true
                         }) {
-                            Text(text = "Select Time", fontSize = 10.sp)
+                            Text(text = stringResource(R.string.add_edit_dialog_select_time_button), fontSize = 10.sp)
                             val date = showTimePickerDialog(context = context, isTimeDialogShowing)
                             timeText.value = date
                             timeTextState = date
@@ -135,7 +137,7 @@ fun addTodoDialog(
                                         tint = MaterialTheme.colorScheme.primary
                                     )
                                     Spacer(modifier = modifier.width(8.dp))
-                                    Text(text = "Repeat Everyday", fontSize = 12.sp)
+                                    Text(text = stringResource(R.string.add_edit_dialog_repeat_everyday), fontSize = 12.sp)
                                 }
                                 Checkbox(checked = isRepeating, onCheckedChange = {
                                     isRepeating = it
@@ -179,7 +181,7 @@ fun addTodoDialog(
                                 scheduleNotification(
                                     context,
                                     titleText = enteredText1,
-                                    messageText = Constants.MESSAGE,
+                                    messageText = context.getString(R.string.task_complete_notification_message),
                                     time = "${dateText.value} ${timeText.value}",
                                     todo = todo
                                 )
@@ -192,7 +194,7 @@ fun addTodoDialog(
                     isRepeating = false
                 }
                 ) {
-                    Text(text = "Add")
+                    Text(text = stringResource(R.string.add_edit_dialog_add_button_text))
                 }
             },
             dismissButton = {
@@ -204,7 +206,7 @@ fun addTodoDialog(
                         containerColor = Color(0xFFF1574C),
                         contentColor = Color.White
                     )) {
-                    Text(text = "Cancel")
+                    Text(text = stringResource(R.string.add_edit_dialog_cancel_button_text))
                 }
             })
          isRepeating = false

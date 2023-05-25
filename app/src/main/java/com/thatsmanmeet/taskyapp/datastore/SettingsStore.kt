@@ -16,6 +16,7 @@ class SettingsStore(
         private val Context.dataStore:DataStore<Preferences> by preferencesDataStore("settings")
         val TASK_LIST_KEY = booleanPreferencesKey("task_list_preference")
         val ANIMATION_SHOW_KEY = booleanPreferencesKey("animation_list_preference")
+        val SHOW_24_HOUR_CLOCK_KEY = booleanPreferencesKey("show_24_hour_clock_preference")
     }
 
     val getTaskListKey : Flow<Boolean?> = context.dataStore.data.map {preference->
@@ -26,6 +27,10 @@ class SettingsStore(
         preference[ANIMATION_SHOW_KEY] ?: true
     }
 
+    val getClockKey : Flow<Boolean?> = context.dataStore.data.map {preference->
+        preference[SHOW_24_HOUR_CLOCK_KEY] ?: true
+    }
+
     suspend fun saveTaskListKey(isEnabled:Boolean) {
         context.dataStore.edit {preferences->
             preferences[TASK_LIST_KEY] = isEnabled
@@ -34,6 +39,12 @@ class SettingsStore(
     suspend fun saveAnimationShowKey(isEnabled:Boolean) {
         context.dataStore.edit {preferences->
             preferences[ANIMATION_SHOW_KEY] = isEnabled
+        }
+    }
+
+    suspend fun saveClockKey(isEnabled: Boolean){
+        context.dataStore.edit { preference->
+            preference[SHOW_24_HOUR_CLOCK_KEY] = isEnabled
         }
     }
 }
