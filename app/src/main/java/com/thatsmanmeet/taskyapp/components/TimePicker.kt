@@ -22,7 +22,7 @@ fun showTimePickerDialog(
         context,
         {_, currentHour : Int, currentMinute: Int ->
             time.value = "$currentHour:$currentMinute"
-        }, hour, minute, false
+        }, hour, minute, true
     )
     if(isShowing.value){
         timePickerDialog.show()

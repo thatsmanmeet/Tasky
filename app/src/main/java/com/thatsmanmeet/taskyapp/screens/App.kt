@@ -126,7 +126,7 @@ fun MyApp(
             },
             floatingActionButton = {
                 ExtendedFloatingActionButton(
-                    text = { Text(text = "Add Task") },
+                    text = { Text(text = stringResource(R.string.add_task_button)) },
                     icon = { Icon(painter = painterResource(id = R.drawable.ic_add_task), contentDescription = null) },
                     onClick = {
                         openDialog.value = true
@@ -169,7 +169,7 @@ fun MyApp(
                                 tint = MaterialTheme.colorScheme.primary
                             )
                             Text(
-                                text = "No Tasks",
+                                text = stringResource(R.string.empty_list_no_tasks_text),
                                 fontSize = 30.sp,
                                 color = MaterialTheme.colorScheme.primary,
                                 fontWeight = FontWeight.Light

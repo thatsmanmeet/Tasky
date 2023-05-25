@@ -16,6 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.thatsmanmeet.taskyapp.R
 import com.thatsmanmeet.taskyapp.room.Todo
 import com.thatsmanmeet.taskyapp.room.TodoViewModel
 import com.thatsmanmeet.taskyapp.screens.cancelNotification
@@ -76,7 +77,7 @@ fun TodoItemCard(
                             cancelNotification(
                                 context = context,
                                 titleText = currentTodo.title,
-                                messageText = "Have you completed your task today ?",
+                                messageText = context.getString(R.string.task_complete_notification_message),
                                 todo = currentTodo
                             )
                     }else{
@@ -94,7 +95,7 @@ fun TodoItemCard(
                                 scheduleNotification(
                                     context = context,
                                     titleText = currentTodo.title,
-                                    messageText = "Have you completed your task today ?",
+                                    messageText = context.getString(R.string.task_complete_notification_message),
                                     time = "${currentTodo.date} ${currentTodo.time}",
                                     todo = currentTodo
                                 )
