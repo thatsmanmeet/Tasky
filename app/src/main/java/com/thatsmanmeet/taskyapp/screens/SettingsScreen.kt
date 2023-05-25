@@ -32,7 +32,8 @@ fun SettingsScreen(
     navHostController: NavHostController,
     modifier: Modifier = Modifier,
     isChecked:State<Boolean?>,
-    shouldShowAnimation:State<Boolean?>
+    shouldShowAnimation:State<Boolean?>,
+    is24HourClockKey:State<Boolean?>
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -42,6 +43,9 @@ fun SettingsScreen(
     }
     val shouldShowAnimationState = remember {
         mutableStateOf(shouldShowAnimation.value)
+    }
+    val is24HourClockState = remember {
+        mutableStateOf(is24HourClockKey.value)
     }
     val mainViewModel = MainViewModel()
     TaskyTheme{
@@ -154,6 +158,40 @@ fun SettingsScreen(
                                         shouldShowAnimationState.value = isToggleChecked
                                         scope.launch {
                                             settingStore.saveAnimationShowKey(isToggleChecked)
+                                        }
+                                    })
+                            }
+                        }
+                    }
+                    Spacer(modifier = modifier.height(12.dp))
+                    // 24 Hour Clock
+                    Card(
+                        modifier = modifier
+                            .clip(RoundedCornerShape(15.dp))
+                            .fillMaxWidth()
+                            .background(MaterialTheme.colorScheme.inverseOnSurface),
+                        elevation = CardDefaults.cardElevation(0.dp)
+                    ) {
+                        Row(
+                            modifier = modifier
+                                .padding(10.dp)
+                                .fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = "Use 24 Hour Clock",
+                                fontSize = 18.sp,
+                                modifier = modifier.weight(1f)
+                            )
+                            is24HourClockState.value?.let { it1 ->
+                                Switch(
+                                    modifier = modifier.weight(0.2f),
+                                    checked = it1,
+                                    onCheckedChange = { isToggleChecked->
+                                        is24HourClockState.value = isToggleChecked
+                                        scope.launch {
+                                            settingStore.saveClockKey(isToggleChecked)
                                         }
                                     })
                             }

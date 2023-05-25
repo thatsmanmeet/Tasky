@@ -16,6 +16,7 @@ fun SetupNavGraph(
     val settingsStore = SettingsStore(context)
     val isEnabledState = settingsStore.getTaskListKey.collectAsState(initial = false)
     val isAnimationShowingState = settingsStore.getAnimationKey.collectAsState(initial = false)
+    val is24HourClock = settingsStore.getClockKey.collectAsState(initial = false)
     NavHost(
         navController = navController,
         startDestination = Screen.PermissionScreen.route
@@ -34,7 +35,8 @@ fun SetupNavGraph(
             SettingsScreen(
                 navController,
                 isChecked = isEnabledState,
-                shouldShowAnimation = isAnimationShowingState
+                shouldShowAnimation = isAnimationShowingState,
+                is24HourClockKey = is24HourClock
             )
         }
         composable(
