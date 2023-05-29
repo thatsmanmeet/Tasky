@@ -25,5 +25,8 @@
     <string name="enable_autostart_information_text">For some devices notifications might not receive on time or may not work after reboot. Click here to enable autostart. \n\n(Useful for Xiaomi, vivo, Oppo like devices running stock rom)</string>
     <string name="view_source_title">View Source</string>
     <string name="view_source_information_text">Tasky is completely open source. Have a feedback or want to get into development ? visit Github! Oh and don\'t forget to give a ⭐️ ;)</string>
+    <string name="use_24_hour_clock">Use 24 Hour Clock</string>
+    <string name="settings_backup_restore">Backup/Restore</string>
+    <string name="settings_backup_restore_information_text">Backup or Restore your tasks from a local zip file.</string>
 
 </resources>

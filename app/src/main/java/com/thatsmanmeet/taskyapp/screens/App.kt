@@ -59,10 +59,10 @@ fun MyApp(
     }
     val todoListFromFlow by todoViewModel.getAllTodosFlow.collectAsState(initial = emptyList())
     val topAppBarColors = TopAppBarDefaults
-    val openDialog = remember {
+    val openDialog = rememberSaveable {
         mutableStateOf(false)
     }
-    val openEditDialog = remember {
+    val openEditDialog = rememberSaveable {
         mutableStateOf(false)
     }
     var enteredText by remember {
