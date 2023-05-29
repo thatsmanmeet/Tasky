@@ -1,6 +1,8 @@
 package com.thatsmanmeet.taskyapp.screens
 
-import android.widget.Toast
+import android.app.Activity
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -10,6 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -17,7 +20,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
 import androidx.navigation.NavHostController
+import com.thatsmanmeet.taskyapp.MainActivity
 import com.thatsmanmeet.taskyapp.R
 import com.thatsmanmeet.taskyapp.components.SettingsComponent
 import com.thatsmanmeet.taskyapp.datastore.SettingsStore
@@ -26,6 +31,8 @@ import com.thatsmanmeet.taskyapp.viewmodels.MainViewModel
 import kotlinx.coroutines.launch
 
 
+@Suppress("DEPRECATION")
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
@@ -47,7 +54,12 @@ fun SettingsScreen(
     val is24HourClockState = remember {
         mutableStateOf(is24HourClockKey.value)
     }
+    var isDialogShowingState by rememberSaveable {
+        mutableStateOf(false)
+    }
     val mainViewModel = MainViewModel()
+    val activity = LocalContext.current as Activity
+    val dbPath = activity.getDatabasePath("todo_database").absolutePath
     TaskyTheme{
         Scaffold(
             modifier = modifier.fillMaxSize(),
@@ -180,7 +192,7 @@ fun SettingsScreen(
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(
-                                text = "Use 24 Hour Clock",
+                                text = stringResource(R.string.use_24_hour_clock),
                                 fontSize = 18.sp,
                                 modifier = modifier.weight(1f)
                             )
@@ -205,13 +217,13 @@ fun SettingsScreen(
                         mainViewModel.enableAutoStartIntent(context = context)
                     }
                     // Backup/Restore card
-//                    SettingsComponent(
-//                        settingHeaderText = "Backup/Restore",
-//                        settingText = "Backup your tasks to a local file or restore it from already backed up file.",
-//                        painterResourceID = R.drawable.ic_history
-//                    ) {
-//                        Toast.makeText(context.applicationContext,"This feature will be available in future.",Toast.LENGTH_SHORT).show()
-//                    }
+                    SettingsComponent(
+                        settingHeaderText = stringResource(id = R.string.settings_backup_restore),
+                        settingText = stringResource(id = R.string.settings_backup_restore_information_text),
+                        painterResourceID = R.drawable.ic_history
+                    ) {
+                        isDialogShowingState = true
+                    }
                     // Visit Github Card
                     SettingsComponent(
                         settingHeaderText = stringResource(R.string.view_source_title),
@@ -222,6 +234,34 @@ fun SettingsScreen(
                 }
             }
         }
-
+        if(isDialogShowingState){
+         AlertDialog(
+             onDismissRequest = {
+             isDialogShowingState = false
+            },
+             title = {
+                 Text(text = stringResource(R.string.settings_backup_restore))
+             },
+             text = {
+                 Text(text = stringResource(R.string.settings_backup_restore_information_text))
+             },
+             confirmButton = {
+                 OutlinedButton(onClick = {
+                     MainActivity().restoreFile(context = activity,dbPath.toUri())
+                     isDialogShowingState = false
+                 }) {
+                     Text(text = "Restore")
+                 }
+             },
+             dismissButton = {
+                 OutlinedButton(onClick = {
+                     MainActivity().writeFile(context = activity,dbPath.toUri())
+                     isDialogShowingState = false
+                 }) {
+                     Text(text = "Backup")
+                 }
+             }
+         )
+        }
     }
 }

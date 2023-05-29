@@ -10,7 +10,9 @@ import androidx.lifecycle.ViewModel
 class MainViewModel : ViewModel() {
 
     private val permissionDialogQueue = mutableStateListOf<String>()
-    
+
+
+
     fun onPermissionResult(
         permission:String,
         isGranted:Boolean
