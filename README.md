@@ -4,23 +4,16 @@
 Tasky is a highly intuitive and easy-to-use todo list application designed for those who seek a powerful yet minimalistic way to manage their daily tasks. 
 
 ## Features ⭐️
-- Modern Design
-- Notifications for tasks
-- Material You Dynamic theming
-- Add and Delete Sounds
-- Minimal Design
-- Completely Offline making it privacy first
 
-## Disclaimer ⚠️
-
-Starting from version 1.5, Tasky package name is being changed to `com.thatsmanmeet.taskyapp` 
-from `com.thatsmanmeet.tasky` because someone have uploaded my app to Play Store without changing
-package name and hence I have to rename my app to upload it to Play Store.
-
-So, please remove your old version of tasky and download the new one as this will also be available
-on Play Store.
-
-I am really sorry for this inconvenience.
+1. Modern and minimal design
+2. Notifications for tasks
+3. Material You Dynamic theming
+4. Repeating tasks
+5. Cool task completion animation
+6. Add and Delete Sounds
+7. Completely offline making it privacy first
+8. Free and Open Source
+9. Offline Backups
 
 ## Technologies 🛠️
 - [Kotlin](https://kotlinlang.org/) - First class and official programming language for Android development.
@@ -42,10 +35,10 @@ This app uses [***MVVM (Model View View-Model)***](https://developer.android.com
 
 <table>
   <tr>
-    <td> <img src="./screenshots/tasky1.jpg" height="215px" width="120px" /></td>
-    <td><img src="./screenshots/tasky4.png" height="215px" width="120px"/> </td>
-    <td><img src="./screenshots/tasky2.png" height="215px" width="120px"/></td>
-      <td><img src="./screenshots/tasky3.png" height="215px" width="120px"/></td>
+    <td> <img src="./screenshots/tasky1.jpg" height="215px" width="150px" /></td>
+    <td><img src="./screenshots/tasky4.png" height="215px" width="150px"/> </td>
+    <td><img src="./screenshots/tasky2.png" height="215px" width="150px"/></td>
+      <td><img src="./screenshots/tasky3.png" height="215px" width="150px"/></td>
    </tr> 
 </table>
 
