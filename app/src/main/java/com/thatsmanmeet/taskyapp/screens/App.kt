@@ -55,7 +55,7 @@ fun MyApp(
     val todoViewModel = TodoViewModel(activity.application)
     val listState = rememberLazyListState()
     val selectedItem = rememberSaveable {
-        mutableStateOf(-1)
+        mutableIntStateOf(-1)
     }
     val todoListFromFlow by todoViewModel.getAllTodosFlow.collectAsState(initial = emptyList())
     val topAppBarColors = TopAppBarDefaults
@@ -313,8 +313,8 @@ fun getTimeInMillis(date: String): Long {
 
 @Composable
 private fun LazyListState.isScrollingUp(): Boolean {
-    var previousIndex by remember(this) { mutableStateOf(firstVisibleItemIndex) }
-    var previousScrollOffset by remember(this) { mutableStateOf(firstVisibleItemScrollOffset) }
+    var previousIndex by remember(this) { mutableIntStateOf(firstVisibleItemIndex) }
+    var previousScrollOffset by remember(this) { mutableIntStateOf(firstVisibleItemScrollOffset) }
     return remember(this) {
         derivedStateOf {
             if (previousIndex != firstVisibleItemIndex) {

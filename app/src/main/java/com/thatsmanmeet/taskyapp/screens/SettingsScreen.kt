@@ -196,7 +196,7 @@ fun SettingsScreen(
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(
-                                text = "Use task complete sounds",
+                                text = stringResource(R.string.use_task_complete_sounds_title),
                                 fontSize = 18.sp,
                                 modifier = modifier.weight(1f)
                             )
