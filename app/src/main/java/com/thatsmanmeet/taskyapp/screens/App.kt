@@ -7,8 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.media.AudioAttributes
 import android.net.Uri
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
 import androidx.compose.material.icons.Icons
@@ -89,9 +87,7 @@ fun MyApp(
     val isLottiePlaying = remember {
         mutableStateOf(true)
     }
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        createNotificationChannel(context.applicationContext)
-    }
+    createNotificationChannel(context.applicationContext)
     // setup settings store
     val settingsStore = SettingsStore(context)
     val savedTaskKey = settingsStore.getTaskListKey.collectAsState(initial = true)
@@ -234,7 +230,7 @@ fun MyApp(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 fun createNotificationChannel(context: Context){
     val name = "Reminder"
     val desc = "Sends Notifications of the tasks added to the list"

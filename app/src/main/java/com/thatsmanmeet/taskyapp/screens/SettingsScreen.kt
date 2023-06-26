@@ -1,8 +1,6 @@
 package com.thatsmanmeet.taskyapp.screens
 
 import android.app.Activity
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -32,7 +30,6 @@ import kotlinx.coroutines.launch
 
 
 @Suppress("DEPRECATION")
-@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(

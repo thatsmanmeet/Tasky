@@ -34,7 +34,11 @@ fun TaskList(
     ){
         grouped.forEach { (date, grouped_list) ->
             stickyHeader(DateFormat.getDateInstance(DateFormat.MEDIUM).format(date!!)) {
-                DateHeader(date = DateFormat.getDateInstance(DateFormat.MEDIUM).format(date))
+                val currentDate = date.toString().split(" ")
+                val month = currentDate[1]
+                val dateOfMonth = currentDate[2]
+                val year = currentDate[5]
+                DateHeader(date = "$month $dateOfMonth, $year")
             }
             itemsIndexed(grouped_list){_,item->
                 val movableContent = movableContentOf {

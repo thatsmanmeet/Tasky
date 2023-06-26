@@ -8,6 +8,7 @@ import android.content.Intent
 import androidx.core.app.NotificationCompat
 import com.thatsmanmeet.taskyapp.MainActivity
 import com.thatsmanmeet.taskyapp.R
+import kotlin.random.Random
 
 const val notificationID = 1
 const val channelID = "Remainder Channel"
@@ -30,6 +31,6 @@ class Notification: BroadcastReceiver(){
             .build()
 
         val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        manager.notify(notificationID,notification)
+        manager.notify(Random.nextInt(0,1000) - Random.nextInt(25,75),notification)
     }
 }
