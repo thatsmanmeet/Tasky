@@ -15,7 +15,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.thatsmanmeet.taskyapp.R
-import com.thatsmanmeet.taskyapp.constants.Constants
 import com.thatsmanmeet.taskyapp.room.Todo
 import com.thatsmanmeet.taskyapp.room.TodoViewModel
 import com.thatsmanmeet.taskyapp.screens.scheduleNotification
@@ -149,7 +148,6 @@ fun addTodoDialog(
             },
             confirmButton = {
                 Button(onClick = {
-                    openDialog.value = false
                     val todo = Todo(
                         ID = null,
                         enteredText1.ifEmpty { "No Name" },
@@ -166,6 +164,11 @@ fun addTodoDialog(
                     todoViewModel.insertTodo(
                         todo
                     )
+                    if(dateText.value.isEmpty()){
+                        dateText.value = SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH).format(
+                            Calendar.getInstance().time
+                        ).toString()
+                    }
                     if (dateText.value.isNotEmpty() && timeText.value.isNotEmpty()) {
                         // SCHEDULE NOTIFICATION
                         val format = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
@@ -176,8 +179,7 @@ fun addTodoDialog(
                             set(Calendar.MINUTE, todo.time!!.substringAfter(":").toInt())
                             set(Calendar.SECOND, 0)
                         }
-                        val currentTime = Calendar.getInstance().timeInMillis
-                        if(calendar.timeInMillis >= currentTime){
+                        if(calendar.timeInMillis > Calendar.getInstance().timeInMillis){
                                 scheduleNotification(
                                     context,
                                     titleText = enteredText1,
@@ -190,6 +192,7 @@ fun addTodoDialog(
                             setRepeatingAlarm(context = context)
                         }
                     }
+                    openDialog.value = false
                     enteredText1 = ""
                     isRepeating = false
                 }

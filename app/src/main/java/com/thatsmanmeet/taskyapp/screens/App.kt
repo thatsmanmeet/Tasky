@@ -2,8 +2,11 @@ package com.thatsmanmeet.taskyapp.screens
 
 import android.annotation.SuppressLint
 import android.app.*
+import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
+import android.media.AudioAttributes
+import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
@@ -87,7 +90,7 @@ fun MyApp(
         mutableStateOf(true)
     }
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        createNotificationChannel(context)
+        createNotificationChannel(context.applicationContext)
     }
     // setup settings store
     val settingsStore = SettingsStore(context)
@@ -237,9 +240,15 @@ fun createNotificationChannel(context: Context){
     val desc = "Sends Notifications of the tasks added to the list"
     val importance = NotificationManager.IMPORTANCE_HIGH
     val channel = NotificationChannel(channelID,name,importance)
+    val attributes = AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_NOTIFICATION).build()
     channel.description = desc
+    channel.enableLights(true)
+    channel.enableVibration(true)
+    channel.setSound(Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + context.packageName + "/" + R.raw.notifications),attributes)
     val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-    notificationManager.createNotificationChannel(channel)
+    if(notificationManager.notificationChannels.isNullOrEmpty()){
+        notificationManager.createNotificationChannel(channel)
+    }
 }
 fun scheduleNotification(
     context: Context,
