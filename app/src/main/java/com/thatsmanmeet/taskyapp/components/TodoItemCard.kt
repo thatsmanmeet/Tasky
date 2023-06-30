@@ -1,5 +1,6 @@
 package com.thatsmanmeet.taskyapp.components
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -7,6 +8,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -17,6 +19,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.thatsmanmeet.taskyapp.R
+import com.thatsmanmeet.taskyapp.datastore.SettingsStore
 import com.thatsmanmeet.taskyapp.room.Todo
 import com.thatsmanmeet.taskyapp.room.TodoViewModel
 import com.thatsmanmeet.taskyapp.screens.cancelNotification
@@ -25,6 +28,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
+@SuppressLint("SuspiciousIndentation")
 @Composable
 fun TodoItemCard(
     todo: Todo,
@@ -40,6 +44,8 @@ fun TodoItemCard(
         set(Calendar.MINUTE, 0)
         set(Calendar.SECOND, 0)
     }
+    val settingsStore = SettingsStore(context = context)
+    val savedSoundKey = settingsStore.getSoundKey.collectAsState(initial = true)
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -71,8 +77,9 @@ fun TodoItemCard(
                         currentTodo
                     )
                     if(currentCheckBoxState.value){
-
-                        viewModel.playCompletedSound(context)
+                        if(savedSoundKey.value == true){
+                            viewModel.playCompletedSound(context)
+                        }
                         viewModel.isAnimationPlayingState.value = true
                             cancelNotification(
                                 context = context,
@@ -103,9 +110,9 @@ fun TodoItemCard(
                         }
                     }
                 })
-            Spacer(modifier = Modifier.width(3.dp))
+            Spacer(modifier = modifier.width(3.dp))
             Text(
-                modifier = Modifier.fillMaxWidth(0.9f),
+                modifier = modifier.fillMaxWidth(0.9f),
                 text = todo.title!!,
                 textDecoration = if (currentCheckBoxState.value) TextDecoration.LineThrough else TextDecoration.None,
                 fontSize = 16.sp
@@ -113,7 +120,7 @@ fun TodoItemCard(
         }
         if(todo.time!!.isNotEmpty()){
             Icon(
-                modifier = Modifier
+                modifier = modifier
                     .padding(end = 5.dp)
                     .size(24.dp),
                 imageVector = Icons.Default.Notifications,
@@ -122,5 +129,5 @@ fun TodoItemCard(
             )
         }
     }
-    Spacer(modifier = Modifier.height(12.dp))
+    Spacer(modifier = modifier.height(12.dp))
 }

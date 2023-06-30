@@ -29,4 +29,5 @@
     <string name="use_24_hour_clock">Verwenden Sie die 24-Stunden-Uhr</string>
     <string name="settings_backup_restore">Sicherung/Wiederherstellung</string>
     <string name="settings_backup_restore_information_text">Sicherung oder Wiederherstellung ihrer Aufgaben durch eine lokale Zip-Datei</string>
+    <string name="use_task_complete_sounds_title">Verwenden Sie Sounds zum Erledigen von Aufgaben</string>
 </resources>

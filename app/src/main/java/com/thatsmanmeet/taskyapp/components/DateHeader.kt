@@ -20,7 +20,7 @@ fun DateHeader(
 ) {
     Row(
         modifier = modifier
-            .padding(bottom = 8.dp, top = 0.dp)
+            .padding(bottom = 10.dp, top = 0.dp)
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.surface),
         verticalAlignment = Alignment.CenterVertically
@@ -34,7 +34,7 @@ fun DateHeader(
         Text(
             text = date,
             color = MaterialTheme.colorScheme.primary,
-            fontSize = 18.sp
+            fontSize = 20.sp
         )
     }
 }

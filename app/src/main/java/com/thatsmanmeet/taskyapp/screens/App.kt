@@ -2,10 +2,11 @@ package com.thatsmanmeet.taskyapp.screens
 
 import android.annotation.SuppressLint
 import android.app.*
+import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
-import android.os.Build
-import androidx.annotation.RequiresApi
+import android.media.AudioAttributes
+import android.net.Uri
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
 import androidx.compose.material.icons.Icons
@@ -55,7 +56,7 @@ fun MyApp(
     val todoViewModel = TodoViewModel(activity.application)
     val listState = rememberLazyListState()
     val selectedItem = rememberSaveable {
-        mutableStateOf(-1)
+        mutableIntStateOf(-1)
     }
     val todoListFromFlow by todoViewModel.getAllTodosFlow.collectAsState(initial = emptyList())
     val topAppBarColors = TopAppBarDefaults
@@ -86,9 +87,7 @@ fun MyApp(
     val isLottiePlaying = remember {
         mutableStateOf(true)
     }
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        createNotificationChannel(context)
-    }
+    createNotificationChannel(context.applicationContext)
     // setup settings store
     val settingsStore = SettingsStore(context)
     val savedTaskKey = settingsStore.getTaskListKey.collectAsState(initial = true)
@@ -231,15 +230,24 @@ fun MyApp(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 fun createNotificationChannel(context: Context){
     val name = "Reminder"
     val desc = "Sends Notifications of the tasks added to the list"
     val importance = NotificationManager.IMPORTANCE_HIGH
     val channel = NotificationChannel(channelID,name,importance)
+    val attributes = AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_NOTIFICATION).build()
     channel.description = desc
+    channel.enableLights(true)
+    channel.enableVibration(true)
+    channel.setSound(Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + context.packageName + "/" + R.raw.notifications),attributes)
     val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-    notificationManager.createNotificationChannel(channel)
+    if (notificationManager.getNotificationChannel("Remainder Channel") != null){
+        notificationManager.deleteNotificationChannel("Remainder Channel")
+    }
+    if(notificationManager.notificationChannels.isNullOrEmpty()){
+        notificationManager.createNotificationChannel(channel)
+    }
 }
 fun scheduleNotification(
     context: Context,
@@ -313,8 +321,8 @@ fun getTimeInMillis(date: String): Long {
 
 @Composable
 private fun LazyListState.isScrollingUp(): Boolean {
-    var previousIndex by remember(this) { mutableStateOf(firstVisibleItemIndex) }
-    var previousScrollOffset by remember(this) { mutableStateOf(firstVisibleItemScrollOffset) }
+    var previousIndex by remember(this) { mutableIntStateOf(firstVisibleItemIndex) }
+    var previousScrollOffset by remember(this) { mutableIntStateOf(firstVisibleItemScrollOffset) }
     return remember(this) {
         derivedStateOf {
             if (previousIndex != firstVisibleItemIndex) {

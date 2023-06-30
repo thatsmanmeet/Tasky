@@ -1,8 +1,6 @@
 package com.thatsmanmeet.taskyapp.screens
 
 import android.app.Activity
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -32,7 +30,6 @@ import kotlinx.coroutines.launch
 
 
 @Suppress("DEPRECATION")
-@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
@@ -40,7 +37,8 @@ fun SettingsScreen(
     modifier: Modifier = Modifier,
     isChecked:State<Boolean?>,
     shouldShowAnimation:State<Boolean?>,
-    is24HourClockKey:State<Boolean?>
+    is24HourClockKey:State<Boolean?>,
+    shouldPlaySound:State<Boolean?>
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -50,6 +48,9 @@ fun SettingsScreen(
     }
     val shouldShowAnimationState = remember {
         mutableStateOf(shouldShowAnimation.value)
+    }
+    val shouldPlaySoundState = remember{
+        mutableStateOf(shouldPlaySound.value)
     }
     val is24HourClockState = remember {
         mutableStateOf(is24HourClockKey.value)
@@ -170,6 +171,40 @@ fun SettingsScreen(
                                         shouldShowAnimationState.value = isToggleChecked
                                         scope.launch {
                                             settingStore.saveAnimationShowKey(isToggleChecked)
+                                        }
+                                    })
+                            }
+                        }
+                    }
+                    Spacer(modifier = modifier.height(12.dp))
+                    // Use sound Toggle
+                    Card(
+                        modifier = modifier
+                            .clip(RoundedCornerShape(15.dp))
+                            .fillMaxWidth()
+                            .background(MaterialTheme.colorScheme.inverseOnSurface),
+                        elevation = CardDefaults.cardElevation(0.dp)
+                    ) {
+                        Row(
+                            modifier = modifier
+                                .padding(10.dp)
+                                .fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = stringResource(R.string.use_task_complete_sounds_title),
+                                fontSize = 18.sp,
+                                modifier = modifier.weight(1f)
+                            )
+                            shouldPlaySoundState.value?.let { it1 ->
+                                Switch(
+                                    modifier = modifier.weight(0.2f),
+                                    checked = it1,
+                                    onCheckedChange = { isToggleChecked->
+                                        shouldPlaySoundState.value = isToggleChecked
+                                        scope.launch {
+                                            settingStore.saveSoundPlayKey(isToggleChecked)
                                         }
                                     })
                             }

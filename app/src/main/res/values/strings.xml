@@ -28,5 +28,6 @@
     <string name="use_24_hour_clock">Use 24 Hour Clock</string>
     <string name="settings_backup_restore">Backup/Restore</string>
     <string name="settings_backup_restore_information_text">Backup or Restore your tasks from a local zip file.</string>
+    <string name="use_task_complete_sounds_title">Use task complete sounds</string>
 
 </resources>
