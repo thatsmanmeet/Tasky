@@ -11,7 +11,7 @@ import com.thatsmanmeet.taskyapp.R
 import kotlin.random.Random
 
 const val notificationID = 1
-const val channelID = "Remainder Channel"
+const val channelID = "Reminder Channel"
 const val titleExtra = "titleExtra"
 const val messageExtra = "messageExtra"
 

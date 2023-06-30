@@ -242,6 +242,9 @@ fun createNotificationChannel(context: Context){
     channel.enableVibration(true)
     channel.setSound(Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + context.packageName + "/" + R.raw.notifications),attributes)
     val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    if (notificationManager.getNotificationChannel("Remainder Channel") != null){
+        notificationManager.deleteNotificationChannel("Remainder Channel")
+    }
     if(notificationManager.notificationChannels.isNullOrEmpty()){
         notificationManager.createNotificationChannel(channel)
     }
