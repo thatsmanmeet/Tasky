@@ -16,7 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.thatsmanmeet.taskyapp.R
-import com.thatsmanmeet.taskyapp.constants.Constants
+import com.thatsmanmeet.taskyapp.datastore.SettingsStore
 import com.thatsmanmeet.taskyapp.room.Todo
 import com.thatsmanmeet.taskyapp.room.TodoViewModel
 import com.thatsmanmeet.taskyapp.screens.cancelNotification
@@ -81,6 +81,8 @@ fun OpenEditTodoDialog(
         set(Calendar.MINUTE, 0)
         set(Calendar.SECOND, 0)
     }
+    val settingsStore = SettingsStore(context = context)
+    val savedSoundKey = settingsStore.getSoundKey.collectAsState(initial = true)
     var todo : Todo
     AlertDialog(
         onDismissRequest = {
@@ -272,7 +274,9 @@ fun OpenEditTodoDialog(
                         todo = todo
                     )
                     enteredText1 = ""
-                    todoViewModel.playDeletedSound(context)
+                    if(savedSoundKey.value == true){
+                        todoViewModel.playDeletedSound(context)
+                    }
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(
