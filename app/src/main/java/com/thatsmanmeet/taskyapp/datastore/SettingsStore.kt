@@ -5,6 +5,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -18,6 +19,7 @@ class SettingsStore(
         val ANIMATION_SHOW_KEY = booleanPreferencesKey("animation_list_preference")
         val SHOW_24_HOUR_CLOCK_KEY = booleanPreferencesKey("show_24_hour_clock_preference")
         val TASK_COMPLETION_SOUNDS = booleanPreferencesKey("sound_list_preference")
+        val THEME_MODE_KEY = stringPreferencesKey("theme_mode_preference")
     }
 
     val getTaskListKey : Flow<Boolean?> = context.dataStore.data.map {preference->
@@ -33,6 +35,10 @@ class SettingsStore(
     }
     val getSoundKey : Flow<Boolean?> = context.dataStore.data.map{preference->
         preference[TASK_COMPLETION_SOUNDS] ?: true
+    }
+
+    val getThemeModeKey : Flow<String?> = context.dataStore.data.map {preference ->
+        preference[THEME_MODE_KEY] ?: ""
     }
 
     suspend fun saveTaskListKey(isEnabled:Boolean) {
@@ -55,6 +61,12 @@ class SettingsStore(
     suspend fun saveClockKey(isEnabled: Boolean){
         context.dataStore.edit { preference->
             preference[SHOW_24_HOUR_CLOCK_KEY] = isEnabled
+        }
+    }
+
+    suspend fun saveThemeModeKey(mode:String){
+        context.dataStore.edit { preference->
+            preference[THEME_MODE_KEY] = mode
         }
     }
 }
