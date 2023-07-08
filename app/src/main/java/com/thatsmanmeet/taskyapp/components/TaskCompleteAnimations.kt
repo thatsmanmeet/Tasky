@@ -26,7 +26,7 @@ fun TaskCompleteAnimations(
             progressAnimation
         },
         modifier = modifier.fillMaxSize(),
-        contentScale = ContentScale.Fit
+        contentScale = ContentScale.Crop
     )
 
 }

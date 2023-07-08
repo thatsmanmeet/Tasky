@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.media.AudioAttributes
 import android.net.Uri
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
 import androidx.compose.material.icons.Icons
@@ -92,7 +93,15 @@ fun MyApp(
     val settingsStore = SettingsStore(context)
     val savedTaskKey = settingsStore.getTaskListKey.collectAsState(initial = true)
     val savedAnimationKey = settingsStore.getAnimationKey.collectAsState(initial = true)
-    TaskyTheme {
+    val savedThemeKey = settingsStore.getThemeModeKey.collectAsState(initial = "")
+    TaskyTheme(darkTheme = when (savedThemeKey.value) {
+        "0" -> {
+            isSystemInDarkTheme()
+        }
+        "1" -> {false}
+        else -> {true}
+    }
+    ) {
         Scaffold(
             topBar = {
                 TopAppBar(
@@ -152,7 +161,9 @@ fun MyApp(
                 color = MaterialTheme.colorScheme.background
             ) {
                 if(todoListFromFlow.isEmpty()){
-                    Box(modifier = modifier.fillMaxSize(),
+                    Box(modifier = modifier
+                        .fillMaxSize()
+                        .padding(paddingValues),
                         contentAlignment = Alignment.Center) {
                         Column(
                             modifier = modifier,
@@ -176,28 +187,27 @@ fun MyApp(
                         }
                     }
                 }else {
-                    if(savedTaskKey.value == null || savedTaskKey.value == true){
-                        TaskList(
-                            state = listState,
-                            list = todoListFromFlow,
-                            todoViewModel = todoViewModel,
-                            onClick = {index->
-                                selectedItem.value = index
-                                openEditDialog.value = true
-                            }
-                        )
-                    }else{
-                        LegacyTaskList(
-                            state = listState,
-                            list = todoListFromFlow,
-                            todoViewModel = todoViewModel,
-                            onClick = {index->
-                                selectedItem.value = index
-                                openEditDialog.value = true
-                            }
-                        )
-                    }
-
+                        if(savedTaskKey.value == null || savedTaskKey.value == true){
+                            TaskList(
+                                state = listState,
+                                list = todoListFromFlow,
+                                todoViewModel = todoViewModel,
+                                onClick = {index->
+                                    selectedItem.value = index
+                                    openEditDialog.value = true
+                                }
+                            )
+                        }else{
+                            LegacyTaskList(
+                                state = listState,
+                                list = todoListFromFlow,
+                                todoViewModel = todoViewModel,
+                                onClick = {index->
+                                    selectedItem.value = index
+                                    openEditDialog.value = true
+                                }
+                            )
+                        }
                 }
                 if (openEditDialog.value){
                     OpenEditTodoDialog(

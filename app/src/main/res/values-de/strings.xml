@@ -30,4 +30,7 @@
     <string name="settings_backup_restore">Sicherung/Wiederherstellung</string>
     <string name="settings_backup_restore_information_text">Sicherung oder zu Wiederherstellung ihrer Aufgaben durch eine lokale Zip-Datei</string>
     <string name="use_task_complete_sounds_title">Verwende Töne bei erfüllter Aufgabe</string>
+    <string name="select_app_theme_text">Wählen Sie App-Theme</string>
+    <string name="set_app_theme_settings_text">Wählen Sie App-Theme</string>
+    <string name="set_app_theme_info_text">Ändern Sie das aktuelle Design der App in hell, dunkel oder Systemstandard.</string>
 </resources>

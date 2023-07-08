@@ -2,6 +2,7 @@ package com.thatsmanmeet.taskyapp.screens
 
 import android.app.Activity
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -23,6 +24,7 @@ import androidx.navigation.NavHostController
 import com.thatsmanmeet.taskyapp.MainActivity
 import com.thatsmanmeet.taskyapp.R
 import com.thatsmanmeet.taskyapp.components.SettingsComponent
+import com.thatsmanmeet.taskyapp.components.ThemeChangerDialog
 import com.thatsmanmeet.taskyapp.datastore.SettingsStore
 import com.thatsmanmeet.taskyapp.ui.theme.TaskyTheme
 import com.thatsmanmeet.taskyapp.viewmodels.MainViewModel
@@ -43,6 +45,7 @@ fun SettingsScreen(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val settingStore = SettingsStore(context)
+    val savedThemeKey = settingStore.getThemeModeKey.collectAsState(initial = "")
     val isCheckedState = remember {
         mutableStateOf(isChecked.value)
     }
@@ -58,10 +61,20 @@ fun SettingsScreen(
     var isDialogShowingState by rememberSaveable {
         mutableStateOf(false)
     }
+    val isThemeChangerShowing = rememberSaveable {
+        mutableStateOf(false)
+    }
     val mainViewModel = MainViewModel()
     val activity = LocalContext.current as Activity
     val dbPath = activity.getDatabasePath("todo_database").absolutePath
-    TaskyTheme{
+    TaskyTheme(darkTheme = when (savedThemeKey.value) {
+        "0" -> {
+            isSystemInDarkTheme()
+        }
+        "1" -> {false}
+        else -> {true}
+    }
+    ){
         Scaffold(
             modifier = modifier.fillMaxSize(),
             topBar = {
@@ -110,6 +123,14 @@ fun SettingsScreen(
                         )
                         .verticalScroll(rememberScrollState()),
                 ) {
+                    SettingsComponent(
+                        settingHeaderText = stringResource(R.string.set_app_theme_settings_text),
+                        settingText = stringResource(R.string.set_app_theme_info_text),
+                        painterResourceID =  R.drawable.ic_phone
+                    ) {
+                        isThemeChangerShowing.value = true
+                    }
+                    Spacer(modifier = modifier.height(12.dp))
                     Card(
                         modifier = modifier
                             .clip(RoundedCornerShape(15.dp))
@@ -297,6 +318,17 @@ fun SettingsScreen(
                  }
              }
          )
+        }
+        // Backup dialog ends here
+        ThemeChangerDialog(
+            selectedItem = remember {
+            mutableStateOf(savedThemeKey.value.toString())
+        },
+            isShowing = isThemeChangerShowing
+        ){mode->
+            scope.launch {
+                settingStore.saveThemeModeKey(mode)
+            }
         }
     }
 }

@@ -29,5 +29,7 @@
     <string name="settings_backup_restore">Backup/Restore</string>
     <string name="settings_backup_restore_information_text">Backup or Restore your tasks from a local zip file.</string>
     <string name="use_task_complete_sounds_title">Use task complete sounds</string>
-
+    <string name="select_app_theme_text">Select App Theme</string>
+    <string name="set_app_theme_settings_text">Set app theme</string>
+    <string name="set_app_theme_info_text">Change current theme of the app to light, dark or system default.</string>
 </resources>
