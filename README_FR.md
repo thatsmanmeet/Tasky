@@ -5,15 +5,15 @@ Tasky est une application de liste de tâches très intuitive et facile à utili
 
 ## Caractéristiques ⭐️
 
-1.Moderne et Minimale Design
-2.Notifications pour tâches
-3.Thème dynamique
-4.Tâches répétitives
-5.Cool animation d'achèvement de tâche
-6.Ajoute ou Supprime les Sons
-7.Complètement hors ligne, ce qui en fait la confidentialité d'abbord
-8.Libre et Source Ouverte
-9.Sauvegardes Hors Ligne
+1. Moderne et Minimale Design
+2. Notifications pour tâches
+3. Thème dynamique
+4. Tâches répétitives
+5. Cool animation d'achèvement de tâche
+6. Ajoute ou Supprime les Sons
+7. Complètement hors ligne, ce qui en fait la confidentialité d'abbord
+8. Libre et Source Ouverte
+9. Sauvegardes Hors Ligne
 
 ## Captures d'écran 🌠
 
