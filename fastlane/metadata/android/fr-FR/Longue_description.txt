@@ -1,0 +1,15 @@
+<p>Tasky est une application de liste de tâches très intuitive et facile à utiliser, conçue pour ceux qui recherchent un moyen puissant mais minimaliste de gérer leurs tâches quotidiennes.</p>
+
+Features ⭐️:
+<ul>
+   <li>1.Moderne et Minimale Design</li>
+   <li>2.Notifications pour tâches</li>
+   <li>3.Thème dynamique</li>
+   <li>4.Tâches répétitives</li>
+   <li>5.Cool animation d'achèvement de tâche</li>
+   <li>6.Ajoute ou Supprime les Sons</li>
+   <li>7.Complètement hors ligne, ce qui en fait la confidentialité d'abbord</li>
+   <li>8.Libre et Source Ouverte</li>
+   <li>9.Sauvegardes Hors Ligne</li>
+</ul>
+<p>Avec sont design minimaliste et sans effets de cloches ou sifflets supplémentaires, vous pouvez continuer à organiser votre journée sans distraction.</p>
