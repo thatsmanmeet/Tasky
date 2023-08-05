@@ -1,1 +1,1 @@
-Tasky is a simple task management tool to organize your ToDo lists.
+<p>Tasky is a highly intuitive and easy-to-use todo list application designed for those who seek a powerful yet minimalistic way to manage their daily tasks.</p>

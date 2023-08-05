@@ -1,0 +1,4 @@
+What's New:
+1. Added a toggle to change app theme.
+2. Delete task sound can be disabled from settings toggle.
+3. Updated German Translations.
