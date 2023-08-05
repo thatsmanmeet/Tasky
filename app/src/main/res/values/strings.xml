@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Tasky</string>
     <string name="add_task_button">Add Task</string>
@@ -33,3 +34,4 @@
     <string name="set_app_theme_settings_text">Set app theme</string>
     <string name="set_app_theme_info_text">Change current theme of the app to light, dark or system default.</string>
 </resources>
+
