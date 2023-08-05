@@ -98,7 +98,6 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-    @RequiresApi(Build.VERSION_CODES.O)
     @Deprecated("Deprecated in Kotlin")
     fun writeFile(context: Context, partialUri: Uri) {
         val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
@@ -110,7 +109,6 @@ class MainActivity : ComponentActivity() {
         (context as Activity).startActivityForResult(intent, 1)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     @Deprecated("Deprecated in Kotlin", replaceWith = ReplaceWith("newFunction()"))
     fun restoreFile(context: Context, partialUri: Uri) {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
