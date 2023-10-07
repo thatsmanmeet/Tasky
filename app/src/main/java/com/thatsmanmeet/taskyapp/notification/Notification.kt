@@ -15,6 +15,9 @@ const val channelID = "Reminder Channel"
 const val titleExtra = "titleExtra"
 const val messageExtra = "messageExtra"
 
+//  can be used in notification below to show additional text in notification
+// .setContentText(intent.getStringExtra(messageExtra))
+
 class Notification: BroadcastReceiver(){
     override fun onReceive(context: Context, intent: Intent?) {
 
@@ -25,7 +28,6 @@ class Notification: BroadcastReceiver(){
         val notification = NotificationCompat.Builder(context, channelID)
             .setSmallIcon(R.drawable.ic_check)
             .setContentTitle(intent.getStringExtra(titleExtra))
-            .setContentText(intent.getStringExtra(messageExtra))
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
             .build()

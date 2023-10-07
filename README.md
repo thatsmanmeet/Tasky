@@ -22,7 +22,7 @@ Tasky is a highly intuitive and easy-to-use todo list application designed for t
     <td> <img src="./screenshots/tasky1.png" height="400px" width="200px" /></td>
     <td><img src="./screenshots/tasky4.png" height="400px" width="200px" /> </td>
     <td><img src="./screenshots/tasky2.png" height="400px" width="200px" /></td>
-      <td><img src="./screenshots/tasky3.png" height="400px" width="200px" /></td>
+    <td><img src="./screenshots/tasky3.png" height="400px" width="200px" /></td>
    </tr> 
 </table>
 
