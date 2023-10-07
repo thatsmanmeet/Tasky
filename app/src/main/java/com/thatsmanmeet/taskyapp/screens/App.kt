@@ -93,14 +93,13 @@ fun MyApp(
     val settingsStore = SettingsStore(context)
     val savedTaskKey = settingsStore.getTaskListKey.collectAsState(initial = true)
     val savedAnimationKey = settingsStore.getAnimationKey.collectAsState(initial = true)
-    val savedThemeKey = settingsStore.getThemeModeKey.collectAsState(initial = "")
-    TaskyTheme(darkTheme = when (savedThemeKey.value) {
-        "0" -> {
-            isSystemInDarkTheme()
-        }
+    val savedThemeKey = settingsStore.getThemeModeKey.collectAsState(initial = "0")
+    TaskyTheme(darkTheme = when (savedThemeKey.value.toString()) {
+        "null" -> {isSystemInDarkTheme()}
+        "0" -> {isSystemInDarkTheme()}
         "1" -> {false}
         else -> {true}
-    }
+        }
     ) {
         Scaffold(
             topBar = {

@@ -16,6 +16,8 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
@@ -52,47 +54,50 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         installSplashScreen()
         setContent {
-            val context = LocalContext.current
-            val viewModel = MainViewModel()
-            val pageState = remember {
-                mutableStateOf(ContextCompat.checkSelfPermission(context,Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED)
-            }
-            navController = rememberNavController()
-            SetupNavGraph(navController = navController)
-            val notificationPermissionLauncher = rememberLauncherForActivityResult(
-                contract = ActivityResultContracts.RequestPermission(),
-                onResult = {isGranted->
-                    viewModel.onPermissionResult(
-                        permission = Manifest.permission.POST_NOTIFICATIONS,
-                        isGranted = isGranted
-                    )
-                    if (isGranted) {
-                        pageState.value = true
-                        navController.navigate(route = Screen.MyApp.route) {
-                            popUpTo(Screen.PermissionScreen.route) {
-                                inclusive = true
+            Scaffold(contentWindowInsets = ScaffoldDefaults.contentWindowInsets) {
+                it;
+                val context = LocalContext.current
+                val viewModel = MainViewModel()
+                val pageState = remember {
+                    mutableStateOf(ContextCompat.checkSelfPermission(context,Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED)
+                }
+                navController = rememberNavController()
+                SetupNavGraph(navController = navController)
+                val notificationPermissionLauncher = rememberLauncherForActivityResult(
+                    contract = ActivityResultContracts.RequestPermission(),
+                    onResult = {isGranted->
+                        viewModel.onPermissionResult(
+                            permission = Manifest.permission.POST_NOTIFICATIONS,
+                            isGranted = isGranted
+                        )
+                        if (isGranted) {
+                            pageState.value = true
+                            navController.navigate(route = Screen.MyApp.route) {
+                                popUpTo(Screen.PermissionScreen.route) {
+                                    inclusive = true
+                                }
                             }
                         }
                     }
-                }
-            )
-            val checkPermission = ContextCompat.checkSelfPermission(context,Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
-            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU){
-                pageState.value = true
-            }else {
-                if (checkPermission) {
+                )
+                val checkPermission = ContextCompat.checkSelfPermission(context,Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
+                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU){
                     pageState.value = true
-                } else {
-                    PermissionRequestScreen(navHostController = navController, requestOnClick = {
-                        notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-                    })
+                }else {
+                    if (checkPermission) {
+                        pageState.value = true
+                    } else {
+                        PermissionRequestScreen(navHostController = navController, requestOnClick = {
+                            notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                        })
+                    }
                 }
-            }
-            // If permissions are already accepted.
-            if(pageState.value){
-                navController.navigate(route = Screen.MyApp.route){
-                    popUpTo(Screen.PermissionScreen.route){
-                        inclusive = true
+                // If permissions are already accepted.
+                if(pageState.value){
+                    navController.navigate(route = Screen.MyApp.route){
+                        popUpTo(Screen.PermissionScreen.route){
+                            inclusive = true
+                        }
                     }
                 }
             }
