@@ -44,12 +44,13 @@ class RepeatingTasksReceiver : BroadcastReceiver() {
                                     date = currentDate,
                                     time = todo.time,
                                     notificationID = todo.notificationID,
-                                    isRecurring = todo.isRecurring
+                                    isRecurring = todo.isRecurring,
+                                    todoDescription = todo.todoDescription
                                 )
                                 scheduleNotification(
                                     context,
                                     newTodo.title,
-                                    "",
+                                    newTodo.todoDescription,
                                     time = "${newTodo.date} ${newTodo.time}",
                                     todo = newTodo
                                 )

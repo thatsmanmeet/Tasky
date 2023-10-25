@@ -12,5 +12,6 @@ data class Todo(
     @ColumnInfo(name = "date") var date:String? = "",
     @ColumnInfo(name = "time") var time:String? = "",
     @ColumnInfo(name = "notificationID", defaultValue = "0") var notificationID:Int = 0,
-    @ColumnInfo(name = "is_Recurring", defaultValue = "false") var isRecurring : Boolean = false
+    @ColumnInfo(name = "is_Recurring", defaultValue = "false") var isRecurring : Boolean = false,
+    @ColumnInfo(name = "description", defaultValue = "") var todoDescription : String? = ""
 )

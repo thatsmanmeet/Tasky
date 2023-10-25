@@ -18,7 +18,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.thatsmanmeet.taskyapp.R
 import com.thatsmanmeet.taskyapp.datastore.SettingsStore
 import com.thatsmanmeet.taskyapp.room.Todo
 import com.thatsmanmeet.taskyapp.room.TodoViewModel
@@ -51,12 +50,12 @@ fun TodoItemCard(
             .fillMaxWidth()
             .clip(RoundedCornerShape(10.dp))
             .background(MaterialTheme.colorScheme.inverseOnSurface)
-            .heightIn(min = 60.dp)
-            .padding(6.dp),
+            .heightIn(min = 60.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Row (
+            modifier = modifier.padding(6.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
         ) {
@@ -71,7 +70,8 @@ fun TodoItemCard(
                         todo.date,
                         todo.time,
                         notificationID = todo.notificationID,
-                        isRecurring = todo.isRecurring
+                        isRecurring = todo.isRecurring,
+                        todoDescription = todo.todoDescription
                     )
                     viewModel.updateTodo(
                         currentTodo
@@ -83,8 +83,6 @@ fun TodoItemCard(
                         viewModel.isAnimationPlayingState.value = true
                             cancelNotification(
                                 context = context,
-                                titleText = currentTodo.title,
-                                messageText = context.getString(R.string.task_complete_notification_message),
                                 todo = currentTodo
                             )
                     }else{
@@ -102,7 +100,7 @@ fun TodoItemCard(
                                 scheduleNotification(
                                     context = context,
                                     titleText = currentTodo.title,
-                                    messageText = context.getString(R.string.task_complete_notification_message),
+                                    messageText = currentTodo.todoDescription,
                                     time = "${currentTodo.date} ${currentTodo.time}",
                                     todo = currentTodo
                                 )

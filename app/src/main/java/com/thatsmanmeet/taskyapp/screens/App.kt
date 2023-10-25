@@ -1,12 +1,9 @@
 package com.thatsmanmeet.taskyapp.screens
 
-import android.annotation.SuppressLint
+
 import android.app.*
-import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
-import android.media.AudioAttributes
-import android.net.Uri
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
@@ -26,7 +23,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.thatsmanmeet.taskyapp.R
-import com.thatsmanmeet.taskyapp.components.LegacyTaskList
 import com.thatsmanmeet.taskyapp.components.OpenEditTodoDialog
 import com.thatsmanmeet.taskyapp.components.TaskCompleteAnimations
 import com.thatsmanmeet.taskyapp.components.TaskList
@@ -45,7 +41,6 @@ import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.*
 
-@SuppressLint("AutoboxingStateValueProperty")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyApp(
@@ -68,6 +63,9 @@ fun MyApp(
         mutableStateOf(false)
     }
     var enteredText by remember {
+        mutableStateOf("")
+    }
+    val descriptionText by remember{
         mutableStateOf("")
     }
     val dateText = remember {
@@ -145,6 +143,7 @@ fun MyApp(
             enteredText = addTodoDialog(
                 openDialog,
                 enteredText,
+                descriptionText,
                 dateText,
                 isDateDialogShowing,
                 context,
@@ -186,27 +185,36 @@ fun MyApp(
                         }
                     }
                 }else {
-                        if(savedTaskKey.value == null || savedTaskKey.value == true){
-                            TaskList(
-                                state = listState,
-                                list = todoListFromFlow,
-                                todoViewModel = todoViewModel,
-                                onClick = {index->
-                                    selectedItem.value = index
-                                    openEditDialog.value = true
-                                }
-                            )
-                        }else{
-                            LegacyTaskList(
-                                state = listState,
-                                list = todoListFromFlow,
-                                todoViewModel = todoViewModel,
-                                onClick = {index->
-                                    selectedItem.value = index
-                                    openEditDialog.value = true
-                                }
-                            )
+                    TaskList(
+                        state = listState,
+                        list = todoListFromFlow,
+                        todoViewModel = todoViewModel,
+                        onClick = {index->
+                            selectedItem.intValue = index
+                            openEditDialog.value = true
                         }
+                    )
+//                        if(savedTaskKey.value == null || savedTaskKey.value == true){
+//                            TaskList(
+//                                state = listState,
+//                                list = todoListFromFlow,
+//                                todoViewModel = todoViewModel,
+//                                onClick = {index->
+//                                    selectedItem.value = index
+//                                    openEditDialog.value = true
+//                                }
+//                            )
+//                        }else{
+//                            LegacyTaskList(
+//                                state = listState,
+//                                list = todoListFromFlow,
+//                                todoViewModel = todoViewModel,
+//                                onClick = {index->
+//                                    selectedItem.value = index
+//                                    openEditDialog.value = true
+//                                }
+//                            )
+//                        }
                 }
                 if (openEditDialog.value){
                     OpenEditTodoDialog(
@@ -215,6 +223,7 @@ fun MyApp(
                         openEditDialog,
                         todoViewModel,
                         enteredText,
+                        todoListFromFlow[selectedItem.intValue].todoDescription!!,
                         context
                     )
                 }
@@ -241,19 +250,16 @@ fun MyApp(
 
 
 fun createNotificationChannel(context: Context){
-    val name = "Reminder"
+    val name = "Reminders"
     val desc = "Sends Notifications of the tasks added to the list"
     val importance = NotificationManager.IMPORTANCE_HIGH
     val channel = NotificationChannel(channelID,name,importance)
-    val attributes = AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_NOTIFICATION).build()
     channel.description = desc
     channel.enableLights(true)
     channel.enableVibration(true)
-    channel.setSound(Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + context.packageName + "/" + R.raw.notifications),attributes)
+//    val attributes = AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_NOTIFICATION_EVENT).build()
+//    channel.setSound(Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + context.packageName + "/raw/notifications"),attributes)
     val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-    if (notificationManager.getNotificationChannel("Remainder Channel") != null){
-        notificationManager.deleteNotificationChannel("Remainder Channel")
-    }
     if(notificationManager.notificationChannels.isNullOrEmpty()){
         notificationManager.createNotificationChannel(channel)
     }
@@ -306,13 +312,9 @@ fun setRepeatingAlarm(context: Context){
 
 fun cancelNotification(
     context: Context,
-    titleText:String?,
-    messageText:String?,
     todo: Todo
 ){
     val intent = Intent(context, Notification::class.java)
-    intent.putExtra("titleExtra", titleText)
-    intent.putExtra("messageExtra", messageText)
     val pendingIntent = PendingIntent.getBroadcast(
         context,
         todo.notificationID,
