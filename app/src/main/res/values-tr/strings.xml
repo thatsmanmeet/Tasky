@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Tasky</string>
+    <string name="add_task_button">Görev Ekle</string>
+    <string name="add_task_dialog_title">Görev Ekle</string>
+    <string name="add_edit_text_placeholder">Aklında ne var?</string>
+    <string name="add_edit_dialog_select_date_button">Tarih seç</string>
+    <string name="add_edit_dialog_select_time_button">Zaman seç</string>
+    <string name="add_edit_dialog_repeat_everyday">Her gün tekrarla</string>
+    <string name="add_edit_dialog_set_reminder_title">Hatırlatıcı ayarla (isteğe bağlı)</string>
+    <string name="add_edit_dialog_add_button_text">Ekle</string>
+    <string name="add_edit_dialog_cancel_button_text">İptal</string>
+    <string name="edit_task_dialog_title">Görevi Düzenle</string>
+    <string name="add_edit_dialog_edit_reminder_title">Hatırlatıcıyı Düzenle</string>
+    <string name="add_edit_dialog_save_button_text">Kaydet</string>
+    <string name="add_edit_dialog_delete_button_text">Sil</string>
+    <string name="task_complete_notification_message">Bugün görevini tamamladın mı?</string>
+    <string name="empty_list_no_tasks_text">Görev yok</string>
+    <string name="permission_screen_title">İzin Gerekli</string>
+    <string name="permission_screen_information_text">Android 13+\'dan itibaren uygulamalar bildirimleri göstermek için Bildirim İzni gerektirir.</string>
+    <string name="permission_screen_request_permission_button">İzin Gerekli</string>
+    <string name="settings_screen_appbar_title">Ayarlar</string>
+    <string name="separate_tasks_using_dates_title">Görevleri tarihlerine göre ayır</string>
+    <string name="use_task_complete_animations_title">Görev tamamlama animasyonunu etkinleştir</string>
+    <string name="enable_autostart_title">Otomatik Başlatmayı Etkinleştir</string>
+    <string name="enable_autostart_information_text">Bazı cihazlarda bildirimler zamanında alınmayabilir veya yeniden başlatıldıktan sonra çalışmayabilir. Otomatik başlatmayı etkinleştirmek için buraya tıklayın. \n\n(Stok rom çalıştıran Xiaomi, vivo, Oppo gibi cihazlar için kullanışlıdır)</string>
+    <string name="view_source_title">Kaynak kodunu görüntüle</string>
+    <string name="view_source_information_text">Tasky tamamen açık kaynak kodludur. Bir geri bildiriminiz mi var veya geliştirme sürecine dahil olmak mı istiyorsunuz? Github\'ı ziyaret edin! Ve bir de ⭐️ vermeyi unutmayın ;)</string>
+    <string name="use_24_hour_clock">24 Saat Formatı</string>
+    <string name="settings_backup_restore">Yedekle/Geri Yükle</string>
+    <string name="settings_backup_restore_information_text">Görevlerinizi yerel bir zip dosyasından yedekleyin veya geri yükleyin.</string>
+    <string name="use_task_complete_sounds_title">Görev tamamlamama ses efektini etkinleştir</string>
+    <string name="select_app_theme_text">Uygulama Teması Seç</string>
+    <string name="set_app_theme_settings_text">Uygulama temasını ayarla</string>
+    <string name="set_app_theme_info_text">Change current theme of the app to light, dark or system default.</string>
+</resources>

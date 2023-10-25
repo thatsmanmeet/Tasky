@@ -48,7 +48,7 @@ class BootCompletedReceiver : BroadcastReceiver() {
                                     scheduleNotification(
                                         context = context,
                                         titleText = todo.title,
-                                        messageText = "Did you complete your Task ?",
+                                        messageText = todo.todoDescription,
                                         time = "${todo.date} ${todo.time}",
                                         todo = todo
                                     )

@@ -131,39 +131,6 @@ fun SettingsScreen(
                         isThemeChangerShowing.value = true
                     }
                     Spacer(modifier = modifier.height(12.dp))
-                    Card(
-                        modifier = modifier
-                            .clip(RoundedCornerShape(15.dp))
-                            .fillMaxWidth()
-                            .background(MaterialTheme.colorScheme.inverseOnSurface),
-                        elevation = CardDefaults.cardElevation(0.dp)
-                    ) {
-                        Row(
-                            modifier = modifier
-                                .padding(10.dp)
-                                .fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(
-                                text = stringResource(R.string.separate_tasks_using_dates_title),
-                                fontSize = 18.sp,
-                                modifier = modifier.weight(1f)
-                            )
-                            isCheckedState.value?.let { it1 ->
-                                Switch(
-                                    modifier = modifier.weight(0.2f),
-                                    checked = it1,
-                                    onCheckedChange = { isToggleChecked->
-                                    isCheckedState.value = isToggleChecked
-                                    scope.launch {
-                                        settingStore.saveTaskListKey(isToggleChecked)
-                                    }
-                                })
-                            }
-                        }
-                    }
-                    Spacer(modifier = modifier.height(12.dp))
                     // Use Animations Toggle
                     Card(
                         modifier = modifier

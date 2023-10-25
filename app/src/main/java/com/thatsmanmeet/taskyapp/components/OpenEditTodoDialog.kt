@@ -34,11 +34,15 @@ fun OpenEditTodoDialog(
     openEditDialog: MutableState<Boolean>,
     todoViewModel: TodoViewModel,
     enteredText: String,
+    descriptionText:String,
     context: Context,
     modifier: Modifier = Modifier
 ) {
     var enteredText1 by remember {
         mutableStateOf(enteredText)
+    }
+    var currentDescriptionText by remember{
+        mutableStateOf(descriptionText)
     }
     val currentTodoTitle = remember {
         mutableStateOf(todosList[selectedItem.value].title)
@@ -98,6 +102,13 @@ fun OpenEditTodoDialog(
                         currentTodoTitle.value = textChange
                     }
                 )
+                Spacer(modifier = modifier.height(10.dp))
+                OutlinedTextField(
+                    value = currentDescriptionText,
+                    placeholder = { Text(text = "Description")},
+                    onValueChange = {descriptionTextChange->
+                        currentDescriptionText = descriptionTextChange
+                })
                 Spacer(modifier = modifier.height(12.dp))
                 Text(text = stringResource(R.string.add_edit_dialog_edit_reminder_title))
                 Spacer(modifier = modifier.height(10.dp))
@@ -214,7 +225,8 @@ fun OpenEditTodoDialog(
                     currentTodoDateValue.value,
                     currentTodoTimeValue.value,
                     currentTodoNotificationId.value,
-                    isRecurring = isRepeating
+                    isRecurring = isRepeating,
+                    currentDescriptionText
                 )
                 todoViewModel.updateTodo(
                     todo
@@ -234,7 +246,7 @@ fun OpenEditTodoDialog(
                             scheduleNotification(
                                 context = context,
                                 titleText = currentTodoTitle.value,
-                                messageText = context.getString(R.string.task_complete_notification_message),
+                                messageText = currentDescriptionText,
                                 time = "${currentTodoDateValue.value} ${currentTodoTimeValue.value}",
                                 todo = todo
                             )
@@ -247,6 +259,7 @@ fun OpenEditTodoDialog(
                     }
                 }
                 enteredText1 = ""
+                currentDescriptionText = ""
             }) {
                 Text(text = stringResource(R.string.add_edit_dialog_save_button_text))
             }
@@ -262,18 +275,18 @@ fun OpenEditTodoDialog(
                         currentTodoDateValue.value,
                         currentTodoTimeValue.value,
                         currentTodoNotificationId.value,
-                        isRepeating
+                        isRepeating,
+                        currentDescriptionText
                     )
                     todoViewModel.deleteTodo(
                         todo
                     )
                     cancelNotification(
                         context = context,
-                        titleText = currentTodoTitle.value,
-                        messageText = context.getString(R.string.task_complete_notification_message),
                         todo = todo
                     )
                     enteredText1 = ""
+                    currentDescriptionText = ""
                     if(savedSoundKey.value == true){
                         todoViewModel.playDeletedSound(context)
                     }

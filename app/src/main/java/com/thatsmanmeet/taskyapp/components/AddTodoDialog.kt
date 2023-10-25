@@ -26,6 +26,7 @@ import java.util.*
 fun addTodoDialog(
     openDialog: MutableState<Boolean>,
     enteredText: String,
+    description:String,
     dateText: MutableState<String>,
     isDateDialogShowing: MutableState<Boolean>,
     context: Context,
@@ -37,6 +38,9 @@ fun addTodoDialog(
 ): String {
     var enteredText1 by remember {
         mutableStateOf(enteredText)
+    }
+    var descriptionText by remember{
+        mutableStateOf(description)
     }
     var isRepeating by remember {
         mutableStateOf(isRepeatingAttribute)
@@ -61,6 +65,13 @@ fun addTodoDialog(
                         },
                         maxLines = 1
                     )
+                    Spacer(modifier = modifier.height(10.dp))
+                    OutlinedTextField(
+                        value = descriptionText,
+                        placeholder = { Text(text = "Description")},
+                        onValueChange = {descriptionTextChange->
+                            descriptionText = descriptionTextChange
+                        })
                     Spacer(modifier = modifier.height(10.dp))
                     Text(text = stringResource(R.string.add_edit_dialog_set_reminder_title))
                     Spacer(modifier = modifier.height(10.dp))
@@ -159,7 +170,8 @@ fun addTodoDialog(
                         },
                         time = timeText.value,
                         notificationID = ((0..2000).random() - (0..50).random()),
-                        isRecurring = isRepeating
+                        isRecurring = isRepeating,
+                        todoDescription = descriptionText
                     )
                     todoViewModel.insertTodo(
                         todo
@@ -183,7 +195,7 @@ fun addTodoDialog(
                                 scheduleNotification(
                                     context,
                                     titleText = enteredText1,
-                                    messageText = context.getString(R.string.task_complete_notification_message),
+                                    messageText = descriptionText,
                                     time = "${dateText.value} ${timeText.value}",
                                     todo = todo
                                 )
@@ -194,6 +206,7 @@ fun addTodoDialog(
                     }
                     openDialog.value = false
                     enteredText1 = ""
+                    descriptionText = ""
                     isRepeating = false
                 }
                 ) {
@@ -204,6 +217,7 @@ fun addTodoDialog(
                 Button(onClick = {
                     openDialog.value = false
                     enteredText1 = ""
+                    descriptionText = ""
                 },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color(0xFFF1574C),
