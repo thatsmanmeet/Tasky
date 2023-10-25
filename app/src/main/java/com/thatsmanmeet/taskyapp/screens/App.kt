@@ -260,6 +260,9 @@ fun createNotificationChannel(context: Context){
 //    val attributes = AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_NOTIFICATION_EVENT).build()
 //    channel.setSound(Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + context.packageName + "/raw/notifications"),attributes)
     val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    if(notificationManager.getNotificationChannel("Reminder Channel") != null){
+        notificationManager.deleteNotificationChannel("Reminder Channel")
+    }
     if(notificationManager.notificationChannels.isNullOrEmpty()){
         notificationManager.createNotificationChannel(channel)
     }
