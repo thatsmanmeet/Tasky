@@ -194,27 +194,6 @@ fun MyApp(
                             openEditDialog.value = true
                         }
                     )
-//                        if(savedTaskKey.value == null || savedTaskKey.value == true){
-//                            TaskList(
-//                                state = listState,
-//                                list = todoListFromFlow,
-//                                todoViewModel = todoViewModel,
-//                                onClick = {index->
-//                                    selectedItem.value = index
-//                                    openEditDialog.value = true
-//                                }
-//                            )
-//                        }else{
-//                            LegacyTaskList(
-//                                state = listState,
-//                                list = todoListFromFlow,
-//                                todoViewModel = todoViewModel,
-//                                onClick = {index->
-//                                    selectedItem.value = index
-//                                    openEditDialog.value = true
-//                                }
-//                            )
-//                        }
                 }
                 if (openEditDialog.value){
                     OpenEditTodoDialog(
