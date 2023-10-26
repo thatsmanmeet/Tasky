@@ -89,7 +89,6 @@ fun MyApp(
     createNotificationChannel(context.applicationContext)
     // setup settings store
     val settingsStore = SettingsStore(context)
-    val savedTaskKey = settingsStore.getTaskListKey.collectAsState(initial = true)
     val savedAnimationKey = settingsStore.getAnimationKey.collectAsState(initial = true)
     val savedThemeKey = settingsStore.getThemeModeKey.collectAsState(initial = "0")
     TaskyTheme(darkTheme = when (savedThemeKey.value.toString()) {
