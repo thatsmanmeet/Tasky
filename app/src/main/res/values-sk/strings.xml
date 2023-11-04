@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Tasky</string>
+    <string name="add_task_button">Pridať úlohu</string>
+    <string name="add_task_dialog_title">Pridať úlohu</string>
+    <string name="add_edit_text_placeholder">Čo máte na mysli?</string>
+    <string name="add_edit_dialog_select_date_button">Vyberte dátum</string>
+    <string name="add_edit_dialog_select_time_button">Vyberte čas</string>
+    <string name="add_edit_dialog_repeat_everyday">Opakovať každý deň</string>
+    <string name="add_edit_dialog_set_reminder_title">Nastaviť pripomenutie (voliteľné)</string>
+    <string name="add_edit_dialog_add_button_text">Pridať</string>
+    <string name="add_edit_dialog_cancel_button_text">Zrušiť</string>
+    <string name="edit_task_dialog_title">Upraviť úlohu</string>
+    <string name="add_edit_dialog_edit_reminder_title">Upraviť pripomenutie</string>
+    <string name="add_edit_dialog_save_button_text">Uložiť</string>
+    <string name="add_edit_dialog_delete_button_text">Zmazať</string>
+    <string name="task_complete_notification_message">Splnili ste svoju dnešnú úlohu?</string>
+    <string name="empty_list_no_tasks_text">Žiadne úlohy</string>
+    <string name="permission_screen_title">Vyžaduje sa povolenie</string>
+    <string name="permission_screen_information_text">Od verzie Android 13 a vyššie, vyžadujú aplikácie na zobrazovanie upozornení povolenie na upozornenia.</string>
+    <string name="permission_screen_request_permission_button">Požiadať o povolenie</string>
+    <string name="settings_screen_appbar_title">Nastavenia</string>
+    <string name="separate_tasks_using_dates_title">Oddeľte úlohy pomocou dátumov</string>
+    <string name="use_task_complete_animations_title">Použiť animáciu dokončenia úlohy</string>
+    <string name="enable_autostart_title">Povoliť AutoStart</string>
+    <string name="enable_autostart_information_text">Na niektorých zariadeniach nemusia byť upozornenia prijímané včas alebo po reštarte nemusia fungovať. Kliknutím sem povolíte automatické spustenie. \n\n(Užitočné pre Xiaomi, Oppo, vivo a zariadenia so stock ROM)</string>
+    <string name="view_source_title">Zobraziť zdrojový kód</string>
+    <string name="view_source_information_text">Tasky je aplikácia s otvoreným zdrojovým kódom. Máte spätnú väzbu alebo sa chcete pustiť do vývoja? navštívte Github! A nezabudnite dať ⭐️ ;)</string>
+    <string name="use_24_hour_clock">Použite 24-hodinový čas</string>
+    <string name="settings_backup_restore">Zálohovať a Obnoviť</string>
+    <string name="settings_backup_restore_information_text">Zálohujte alebo obnovte svoje úlohy z lokálneho súboru zip.</string>
+    <string name="use_task_complete_sounds_title">Použiť zvuk dokončenia úlohy</string>
+    <string name="select_app_theme_text">Vyberte motív aplikácie</string>
+    <string name="set_app_theme_settings_text">Nastaviť motív aplikácie</string>
+    <string name="set_app_theme_info_text">Zmeňte aktuálny motív aplikácie na svetlý, tmavý alebo predvolený podľa systému.</string>
+</resources>
+
