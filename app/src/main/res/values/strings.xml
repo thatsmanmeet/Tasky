@@ -3,7 +3,7 @@
     <string name="app_name">Tasky</string>
     <string name="add_task_button">Add Task</string>
     <string name="add_task_dialog_title">Add Task</string>
-    <string name="add_edit_text_placeholder">what\'s on your mind?</string>
+    <string name="add_edit_text_placeholder">What\'s on your mind?</string>
     <string name="add_edit_dialog_select_date_button">Select Date</string>
     <string name="add_edit_dialog_select_time_button">Select Time</string>
     <string name="add_edit_dialog_repeat_everyday">Repeat Everyday</string>
@@ -14,7 +14,7 @@
     <string name="add_edit_dialog_edit_reminder_title">Edit Reminder</string>
     <string name="add_edit_dialog_save_button_text">Save</string>
     <string name="add_edit_dialog_delete_button_text">Delete</string>
-    <string name="task_complete_notification_message">Have you completed your task today ?</string>
+    <string name="task_complete_notification_message">Have you completed your task today?</string>
     <string name="empty_list_no_tasks_text">No Tasks</string>
     <string name="permission_screen_title">Permission Required</string>
     <string name="permission_screen_information_text">Starting from Android 13+, apps requires Notification Permission to show notifications.</string>
@@ -23,9 +23,9 @@
     <string name="separate_tasks_using_dates_title">Separate tasks using dates</string>
     <string name="use_task_complete_animations_title">Use task complete animations</string>
     <string name="enable_autostart_title">Enable AutoStart</string>
-    <string name="enable_autostart_information_text">For some devices notifications might not receive on time or may not work after reboot. Click here to enable autostart. \n\n(Useful for Xiaomi, vivo, Oppo like devices running stock rom)</string>
+    <string name="enable_autostart_information_text">For some devices, notifications might not be received on time, or may not work after reboot. Click here to enable autostart. \n\n(Useful for Xiaomi, Oppo, vivo and devices running stock ROM)</string>
     <string name="view_source_title">View Source</string>
-    <string name="view_source_information_text">Tasky is completely open source. Have a feedback or want to get into development ? visit Github! Oh and don\'t forget to give a ⭐️ ;)</string>
+    <string name="view_source_information_text">Tasky is completely open source. Have a feedback or want to get into development? visit Github! Oh and don\'t forget to give a ⭐️ ;)</string>
     <string name="use_24_hour_clock">Use 24 Hour Clock</string>
     <string name="settings_backup_restore">Backup/Restore</string>
     <string name="settings_backup_restore_information_text">Backup or Restore your tasks from a local zip file.</string>
