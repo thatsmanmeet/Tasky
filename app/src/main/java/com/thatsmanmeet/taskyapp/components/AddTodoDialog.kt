@@ -1,6 +1,7 @@
 package com.thatsmanmeet.taskyapp.components
 
 import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
@@ -159,39 +160,41 @@ fun addTodoDialog(
             },
             confirmButton = {
                 Button(onClick = {
-                    val todo = Todo(
-                        ID = null,
-                        enteredText1.ifEmpty { "No Name" },
-                        isCompleted = false,
-                        date = dateText.value.ifEmpty {
-                            SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH).format(
+                    if (enteredText1.isNotEmpty() && descriptionText.isNotEmpty()){
+                         val todo = Todo(
+                            ID = null,
+                             title = enteredText1,
+                            //enteredText1.ifEmpty { "No Name" },
+                            isCompleted = false,
+                            date = dateText.value.ifEmpty {
+                                SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH).format(
+                                    Calendar.getInstance().time
+                                ).toString()
+                            },
+                            time = timeText.value,
+                            notificationID = ((0..2000).random() - (0..50).random()),
+                            isRecurring = isRepeating,
+                            todoDescription = descriptionText
+                        )
+                        todoViewModel.insertTodo(
+                            todo
+                        )
+                        if(dateText.value.isEmpty()){
+                            dateText.value = SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH).format(
                                 Calendar.getInstance().time
                             ).toString()
-                        },
-                        time = timeText.value,
-                        notificationID = ((0..2000).random() - (0..50).random()),
-                        isRecurring = isRepeating,
-                        todoDescription = descriptionText
-                    )
-                    todoViewModel.insertTodo(
-                        todo
-                    )
-                    if(dateText.value.isEmpty()){
-                        dateText.value = SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH).format(
-                            Calendar.getInstance().time
-                        ).toString()
-                    }
-                    if (dateText.value.isNotEmpty() && timeText.value.isNotEmpty()) {
-                        // SCHEDULE NOTIFICATION
-                        val format = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-                        val parsedDate = format.parse(dateText.value)
-                        val calendar = Calendar.getInstance().apply {
-                            time = parsedDate!!
-                            set(Calendar.HOUR_OF_DAY, todo.time!!.substringBefore(":").toInt())
-                            set(Calendar.MINUTE, todo.time!!.substringAfter(":").toInt())
-                            set(Calendar.SECOND, 0)
                         }
-                        if(calendar.timeInMillis > Calendar.getInstance().timeInMillis){
+                        if (dateText.value.isNotEmpty() && timeText.value.isNotEmpty()) {
+                            // SCHEDULE NOTIFICATION
+                            val format = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                            val parsedDate = format.parse(dateText.value)
+                            val calendar = Calendar.getInstance().apply {
+                                time = parsedDate!!
+                                set(Calendar.HOUR_OF_DAY, todo.time!!.substringBefore(":").toInt())
+                                set(Calendar.MINUTE, todo.time!!.substringAfter(":").toInt())
+                                set(Calendar.SECOND, 0)
+                            }
+                            if(calendar.timeInMillis > Calendar.getInstance().timeInMillis){
                                 scheduleNotification(
                                     context,
                                     titleText = enteredText1,
@@ -199,15 +202,19 @@ fun addTodoDialog(
                                     time = "${dateText.value} ${timeText.value}",
                                     todo = todo
                                 )
+                            }
+                            if(isRepeating){
+                                setRepeatingAlarm(context = context)
+                            }
                         }
-                        if(isRepeating){
-                            setRepeatingAlarm(context = context)
-                        }
+                        openDialog.value = false
+                        enteredText1 = ""
+                        descriptionText = ""
+                        isRepeating = false
                     }
-                    openDialog.value = false
-                    enteredText1 = ""
-                    descriptionText = ""
-                    isRepeating = false
+                    else{
+                        Toast.makeText(context,"Fill in all fields",Toast.LENGTH_SHORT).show()
+                    }
                 }
                 ) {
                     Text(text = stringResource(R.string.add_edit_dialog_add_button_text))
