@@ -4,6 +4,7 @@ package com.thatsmanmeet.taskyapp
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -185,6 +186,18 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    override fun onBackPressed() {
+        AlertDialog.Builder(this)
+            .setTitle("Confirm Exit ?")
+            .setMessage("Are you sure you want to exit?")
+            .setPositiveButton("Yes") { _, _ ->
+                super.onBackPressed()
+            }
+            .setNegativeButton("No") { dialog, _ ->
+                dialog.cancel()
+            }
+            .show()
+    }
 
     @Throws(IOException::class)
     private fun copyStream(input: InputStream, output: OutputStream) {
