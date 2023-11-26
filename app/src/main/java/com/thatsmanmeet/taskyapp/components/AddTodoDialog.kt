@@ -52,7 +52,7 @@ fun addTodoDialog(
     if (openDialog.value) {
         AlertDialog(
             onDismissRequest = {
-                openDialog.value = false
+                //openDialog.value = false
                 enteredText1 = ""
             },
             title = { Text(text = stringResource(R.string.add_task_dialog_title)) },
