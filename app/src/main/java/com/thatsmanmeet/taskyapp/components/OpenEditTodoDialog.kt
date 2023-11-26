@@ -90,7 +90,7 @@ fun OpenEditTodoDialog(
     var todo : Todo
     AlertDialog(
         onDismissRequest = {
-            openEditDialog.value = false
+            //openEditDialog.value = false
         },
         title = { Text(text = stringResource(R.string.edit_task_dialog_title)) },
         text = {
