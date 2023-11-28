@@ -105,28 +105,22 @@ fun MyApp(
                         Row(
                             modifier = modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically,
-//                            horizontalArrangement = Arrangement.SpaceBetween
+                            horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            IconButton(onClick = { /*TODO*/ }) {
-                                Icon(
-                                    imageVector = Icons.Default.Menu,
-                                    contentDescription = "Menu"
-                                )
-                            }
                             Text(
                                 text = stringResource(id = R.string.app_name),
                                 fontSize = 25.sp
                             )
                             Spacer(modifier = modifier.width(10.dp))
-//                            IconButton(onClick = {
-//                                // Implement Navigation to settings
-//                                navHostController.navigate(route = Screen.SettingsScreen.route)
-//                            }) {
-//                                Icon(
-//                                    imageVector = Icons.Default.Settings,
-//                                    contentDescription = null
-//                                )
-//                            }
+                            IconButton(onClick = {
+                                // Implement Navigation to settings
+                                navHostController.navigate(route = Screen.SettingsScreen.route)
+                            }) {
+                                Icon(
+                                    imageVector = Icons.Default.Settings,
+                                    contentDescription = null
+                                )
+                            }
                         }
                             },
                     colors = topAppBarColors.topAppBarColors(
