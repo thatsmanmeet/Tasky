@@ -186,18 +186,19 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    override fun onBackPressed() {
-        AlertDialog.Builder(this)
-            .setTitle("Confirm Exit ?")
-            .setMessage("Are you sure you want to exit?")
-            .setPositiveButton("Yes") { _, _ ->
-                super.onBackPressed()
-            }
-            .setNegativeButton("No") { dialog, _ ->
-                dialog.cancel()
-            }
-            .show()
-    }
+//    override fun onBackPressed() {
+//        //navController.
+//        AlertDialog.Builder(this)
+//            .setTitle("Confirm Exit ?")
+//            .setMessage("Are you sure you want to exit?")
+//            .setPositiveButton("Yes") { _, _ ->
+//                super.onBackPressed()
+//            }
+//            .setNegativeButton("No") { dialog, _ ->
+//                dialog.cancel()
+//            }
+//            .show()
+//    }
 
     @Throws(IOException::class)
     private fun copyStream(input: InputStream, output: OutputStream) {

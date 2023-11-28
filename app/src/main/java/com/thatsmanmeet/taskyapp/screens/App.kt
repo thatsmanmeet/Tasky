@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.thatsmanmeet.taskyapp.R
 import com.thatsmanmeet.taskyapp.components.OpenEditTodoDialog
+import com.thatsmanmeet.taskyapp.components.SearchBarTop
 import com.thatsmanmeet.taskyapp.components.TaskCompleteAnimations
 import com.thatsmanmeet.taskyapp.components.TaskList
 import com.thatsmanmeet.taskyapp.components.addTodoDialog
@@ -86,6 +87,11 @@ fun MyApp(
     val isLottiePlaying = remember {
         mutableStateOf(true)
     }
+
+    var searchText by rememberSaveable {
+        mutableStateOf("")
+    }
+
     createNotificationChannel(context.applicationContext)
     // setup settings store
     val settingsStore = SettingsStore(context)
@@ -111,17 +117,22 @@ fun MyApp(
                                 text = stringResource(id = R.string.app_name),
                                 fontSize = 30.sp
                             )
-                            IconButton(onClick = {
-                                // Implement Navigation to settings
-                                navHostController.navigate(route = Screen.SettingsScreen.route)
-                            }) {
-                                Icon(
-                                    imageVector = Icons.Default.Settings,
-                                    contentDescription = null
-                                )
-                            }
+                            SearchBarTop(searchText,{searchText = it})
+
                         }
                             },
+                    actions = {
+                        IconButton(onClick = {
+                            // Implement Navigation to settings
+                            navHostController.navigate(route = Screen.SettingsScreen.route)
+                        }) {
+                            Icon(
+                                imageVector = Icons.Default.Settings,
+                                contentDescription = null,
+                                tint =  MaterialTheme.colorScheme.onPrimary
+                            )
+                        }
+                    },
                     colors = topAppBarColors.topAppBarColors(
                         containerColor = MaterialTheme.colorScheme.primary,
                         titleContentColor = MaterialTheme.colorScheme.onPrimary
@@ -191,7 +202,8 @@ fun MyApp(
                         onClick = {index->
                             selectedItem.intValue = index
                             openEditDialog.value = true
-                        }
+                        },
+                        searchText = searchText
                     )
                 }
                 if (openEditDialog.value){
