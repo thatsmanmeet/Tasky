@@ -39,6 +39,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.thatsmanmeet.taskyapp.room.Todo
 import com.thatsmanmeet.taskyapp.room.TodoViewModel
+import com.thatsmanmeet.taskyapp.screens.CurrentDateTimeComparator
 import com.thatsmanmeet.taskyapp.screens.cancelNotification
 import com.thatsmanmeet.taskyapp.screens.scheduleNotification
 import kotlinx.coroutines.CoroutineScope
@@ -63,6 +64,7 @@ fun TaskList(
     val isSwipeDeleteDialogShowing = remember {
         mutableStateOf(false)
     }
+    val context = LocalContext.current
     LazyColumn(
         state = state,
         modifier = modifier.padding(16.dp)
@@ -107,13 +109,17 @@ fun TaskList(
                         if(!currentItem.isCompleted){
                             cancelNotification(LocalContext.current,currentItem)
                         }else{
-                            scheduleNotification(
-                                LocalContext.current,
-                                titleText = currentItem.title,
-                                messageText = currentItem.todoDescription,
-                                time = currentItem.time,
-                                todo = currentItem
-                            )
+                            CurrentDateTimeComparator(
+                                inputDate = currentItem.date!!,
+                                inputTime = currentItem.time!!) {
+                                scheduleNotification(
+                                    context = context,
+                                    titleText = currentItem.title,
+                                    messageText = currentItem.todoDescription,
+                                    time = "${currentItem.date} ${currentItem.time}",
+                                    todo = currentItem
+                                )
+                            }
                         }
                     }
 
