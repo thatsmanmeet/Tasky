@@ -12,6 +12,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.DocumentsContract
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -186,19 +187,55 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-//    override fun onBackPressed() {
-//        //navController.
-//        AlertDialog.Builder(this)
-//            .setTitle("Confirm Exit ?")
-//            .setMessage("Are you sure you want to exit?")
-//            .setPositiveButton("Yes") { _, _ ->
-//                super.onBackPressed()
-//            }
-//            .setNegativeButton("No") { dialog, _ ->
-//                dialog.cancel()
-//            }
-//            .show()
-//    }
+    override fun onDestroy() {
+        Log.d("func","onDestroy")
+        super.onDestroy()
+    }
+
+    override fun onRestart() {
+        Log.d("func","onRestart()")
+        super.onRestart()
+    }
+
+    override fun onPause() {
+        Log.d("func","onPause()")
+        super.onPause()
+    }
+
+    override fun onStop() {
+        Log.d("func","onStop()")
+        super.onStop()
+    }
+
+    override fun onContentChanged() {
+        Log.d("func","onContentChanged()")
+        super.onContentChanged()
+    }
+
+    override fun onDetachedFromWindow() {
+        Log.d("func","onDetachedFromWindow()")
+        super.onDetachedFromWindow()
+    }
+
+    override fun onBackPressed() {
+        val currentRoute = navController.currentBackStackEntry?.destination?.route
+        if(currentRoute == Screen.MyApp.route){
+            AlertDialog.Builder(this)
+                .setTitle("Confirm Exit ?")
+                .setMessage("Are you sure you want to exit?")
+                .setPositiveButton("Yes") { _, _ ->
+                    //super.onBackPressed()
+                    finish()
+                }
+                .setNegativeButton("No") { dialog, _ ->
+                    dialog.cancel()
+                }
+                .show()
+        }
+        else{
+            super.onBackPressed()
+        }
+    }
 
     @Throws(IOException::class)
     private fun copyStream(input: InputStream, output: OutputStream) {
