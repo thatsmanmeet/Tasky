@@ -187,36 +187,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    override fun onDestroy() {
-        Log.d("func","onDestroy")
-        super.onDestroy()
-    }
-
-    override fun onRestart() {
-        Log.d("func","onRestart()")
-        super.onRestart()
-    }
-
-    override fun onPause() {
-        Log.d("func","onPause()")
-        super.onPause()
-    }
-
-    override fun onStop() {
-        Log.d("func","onStop()")
-        super.onStop()
-    }
-
-    override fun onContentChanged() {
-        Log.d("func","onContentChanged()")
-        super.onContentChanged()
-    }
-
-    override fun onDetachedFromWindow() {
-        Log.d("func","onDetachedFromWindow()")
-        super.onDetachedFromWindow()
-    }
-
     override fun onBackPressed() {
         val currentRoute = navController.currentBackStackEntry?.destination?.route
         if(currentRoute == Screen.MyApp.route){
