@@ -192,7 +192,8 @@ fun MyApp(
                         onClick = {index->
                             selectedItem.intValue = index
                             openEditDialog.value = true
-                        }
+                        },
+                        coroutineScope = rememberCoroutineScope()
                     )
                 }
                 if (openEditDialog.value){

@@ -33,4 +33,7 @@
     <string name="select_app_theme_text">Sélectionnez le thème de la application.</string>
     <string name="set_app_theme_settings_text">Définir le thème de la application.</string>
     <string name="set_app_theme_info_text">Changez le thème actuel de la application en clair, sombre ou par défaut du système.</string>
+    <string name="delete_task_button_text">Supprimer</string>
+    <string name="delete_task_title">Supprimer la tâche?</string>
+    <string name="delete_task_description">Voulez-vous supprimer cette tâche?</string>
 </resources>

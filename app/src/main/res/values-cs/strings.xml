@@ -33,5 +33,8 @@
     <string name="select_app_theme_text">Vyberte motiv aplikace</string>
     <string name="set_app_theme_settings_text">Nastavit motiv aplikace</string>
     <string name="set_app_theme_info_text">Změňte aktuální motiv aplikace na světlý, tmavý nebo výchozí podle systému.</string>
+    <string name="delete_task_button_text">vymazat</string>
+    <string name="delete_task_title">smazat úkol?</string>
+    <string name="delete_task_description">Chcete tento úkol smazat?</string>
 </resources>
 
