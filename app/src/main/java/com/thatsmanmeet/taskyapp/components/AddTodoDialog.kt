@@ -64,7 +64,8 @@ fun addTodoDialog(
                         onValueChange = { textChange ->
                             enteredText1 = textChange
                         },
-                        maxLines = 1
+                        maxLines = 1,
+                        singleLine = true
                     )
                     Spacer(modifier = modifier.height(10.dp))
                     OutlinedTextField(
@@ -72,7 +73,9 @@ fun addTodoDialog(
                         placeholder = { Text(text = "Description")},
                         onValueChange = {descriptionTextChange->
                             descriptionText = descriptionTextChange
-                        })
+                        },
+                        maxLines = 4
+                    )
                     Spacer(modifier = modifier.height(10.dp))
                     Text(text = stringResource(R.string.add_edit_dialog_set_reminder_title))
                     Spacer(modifier = modifier.height(10.dp))
