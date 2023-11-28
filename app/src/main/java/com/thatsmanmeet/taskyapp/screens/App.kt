@@ -109,8 +109,9 @@ fun MyApp(
                         ) {
                             Text(
                                 text = stringResource(id = R.string.app_name),
-                                fontSize = 30.sp
+                                fontSize = 25.sp
                             )
+                            Spacer(modifier = modifier.width(10.dp))
                             IconButton(onClick = {
                                 // Implement Navigation to settings
                                 navHostController.navigate(route = Screen.SettingsScreen.route)
