@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DismissDirection
@@ -33,6 +34,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.movableContentOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -45,6 +47,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.thatsmanmeet.taskyapp.room.Todo
 import com.thatsmanmeet.taskyapp.room.TodoViewModel
+import com.thatsmanmeet.taskyapp.screens.CurrentDateTimeComparator
+import com.thatsmanmeet.taskyapp.screens.cancelNotification
+import com.thatsmanmeet.taskyapp.screens.scheduleNotification
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -58,6 +65,7 @@ fun TaskList(
     todoViewModel: TodoViewModel,
     onClick : (Int) -> Unit,
     searchText: String
+    coroutineScope: CoroutineScope
 ) {
     val context = LocalContext.current
     //Filter list for search operation.
@@ -71,7 +79,10 @@ fun TaskList(
     val grouped = searchedList.groupBy {
         SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(it.date!!)
     }.entries.sortedByDescending { it.key }
-
+    val isSwipeDeleteDialogShowing = remember {
+        mutableStateOf(false)
+    }
+    val context = LocalContext.current
     LazyColumn(
         state = state,
         modifier = modifier.padding(16.dp)
@@ -91,11 +102,44 @@ fun TaskList(
 
 
                     if(dismissState.isDismissed(direction = DismissDirection.EndToStart)){
-                        todoViewModel.deleteTodo(currentItem)
+                        isSwipeDeleteDialogShowing.value = true
+                        ActionDialogBox(
+                            isDialogShowing = isSwipeDeleteDialogShowing,
+                            title = "Delete Task?",
+                            message = "Do you want to delete this task?",
+                            confirmButtonText = "Delete",
+                            dismissButtonText = "Cancel",
+                            onConfirmClick = {
+                                todoViewModel.deleteTodo(currentItem)
+                            },
+                            onDismissClick = {
+                                isSwipeDeleteDialogShowing.value = false
+                                coroutineScope.launch {
+                                    dismissState.reset()
+                                }
+                            },
+                            confirmButtonColor = Color(0xFFF75F5F),
+                            confirmButtonContentColor = Color.White
+                            )
                     }
 
                     if(dismissState.isDismissed(direction = DismissDirection.StartToEnd)){
-                        todoViewModel.deleteTodo(currentItem)
+                        todoViewModel.updateTodo(currentItem.copy(isCompleted = !currentItem.isCompleted))
+                        if(!currentItem.isCompleted){
+                            cancelNotification(LocalContext.current,currentItem)
+                        }else{
+                            CurrentDateTimeComparator(
+                                inputDate = currentItem.date!!,
+                                inputTime = currentItem.time!!) {
+                                scheduleNotification(
+                                    context = context,
+                                    titleText = currentItem.title,
+                                    messageText = currentItem.todoDescription,
+                                    time = "${currentItem.date} ${currentItem.time}",
+                                    todo = currentItem
+                                )
+                            }
+                        }
                     }
 
                     SwipeToDismiss(
@@ -104,14 +148,14 @@ fun TaskList(
                             // background color
                             val backgroundColor by animateColorAsState(
                                 when (dismissState.targetValue) {
-                                    DismissValue.DismissedToStart -> Color.Red.copy(alpha = 0.8f)
-                                    DismissValue.DismissedToEnd -> Color.Red.copy(alpha = 0.8f)
+                                    DismissValue.DismissedToStart -> Color(0xFFF44336)
+                                    DismissValue.DismissedToEnd -> Color(0xFF4CAF50)
                                     else -> MaterialTheme.colorScheme.inverseOnSurface
                                 }, label = ""
                             )
                             // icon
                             val iconImageVector = when (dismissState.targetValue) {
-                                DismissValue.DismissedToEnd -> Icons.Outlined.Delete
+                                DismissValue.DismissedToEnd -> Icons.Outlined.Check
                                 else -> Icons.Outlined.Delete
                             }
 
@@ -156,33 +200,6 @@ fun TaskList(
                 }
                 movableContent()
             }
-        }
-    }
-}
-
-@Composable
-fun LegacyTaskList(
-    modifier: Modifier = Modifier,
-    state: LazyListState,
-    list: List<Todo>,
-    todoViewModel: TodoViewModel,
-    onClick: (Int) -> Unit
-) {
-    LazyColumn(
-        state = state,
-        modifier = modifier.padding(16.dp)
-    ){
-        itemsIndexed(list) { index, item ->
-            val movableContent = movableContentOf {
-                TodoItemCard(
-                    todo = item,
-                    viewModel = todoViewModel,
-                    modifier = Modifier
-                        .clickable {
-                            onClick(index)
-                        })
-            }
-            movableContent()
         }
     }
 }

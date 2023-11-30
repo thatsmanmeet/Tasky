@@ -33,5 +33,8 @@
     <string name="select_app_theme_text">Select App Theme</string>
     <string name="set_app_theme_settings_text">Set app theme</string>
     <string name="set_app_theme_info_text">Change current theme of the app to light, dark or system default.</string>
+    <string name="delete_task_button_text">Delete</string>
+    <string name="delete_task_title">Delete Task?</string>
+    <string name="delete_task_description">Do you want to delete this task?</string>
 </resources>
 

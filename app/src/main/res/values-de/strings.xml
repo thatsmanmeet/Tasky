@@ -33,4 +33,7 @@
     <string name="select_app_theme_text">Wählen Sie App-Theme</string>
     <string name="set_app_theme_settings_text">Wählen Sie App-Theme</string>
     <string name="set_app_theme_info_text">Ändern Sie das aktuelle Design der App in hell, dunkel oder Systemstandard.</string>
+    <string name="delete_task_button_text">Löschen</string>
+    <string name="delete_task_title">Aufgabe löschen?</string>
+    <string name="delete_task_description">Möchten Sie diese Aufgabe löschen?</string>
 </resources>

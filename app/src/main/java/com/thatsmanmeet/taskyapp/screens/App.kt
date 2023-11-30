@@ -115,24 +115,21 @@ fun MyApp(
                         ) {
                             Text(
                                 text = stringResource(id = R.string.app_name),
-                                fontSize = 30.sp
+                                fontSize = 25.sp
                             )
                             SearchBarTop(searchText,{searchText = it})
-
+                            Spacer(modifier = modifier.width(10.dp))
+                            IconButton(onClick = {
+                                // Implement Navigation to settings
+                                navHostController.navigate(route = Screen.SettingsScreen.route)
+                            }) {
+                                Icon(
+                                    imageVector = Icons.Default.Settings,
+                                    contentDescription = null
+                                )
+                            }
                         }
                             },
-                    actions = {
-                        IconButton(onClick = {
-                            // Implement Navigation to settings
-                            navHostController.navigate(route = Screen.SettingsScreen.route)
-                        }) {
-                            Icon(
-                                imageVector = Icons.Default.Settings,
-                                contentDescription = null,
-                                tint =  MaterialTheme.colorScheme.onPrimary
-                            )
-                        }
-                    },
                     colors = topAppBarColors.topAppBarColors(
                         containerColor = MaterialTheme.colorScheme.primary,
                         titleContentColor = MaterialTheme.colorScheme.onPrimary
@@ -204,6 +201,7 @@ fun MyApp(
                             openEditDialog.value = true
                         },
                         searchText = searchText
+                        coroutineScope = rememberCoroutineScope()
                     )
                 }
                 if (openEditDialog.value){
@@ -339,4 +337,31 @@ private fun LazyListState.isScrollingUp(): Boolean {
             }
         }
     }.value
+}
+
+
+@Composable
+fun CurrentDateTimeComparator(
+    inputDate:String,
+    inputTime:String,
+    onTruePerform: () -> Unit
+) {
+    val calendarInstance = Calendar.getInstance()
+    val currentDate = calendarInstance.apply {
+        set(Calendar.HOUR_OF_DAY, 0)
+        set(Calendar.MINUTE, 0)
+        set(Calendar.SECOND, 0)
+    }
+    val format = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+    val parsedDate = format.parse(inputDate)
+    val calendar = calendarInstance.apply {
+        time = parsedDate!!
+        set(Calendar.HOUR_OF_DAY, inputTime.substringBefore(":").toInt())
+        set(Calendar.MINUTE, inputTime.substringAfter(":").toInt())
+        set(Calendar.SECOND, 0)
+    }
+    val currentTime = Calendar.getInstance().timeInMillis
+    if(calendar >= currentDate && calendar.timeInMillis >= currentTime){
+        onTruePerform()
+    }
 }

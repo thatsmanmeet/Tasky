@@ -33,4 +33,7 @@
     <string name="select_app_theme_text">Uygulama Teması Seç</string>
     <string name="set_app_theme_settings_text">Uygulama temasını ayarla</string>
     <string name="set_app_theme_info_text">Change current theme of the app to light, dark or system default.</string>
+    <string name="delete_task_button_text">Silmek</string>
+    <string name="delete_task_title">Görev Silinsin mi?</string>
+    <string name="delete_task_description">Bu görevi silmek istiyor musunuz?</string>
 </resources>
