@@ -26,4 +26,7 @@ jobs:
       run: ./gradlew build
     - name: Build Debug APK
       run: ./gradlew assembleDebug
-
+    - name: Create APK directory
+      run: mkdir -p apk
+    - name: Copy APK to directory
+      run: cp app/build/outputs/apk/debug/*.apk apk/
