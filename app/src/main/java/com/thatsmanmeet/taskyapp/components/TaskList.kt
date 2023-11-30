@@ -64,7 +64,7 @@ fun TaskList(
     list : List<Todo>,
     todoViewModel: TodoViewModel,
     onClick : (Int) -> Unit,
-    searchText: String
+    searchText: String,
     coroutineScope: CoroutineScope
 ) {
     val context = LocalContext.current
@@ -82,7 +82,6 @@ fun TaskList(
     val isSwipeDeleteDialogShowing = remember {
         mutableStateOf(false)
     }
-    val context = LocalContext.current
     LazyColumn(
         state = state,
         modifier = modifier.padding(16.dp)

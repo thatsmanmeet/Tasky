@@ -200,7 +200,7 @@ fun MyApp(
                             selectedItem.intValue = index
                             openEditDialog.value = true
                         },
-                        searchText = searchText
+                        searchText = searchText,
                         coroutineScope = rememberCoroutineScope()
                     )
                 }

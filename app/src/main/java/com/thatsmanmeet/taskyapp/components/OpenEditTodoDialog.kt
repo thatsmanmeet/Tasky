@@ -271,7 +271,29 @@ fun OpenEditTodoDialog(
         dismissButton = {
             Button(
                 onClick = {
-                          openEditDialog.value = false
+                    openEditDialog.value = false
+                    todo = Todo(
+                        currentTodoID.value,
+                        currentTodoTitle.value,
+                        currentTodoChecked.value,
+                        currentTodoDateValue.value,
+                        currentTodoTimeValue.value,
+                        currentTodoNotificationId.value,
+                        isRepeating,
+                        currentDescriptionText
+                    )
+                    todoViewModel.deleteTodo(
+                        todo
+                    )
+                    cancelNotification(
+                        context = context,
+                        todo = todo
+                    )
+                    enteredText1 = ""
+                    currentDescriptionText = ""
+                    if(savedSoundKey.value == true){
+                        todoViewModel.playDeletedSound(context)
+                    }
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(
@@ -279,42 +301,8 @@ fun OpenEditTodoDialog(
                     ), contentColor = Color.White
                 )
             ) {
-                Text(text = "Cancel")
+                Text(text = stringResource(R.string.add_edit_dialog_delete_button_text))
             }
-//            Button(
-//                onClick = {
-//                    openEditDialog.value = false
-//                    todo = Todo(
-//                        currentTodoID.value,
-//                        currentTodoTitle.value,
-//                        currentTodoChecked.value,
-//                        currentTodoDateValue.value,
-//                        currentTodoTimeValue.value,
-//                        currentTodoNotificationId.value,
-//                        isRepeating,
-//                        currentDescriptionText
-//                    )
-//                    todoViewModel.deleteTodo(
-//                        todo
-//                    )
-//                    cancelNotification(
-//                        context = context,
-//                        todo = todo
-//                    )
-//                    enteredText1 = ""
-//                    currentDescriptionText = ""
-//                    if(savedSoundKey.value == true){
-//                        todoViewModel.playDeletedSound(context)
-//                    }
-//                },
-//                colors = ButtonDefaults.buttonColors(
-//                    containerColor = Color(
-//                        0xFFF1574C
-//                    ), contentColor = Color.White
-//                )
-//            ) {
-//                Text(text = stringResource(R.string.add_edit_dialog_delete_button_text))
-//            }
         }
     )
 }
