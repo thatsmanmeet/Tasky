@@ -92,6 +92,10 @@ fun MyApp(
         mutableStateOf("")
     }
 
+    val snackBarHostState = remember {
+        SnackbarHostState()
+    }
+
     createNotificationChannel(context.applicationContext)
     // setup settings store
     val settingsStore = SettingsStore(context)
@@ -105,6 +109,7 @@ fun MyApp(
         }
     ) {
         Scaffold(
+            snackbarHost = {SnackbarHost(hostState = snackBarHostState)},
             topBar = {
                 TopAppBar(
                     title = {
@@ -117,7 +122,7 @@ fun MyApp(
                                 text = stringResource(id = R.string.app_name),
                                 fontSize = 25.sp
                             )
-                            SearchBarTop(searchText,{searchText = it})
+                            SearchBarTop(searchText) { searchText = it }
                             Spacer(modifier = modifier.width(10.dp))
                             IconButton(onClick = {
                                 // Implement Navigation to settings
@@ -201,7 +206,8 @@ fun MyApp(
                             openEditDialog.value = true
                         },
                         searchText = searchText,
-                        coroutineScope = rememberCoroutineScope()
+                        coroutineScope = rememberCoroutineScope(),
+                        snackbarHostState = snackBarHostState
                     )
                 }
                 if (openEditDialog.value){

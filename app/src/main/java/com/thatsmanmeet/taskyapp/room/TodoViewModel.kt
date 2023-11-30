@@ -51,6 +51,20 @@ class TodoViewModel(application: Application) : ViewModel() {
         }
     }
 
+    private var lastDeletedTodo = Todo()
+
+    fun setLastDeletedTodo(todo: Todo){
+        lastDeletedTodo = todo
+    }
+
+    fun getLastDeletedTodo():Todo{
+        return lastDeletedTodo
+    }
+
+    fun resetLastDeletedTodo(){
+        lastDeletedTodo = Todo()
+    }
+
     fun playDeletedSound(context: Context) {
         mediaPlayer?.release()
         mediaPlayer = MediaPlayer.create(context, R.raw.deleted)
