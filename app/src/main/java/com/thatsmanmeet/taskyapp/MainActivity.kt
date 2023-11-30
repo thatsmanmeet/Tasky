@@ -4,6 +4,7 @@ package com.thatsmanmeet.taskyapp
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -11,6 +12,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.DocumentsContract
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -182,6 +184,26 @@ class MainActivity : ComponentActivity() {
                     e.printStackTrace()
                 }
             }
+        }
+    }
+
+    override fun onBackPressed() {
+        val currentRoute = navController.currentBackStackEntry?.destination?.route
+        if(currentRoute == Screen.MyApp.route){
+            AlertDialog.Builder(this)
+                .setTitle("Confirm Exit ?")
+                .setMessage("Are you sure you want to exit?")
+                .setPositiveButton("Yes") { _, _ ->
+                    //super.onBackPressed()
+                    finish()
+                }
+                .setNegativeButton("No") { dialog, _ ->
+                    dialog.cancel()
+                }
+                .show()
+        }
+        else{
+            super.onBackPressed()
         }
     }
 

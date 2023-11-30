@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.thatsmanmeet.taskyapp.R
 import com.thatsmanmeet.taskyapp.components.OpenEditTodoDialog
+import com.thatsmanmeet.taskyapp.components.SearchBarTop
 import com.thatsmanmeet.taskyapp.components.TaskCompleteAnimations
 import com.thatsmanmeet.taskyapp.components.TaskList
 import com.thatsmanmeet.taskyapp.components.addTodoDialog
@@ -86,6 +87,11 @@ fun MyApp(
     val isLottiePlaying = remember {
         mutableStateOf(true)
     }
+
+    var searchText by rememberSaveable {
+        mutableStateOf("")
+    }
+
     createNotificationChannel(context.applicationContext)
     // setup settings store
     val settingsStore = SettingsStore(context)
@@ -111,6 +117,7 @@ fun MyApp(
                                 text = stringResource(id = R.string.app_name),
                                 fontSize = 25.sp
                             )
+                            SearchBarTop(searchText,{searchText = it})
                             Spacer(modifier = modifier.width(10.dp))
                             IconButton(onClick = {
                                 // Implement Navigation to settings
@@ -193,6 +200,7 @@ fun MyApp(
                             selectedItem.intValue = index
                             openEditDialog.value = true
                         },
+                        searchText = searchText
                         coroutineScope = rememberCoroutineScope()
                     )
                 }
