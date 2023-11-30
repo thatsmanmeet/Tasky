@@ -68,10 +68,10 @@ fun TaskList(
     //Filter list for search operation.
     val regex =  Regex(searchText, RegexOption.IGNORE_CASE)
     val searchedList = if(searchText.isEmpty()) list
-                        else list.filter {
-                            regex.containsMatchIn(it.title.toString())
-                                    || regex.containsMatchIn(it.todoDescription.toString())
-                        }
+    else list.filter {
+        regex.containsMatchIn(it.title.toString())
+                || regex.containsMatchIn(it.todoDescription.toString())
+    }
 
     val grouped = searchedList.groupBy {
         SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(it.date!!)
@@ -133,7 +133,7 @@ fun TaskList(
                                     todoViewModel.deleteTodo(currentItem)
                                 }
                                 SnackbarResult.ActionPerformed -> {
-                                        dismissState.reset()
+                                    dismissState.reset()
                                 }
                             }
                         }
