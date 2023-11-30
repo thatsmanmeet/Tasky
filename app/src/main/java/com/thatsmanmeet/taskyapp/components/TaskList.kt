@@ -141,20 +141,25 @@ fun TaskList(
 
                     if(dismissState.isDismissed(direction = DismissDirection.StartToEnd)){
                         todoViewModel.updateTodo(currentItem.copy(isCompleted = !currentItem.isCompleted))
-                        if(!currentItem.isCompleted){
-                            cancelNotification(LocalContext.current,currentItem)
-                        }else{
-                            CurrentDateTimeComparator(
-                                inputDate = currentItem.date!!,
-                                inputTime = currentItem.time!!) {
-                                scheduleNotification(
-                                    context = context,
-                                    titleText = currentItem.title,
-                                    messageText = currentItem.todoDescription,
-                                    time = "${currentItem.date} ${currentItem.time}",
-                                    todo = currentItem
-                                )
+                        val currentCompletionCondition = !currentItem.isCompleted
+                        if(!currentCompletionCondition){
+                            if(currentItem.time!! != ""){
+                                CurrentDateTimeComparator(
+                                    inputDate = currentItem.date!!,
+                                    inputTime = currentItem.time!!) {
+                                    scheduleNotification(
+                                        context = context,
+                                        titleText = currentItem.title,
+                                        messageText = currentItem.todoDescription,
+                                        time = "${currentItem.date} ${currentItem.time}",
+                                        todo = currentItem
+                                    )
+                                }
                             }
+                        }else{
+                            // cancel notification
+                            println("Current Status completed:${currentItem.isCompleted}")
+                            cancelNotification(context,currentItem)
                         }
                     }
 
