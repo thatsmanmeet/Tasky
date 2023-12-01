@@ -123,7 +123,7 @@ fun MyApp(
                                 fontSize = 25.sp
                             )
                             SearchBarTop(searchText) { searchText = it }
-                            Spacer(modifier = modifier.width(10.dp))
+                            Spacer(modifier = modifier.width(0.dp))
                             IconButton(onClick = {
                                 // Implement Navigation to settings
                                 navHostController.navigate(route = Screen.SettingsScreen.route)
