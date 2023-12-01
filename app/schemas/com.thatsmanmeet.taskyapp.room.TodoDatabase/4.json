@@ -1,0 +1,79 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 4,
+    "identityHash": "ba7463236f237b93f55f7180888e06e3",
+    "entities": [
+      {
+        "tableName": "todo_table",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`ID` INTEGER PRIMARY KEY AUTOINCREMENT, `title` TEXT, `completed` INTEGER NOT NULL, `date` TEXT, `time` TEXT, `notificationID` INTEGER NOT NULL DEFAULT 0, `is_Recurring` INTEGER NOT NULL DEFAULT false, `description` TEXT DEFAULT '')",
+        "fields": [
+          {
+            "fieldPath": "ID",
+            "columnName": "ID",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "isCompleted",
+            "columnName": "completed",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "date",
+            "columnName": "date",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "time",
+            "columnName": "time",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "notificationID",
+            "columnName": "notificationID",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          },
+          {
+            "fieldPath": "isRecurring",
+            "columnName": "is_Recurring",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "false"
+          },
+          {
+            "fieldPath": "todoDescription",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": false,
+            "defaultValue": "''"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "ID"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ba7463236f237b93f55f7180888e06e3')"
+    ]
+  }
+}

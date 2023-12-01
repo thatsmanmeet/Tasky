@@ -4,6 +4,7 @@ package com.thatsmanmeet.taskyapp
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -16,10 +17,12 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -54,8 +57,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         installSplashScreen()
         setContent {
-            Scaffold(contentWindowInsets = ScaffoldDefaults.contentWindowInsets) {
-                it;
+            Scaffold(contentWindowInsets = ScaffoldDefaults.contentWindowInsets) {paddingValues->
                 val context = LocalContext.current
                 val viewModel = MainViewModel()
                 val pageState = remember {
@@ -89,7 +91,7 @@ class MainActivity : ComponentActivity() {
                     } else {
                         PermissionRequestScreen(navHostController = navController, requestOnClick = {
                             notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-                        })
+                        }, modifier = Modifier.padding(paddingValues))
                     }
                 }
                 // If permissions are already accepted.
@@ -182,6 +184,26 @@ class MainActivity : ComponentActivity() {
                     e.printStackTrace()
                 }
             }
+        }
+    }
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+        val currentRoute = navController.currentBackStackEntry?.destination?.route
+        if(currentRoute == Screen.MyApp.route){
+            AlertDialog.Builder(this,android.R.style.Theme_DeviceDefault_Dialog)
+                .setTitle("Confirm Exit ?")
+                .setMessage("Are you sure you want to exit?")
+                .setPositiveButton("Yes") { _, _ ->
+                    //super.onBackPressed()
+                    finish()
+                }
+                .setNegativeButton("No") { dialog, _ ->
+                    dialog.cancel()
+                }
+                .show()
+        }
+        else{
+            super.onBackPressed()
         }
     }
 

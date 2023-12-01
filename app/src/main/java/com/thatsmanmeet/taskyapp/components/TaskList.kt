@@ -22,6 +22,7 @@ import androidx.compose.material3.DismissValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SwipeToDismiss
 import androidx.compose.material3.rememberDismissState
 import androidx.compose.runtime.Composable
@@ -56,15 +57,25 @@ fun TaskList(
     list : List<Todo>,
     todoViewModel: TodoViewModel,
     onClick : (Int) -> Unit,
-    coroutineScope: CoroutineScope
+    searchText: String,
+    coroutineScope: CoroutineScope,
+    snackbarHostState: SnackbarHostState
 ) {
-    val grouped = list.groupBy {
+    val context = LocalContext.current
+    //Filter list for search operation.
+    val regex =  Regex(searchText, RegexOption.IGNORE_CASE)
+    val searchedList = if(searchText.isEmpty()) list
+    else list.filter {
+        regex.containsMatchIn(it.title.toString())
+                || regex.containsMatchIn(it.todoDescription.toString())
+    }
+
+    val grouped = searchedList.groupBy {
         SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(it.date!!)
     }.entries.sortedByDescending { it.key }
     val isSwipeDeleteDialogShowing = remember {
         mutableStateOf(false)
     }
-    val context = LocalContext.current
     LazyColumn(
         state = state,
         modifier = modifier.padding(16.dp)
@@ -81,6 +92,7 @@ fun TaskList(
                 val movableContent = movableContentOf {
                     val currentItem by rememberUpdatedState(item)
                     val dismissState = rememberDismissState()
+
 
                     if(dismissState.isDismissed(direction = DismissDirection.EndToStart)){
                         isSwipeDeleteDialogShowing.value = true
@@ -102,24 +114,43 @@ fun TaskList(
                             confirmButtonColor = Color(0xFFF75F5F),
                             confirmButtonContentColor = Color.White
                             )
+//                        LaunchedEffect(Unit){
+//                            val result = snackbarHostState.showSnackbar(
+//                                message = "Task will be deleted soon!",
+//                                actionLabel = "Undo",
+//                                duration = SnackbarDuration.Short
+//                            )
+//                            when(result){
+//                                SnackbarResult.Dismissed -> {
+//                                    todoViewModel.deleteTodo(currentItem)
+//                                }
+//                                SnackbarResult.ActionPerformed -> {
+//                                    dismissState.reset()
+//                                }
+//                            }
+//                        }
                     }
 
                     if(dismissState.isDismissed(direction = DismissDirection.StartToEnd)){
                         todoViewModel.updateTodo(currentItem.copy(isCompleted = !currentItem.isCompleted))
-                        if(!currentItem.isCompleted){
-                            cancelNotification(LocalContext.current,currentItem)
-                        }else{
-                            CurrentDateTimeComparator(
-                                inputDate = currentItem.date!!,
-                                inputTime = currentItem.time!!) {
-                                scheduleNotification(
-                                    context = context,
-                                    titleText = currentItem.title,
-                                    messageText = currentItem.todoDescription,
-                                    time = "${currentItem.date} ${currentItem.time}",
-                                    todo = currentItem
-                                )
+                        val currentCompletionCondition = !currentItem.isCompleted
+                        if(!currentCompletionCondition){
+                            if(currentItem.time!! != ""){
+                                CurrentDateTimeComparator(
+                                    inputDate = currentItem.date!!,
+                                    inputTime = currentItem.time!!) {
+                                    scheduleNotification(
+                                        context = context,
+                                        titleText = currentItem.title,
+                                        messageText = currentItem.todoDescription,
+                                        time = "${currentItem.date} ${currentItem.time}",
+                                        todo = currentItem
+                                    )
+                                }
                             }
+                        }else{
+                            // cancel notification
+                            cancelNotification(context,currentItem)
                         }
                     }
 
