@@ -22,13 +22,10 @@ import androidx.compose.material3.DismissValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.SwipeToDismiss
 import androidx.compose.material3.rememberDismissState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.movableContentOf
 import androidx.compose.runtime.mutableStateOf
@@ -98,45 +95,40 @@ fun TaskList(
 
 
                     if(dismissState.isDismissed(direction = DismissDirection.EndToStart)){
-//                        isSwipeDeleteDialogShowing.value = true
-//                        ActionDialogBox(
-//                            isDialogShowing = isSwipeDeleteDialogShowing,
-//                            title = "Delete Task?",
-//                            message = "Do you want to delete this task?",
-//                            confirmButtonText = "Delete",
-//                            dismissButtonText = "Cancel",
-//                            onConfirmClick = {
-//                                todoViewModel.deleteTodo(currentItem)
-//                            },
-//                            onDismissClick = {
-//                                isSwipeDeleteDialogShowing.value = false
-//                                coroutineScope.launch {
-//                                    dismissState.reset()
-//                                    snackbarHostState.
-//                                    showSnackbar(
-//                                        "Operation Cancelled",
-//                                        actionLabel = "OK"
-//                                    )
-//                                }
-//                            },
-//                            confirmButtonColor = Color(0xFFF75F5F),
-//                            confirmButtonContentColor = Color.White
-//                            )
-                        LaunchedEffect(Unit){
-                            val result = snackbarHostState.showSnackbar(
-                                message = "Todo Deleted",
-                                actionLabel = "Undo",
-                                duration = SnackbarDuration.Short
-                            )
-                            when(result){
-                                SnackbarResult.Dismissed -> {
-                                    todoViewModel.deleteTodo(currentItem)
-                                }
-                                SnackbarResult.ActionPerformed -> {
+                        isSwipeDeleteDialogShowing.value = true
+                        ActionDialogBox(
+                            isDialogShowing = isSwipeDeleteDialogShowing,
+                            title = "Delete Task?",
+                            message = "Do you want to delete this task?",
+                            confirmButtonText = "Delete",
+                            dismissButtonText = "Cancel",
+                            onConfirmClick = {
+                                todoViewModel.deleteTodo(currentItem)
+                            },
+                            onDismissClick = {
+                                isSwipeDeleteDialogShowing.value = false
+                                coroutineScope.launch {
                                     dismissState.reset()
                                 }
-                            }
-                        }
+                            },
+                            confirmButtonColor = Color(0xFFF75F5F),
+                            confirmButtonContentColor = Color.White
+                            )
+//                        LaunchedEffect(Unit){
+//                            val result = snackbarHostState.showSnackbar(
+//                                message = "Task will be deleted soon!",
+//                                actionLabel = "Undo",
+//                                duration = SnackbarDuration.Short
+//                            )
+//                            when(result){
+//                                SnackbarResult.Dismissed -> {
+//                                    todoViewModel.deleteTodo(currentItem)
+//                                }
+//                                SnackbarResult.ActionPerformed -> {
+//                                    dismissState.reset()
+//                                }
+//                            }
+//                        }
                     }
 
                     if(dismissState.isDismissed(direction = DismissDirection.StartToEnd)){
@@ -158,7 +150,6 @@ fun TaskList(
                             }
                         }else{
                             // cancel notification
-                            println("Current Status completed:${currentItem.isCompleted}")
                             cancelNotification(context,currentItem)
                         }
                     }
