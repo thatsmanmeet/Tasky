@@ -27,9 +27,13 @@ jobs:
     # Create APK Debug
     - name: Build apk debug project (APK)
       run: ./gradlew assembleDebug
-    # Noted For Output [main_project_module]/build/outputs/apk/debug/
+    # Create an artifacts folder if it doesn't exist, and move APK into it
+    - name: Move APK to artifacts folder
+      run: |
+        mkdir -p ${{ github.workspace }}/artifacts/
+        mv ${{ env.main_project_module }}/build/outputs/apk/debug/* ${{ github.workspace }}/artifacts/
     - name: Upload APK Debug - ${{ env.repository_name }}
       uses: actions/upload-artifact@v3
       with:
         name: Tasky_debug
-        path: ${{ env.main_project_module }}/build/outputs/apk/debug/
+        path: ${{ github.workspace }}/artifacts/
