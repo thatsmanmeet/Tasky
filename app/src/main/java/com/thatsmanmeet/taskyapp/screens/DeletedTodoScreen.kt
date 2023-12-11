@@ -2,13 +2,15 @@ package com.thatsmanmeet.taskyapp.screens
 
 import android.app.Activity
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -18,7 +20,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -30,7 +31,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.thatsmanmeet.taskyapp.components.DeletedTodoItem
 import com.thatsmanmeet.taskyapp.datastore.SettingsStore
+import com.thatsmanmeet.taskyapp.room.TodoViewModel
 import com.thatsmanmeet.taskyapp.room.deletedtodo.DeletedTodoViewModel
 import com.thatsmanmeet.taskyapp.ui.theme.TaskyTheme
 
@@ -45,6 +48,7 @@ fun DeletedTodoScreen(
     val settingStore = SettingsStore(context)
     val savedThemeKey = settingStore.getThemeModeKey.collectAsState(initial = "")
     val deletedTodoViewModel = DeletedTodoViewModel(activity.application)
+    val todoViewModel = TodoViewModel(activity.application)
     val deletedTodoList = deletedTodoViewModel.getAllDeletedTodos.collectAsState(initial = emptyList())
 
     TaskyTheme(darkTheme = when (savedThemeKey.value) {
@@ -84,13 +88,23 @@ fun DeletedTodoScreen(
             ) {
              Box(
                  modifier = modifier
-                 .fillMaxWidth()
-                 .height(100.dp)
-                 .padding(16.dp)
+                     .fillMaxWidth()
+                     .height(100.dp)
+                     .padding(16.dp)
              ){
                  Text(text = "Deleted Todos will be automatically deleted in 30 days.", fontSize = 15.sp)
              }
+                LazyColumn{
+                    items(deletedTodoList.value){deletedTodo->
+                        DeletedTodoItem(
+                            deletedTodo = deletedTodo,
+                            todoViewModel = todoViewModel,
+                            deletedTodoViewModel = deletedTodoViewModel
+                        )
+                        Spacer(modifier = modifier.height(5.dp))
+                    }
 
+                }
             }
         }
     }

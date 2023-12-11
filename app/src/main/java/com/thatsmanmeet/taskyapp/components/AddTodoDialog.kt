@@ -163,7 +163,7 @@ fun addTodoDialog(
             },
             confirmButton = {
                 Button(onClick = {
-                    if (enteredText1.isNotEmpty() && descriptionText.isNotEmpty()){
+                    if (enteredText1.isNotEmpty()){
                          val todo = Todo(
                             ID = null,
                              title = enteredText1,
@@ -216,7 +216,7 @@ fun addTodoDialog(
                         isRepeating = false
                     }
                     else{
-                        Toast.makeText(context,"Fill in all fields",Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context,"Task name is required.",Toast.LENGTH_SHORT).show()
                     }
                 }
                 ) {

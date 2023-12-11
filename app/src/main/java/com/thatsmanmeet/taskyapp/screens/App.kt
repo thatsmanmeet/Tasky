@@ -37,6 +37,7 @@ import com.thatsmanmeet.taskyapp.notification.channelID
 import com.thatsmanmeet.taskyapp.receiver.RepeatingTasksReceiver
 import com.thatsmanmeet.taskyapp.room.Todo
 import com.thatsmanmeet.taskyapp.room.TodoViewModel
+import com.thatsmanmeet.taskyapp.room.deletedtodo.DeletedTodoViewModel
 import com.thatsmanmeet.taskyapp.ui.theme.TaskyTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -54,6 +55,7 @@ fun MyApp(
     val activity = LocalContext.current as Activity
     val context = LocalContext.current
     val todoViewModel = TodoViewModel(activity.application)
+    val deletedTodoViewModel = DeletedTodoViewModel(activity.application)
     val listState = rememberLazyListState()
     val selectedItem = rememberSaveable {
         mutableIntStateOf(-1)
@@ -246,6 +248,7 @@ fun MyApp(
                             state = listState,
                             list = todoListFromFlow,
                             todoViewModel = todoViewModel,
+                            deletedTodoViewModel = deletedTodoViewModel,
                             onClick = {index->
                                 selectedItem.intValue = index
                                 openEditDialog.value = true

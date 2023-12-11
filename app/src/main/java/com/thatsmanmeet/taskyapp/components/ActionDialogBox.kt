@@ -26,7 +26,6 @@ fun ActionDialogBox(
     if(isDialogShowing.value){
         AlertDialog(
             onDismissRequest = {
-                onDismissClick()
                 isDialogShowing.value = false
             },
             confirmButton = {
