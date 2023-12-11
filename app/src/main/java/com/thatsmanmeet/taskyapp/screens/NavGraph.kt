@@ -49,5 +49,9 @@ fun SetupNavGraph(
         ){
             MyApp(navHostController = navController)
         }
+        
+        composable(route = Screen.DeletedTodosScreen.route){
+            DeletedTodoScreen(navHostController = navController)
+        }
     }
 }
