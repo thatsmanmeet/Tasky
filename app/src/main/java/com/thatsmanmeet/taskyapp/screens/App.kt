@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.thatsmanmeet.taskyapp.BuildConfig
 import com.thatsmanmeet.taskyapp.R
 import com.thatsmanmeet.taskyapp.components.OpenEditTodoDialog
 import com.thatsmanmeet.taskyapp.components.SearchBarTop
@@ -119,9 +120,17 @@ fun MyApp(
     ) {
         ModalNavigationDrawer(
             drawerState = drawerState,
+            gesturesEnabled = true,
             drawerContent = {
                 ModalDrawerSheet {
-                    Text("Tasky", modifier = Modifier.padding(16.dp))
+                   Row(
+                       modifier = modifier.fillMaxWidth().padding(16.dp),
+                       horizontalArrangement = Arrangement.SpaceBetween,
+                       verticalAlignment = Alignment.CenterVertically
+                   ) {
+                       Text("Tasky")
+                       Text(text = "V${BuildConfig.VERSION_NAME}")
+                   }
                     HorizontalDivider()
                     NavigationDrawerItem(
                         modifier = modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp),
@@ -133,6 +142,18 @@ fun MyApp(
                                 drawerState.close()
                             }
                             navHostController.navigate(route = Screen.DeletedTodosScreen.route)
+                        }
+                    )
+                    NavigationDrawerItem(
+                        modifier = modifier.padding(start = 16.dp, end = 16.dp),
+                        icon = { Icon(imageVector = Icons.Default.Info, contentDescription = null)},
+                        label = { Text(text = "Guide") },
+                        selected = false,
+                        onClick = {
+                            coroutineScope.launch {
+                                drawerState.close()
+                            }
+                            navHostController.navigate(route = Screen.GuideScreen.route)
                         }
                     )
                     NavigationDrawerItem(
@@ -300,8 +321,6 @@ fun createNotificationChannel(context: Context){
     channel.description = desc
     channel.enableLights(true)
     channel.enableVibration(true)
-//    val attributes = AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_NOTIFICATION_EVENT).build()
-//    channel.setSound(Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + context.packageName + "/raw/notifications"),attributes)
     val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     if(notificationManager.getNotificationChannel("Reminder Channel") != null){
         notificationManager.deleteNotificationChannel("Reminder Channel")
@@ -397,6 +416,32 @@ private fun LazyListState.isScrollingUp(): Boolean {
 
 @Composable
 fun CurrentDateTimeComparator(
+    inputDate:String,
+    inputTime:String,
+    onTruePerform: () -> Unit
+) {
+    val calendarInstance = Calendar.getInstance()
+    val currentDate = calendarInstance.apply {
+        set(Calendar.HOUR_OF_DAY, 0)
+        set(Calendar.MINUTE, 0)
+        set(Calendar.SECOND, 0)
+    }
+    val format = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+    val parsedDate = format.parse(inputDate)
+    val calendar = calendarInstance.apply {
+        time = parsedDate!!
+        set(Calendar.HOUR_OF_DAY, inputTime.substringBefore(":").toInt())
+        set(Calendar.MINUTE, inputTime.substringAfter(":").toInt())
+        set(Calendar.SECOND, 0)
+    }
+    val currentTime = Calendar.getInstance().timeInMillis
+    if(calendar >= currentDate && calendar.timeInMillis >= currentTime){
+        onTruePerform()
+    }
+}
+
+
+fun currentDateTimeComparator(
     inputDate:String,
     inputTime:String,
     onTruePerform: () -> Unit

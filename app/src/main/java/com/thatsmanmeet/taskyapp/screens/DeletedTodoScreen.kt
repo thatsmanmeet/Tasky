@@ -92,7 +92,7 @@ fun DeletedTodoScreen(
                      .height(100.dp)
                      .padding(16.dp)
              ){
-                 Text(text = "Deleted Todos will be automatically deleted in 30 days.", fontSize = 15.sp)
+                 Text(text = "Deleted Tasks will be automatically deleted in 30 days. Tap on a task to restore or permanently delete it.", fontSize = 15.sp)
              }
                 LazyColumn{
                     items(deletedTodoList.value){deletedTodo->

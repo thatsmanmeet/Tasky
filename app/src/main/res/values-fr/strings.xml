@@ -23,7 +23,7 @@
     <string name="separate_tasks_using_dates_title">Séparez les tâches en utilisant les dates.</string>
     <string name="use_task_complete_animations_title">Utilisez complètement les animations.</string>
     <string name="enable_autostart_title">Activez le démarrage automatique.</string>
-    <string name="enable_autostart_information_text">Pour certains appareils, les notifications peuvent ne pas être reçues à temps ou ne pas fonctionner après le redémarrage. Cliquez ici pour activer le démarrage automatique. \n\n(Utile pour Xiaomi, vivo, Oppo comme les appareils exécutant une rom de stockage).</string>
+    <string name="enable_autostart_information_text">Pour certains appareils, les notifications peuvent ne pas être reçues à temps ou ne pas fonctionner après le redémarrage. Cliquez ici pour activer le démarrage automatique. Utile pour Xiaomi, vivo, Oppo comme les appareils exécutant une rom de stockage.</string>
     <string name="view_source_title">Voir la Source.</string>
     <string name="view_source_information_text">Tasky est complètement à source ouverte. Vous avez un retour d expérience ou souhaitez vous lancez dans le développement ? Visitez Github! Oh et n oubliez pas de donnez une ⭐️ ;).</string>
     <string name="use_24_hour_clock">Utiliser l horloge 24 heures.</string>
