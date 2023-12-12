@@ -8,7 +8,7 @@ Tasky is a highly intuitive and easy-to-use todo list application designed for t
 1. Modern and minimal design
 2. Notifications for tasks
 3. Material You Dynamic theming
-4. Repeating tasks
+4. Repeating tasks everyday.
 5. Cool task completion animation
 6. Add and Delete Sounds
 7. Completely offline making it privacy first
