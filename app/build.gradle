@@ -12,8 +12,8 @@ android {
         applicationId "com.thatsmanmeet.taskyapp"
         minSdk 26
         targetSdk 34
-        versionCode 25
-        versionName "2.4.1"
+        versionCode 26
+        versionName "2.4.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary true
@@ -71,7 +71,7 @@ dependencies {
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
-    def room_version = "2.6.0"
+    def room_version = "2.6.1"
     implementation "androidx.room:room-runtime:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
     implementation "androidx.compose.runtime:runtime-livedata:1.5.4"

@@ -26,6 +26,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SwipeToDismiss
 import androidx.compose.material3.rememberDismissState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.movableContentOf
 import androidx.compose.runtime.mutableStateOf
@@ -40,6 +41,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.thatsmanmeet.taskyapp.room.Todo
 import com.thatsmanmeet.taskyapp.room.TodoViewModel
+import com.thatsmanmeet.taskyapp.room.deletedtodo.DeletedTodo
+import com.thatsmanmeet.taskyapp.room.deletedtodo.DeletedTodoViewModel
 import com.thatsmanmeet.taskyapp.screens.CurrentDateTimeComparator
 import com.thatsmanmeet.taskyapp.screens.cancelNotification
 import com.thatsmanmeet.taskyapp.screens.scheduleNotification
@@ -56,6 +59,7 @@ fun TaskList(
     state: LazyListState,
     list : List<Todo>,
     todoViewModel: TodoViewModel,
+    deletedTodoViewModel: DeletedTodoViewModel,
     onClick : (Int) -> Unit,
     searchText: String,
     coroutineScope: CoroutineScope,
@@ -96,39 +100,37 @@ fun TaskList(
 
                     if(dismissState.isDismissed(direction = DismissDirection.EndToStart)){
                         isSwipeDeleteDialogShowing.value = true
-                        ActionDialogBox(
-                            isDialogShowing = isSwipeDeleteDialogShowing,
-                            title = "Delete Task?",
-                            message = "Do you want to delete this task?",
-                            confirmButtonText = "Delete",
-                            dismissButtonText = "Cancel",
-                            onConfirmClick = {
-                                todoViewModel.deleteTodo(currentItem)
-                            },
-                            onDismissClick = {
-                                isSwipeDeleteDialogShowing.value = false
-                                coroutineScope.launch {
-                                    dismissState.reset()
-                                }
-                            },
-                            confirmButtonColor = Color(0xFFF75F5F),
-                            confirmButtonContentColor = Color.White
-                            )
-//                        LaunchedEffect(Unit){
-//                            val result = snackbarHostState.showSnackbar(
-//                                message = "Task will be deleted soon!",
-//                                actionLabel = "Undo",
-//                                duration = SnackbarDuration.Short
-//                            )
-//                            when(result){
-//                                SnackbarResult.Dismissed -> {
-//                                    todoViewModel.deleteTodo(currentItem)
-//                                }
-//                                SnackbarResult.ActionPerformed -> {
+                        deletedTodoViewModel.insertDeletedTodo(DeletedTodo(
+                            ID = currentItem.ID,
+                            title = currentItem.title,
+                            todoDescription = currentItem.todoDescription,
+                            isCompleted = currentItem.isCompleted,
+                            date = currentItem.date,
+                            time = currentItem.time,
+                            isRecurring = currentItem.isRecurring,
+                            notificationID = currentItem.notificationID,
+                            todoDeletionDate = getDate30DaysLater(currentItem.date!!)
+                        ))
+                        todoViewModel.deleteTodo(currentItem)
+                        cancelNotification(context,currentItem)
+//                        ActionDialogBox(
+//                            isDialogShowing = isSwipeDeleteDialogShowing,
+//                            title = "Delete Task?",
+//                            message = "Do you want to delete this task?",
+//                            confirmButtonText = "Delete",
+//                            dismissButtonText = "Cancel",
+//                            onConfirmClick = {
+//                                todoViewModel.deleteTodo(currentItem)
+//                            },
+//                            onDismissClick = {
+//                                isSwipeDeleteDialogShowing.value = false
+//                                coroutineScope.launch {
 //                                    dismissState.reset()
 //                                }
-//                            }
-//                        }
+//                            },
+//                            confirmButtonColor = Color(0xFFF75F5F),
+//                            confirmButtonContentColor = Color.White
+//                            )
                     }
 
                     if(dismissState.isDismissed(direction = DismissDirection.StartToEnd)){
@@ -214,4 +216,13 @@ fun TaskList(
             }
         }
     }
+}
+
+fun getDate30DaysLater(enteredDate:String):String{
+    val sdf = SimpleDateFormat("dd/MM/yyyy",Locale.getDefault())
+    val date = sdf.parse(enteredDate)
+    val calendar = Calendar.getInstance()
+    calendar.time = date!!
+    calendar.add(Calendar.DAY_OF_MONTH,30)
+   return sdf.format(calendar.time)
 }

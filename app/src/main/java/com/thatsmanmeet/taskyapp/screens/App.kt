@@ -19,9 +19,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.thatsmanmeet.taskyapp.BuildConfig
 import com.thatsmanmeet.taskyapp.R
 import com.thatsmanmeet.taskyapp.components.OpenEditTodoDialog
 import com.thatsmanmeet.taskyapp.components.SearchBarTop
@@ -35,9 +38,11 @@ import com.thatsmanmeet.taskyapp.notification.channelID
 import com.thatsmanmeet.taskyapp.receiver.RepeatingTasksReceiver
 import com.thatsmanmeet.taskyapp.room.Todo
 import com.thatsmanmeet.taskyapp.room.TodoViewModel
+import com.thatsmanmeet.taskyapp.room.deletedtodo.DeletedTodoViewModel
 import com.thatsmanmeet.taskyapp.ui.theme.TaskyTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.*
@@ -51,6 +56,7 @@ fun MyApp(
     val activity = LocalContext.current as Activity
     val context = LocalContext.current
     val todoViewModel = TodoViewModel(activity.application)
+    val deletedTodoViewModel = DeletedTodoViewModel(activity.application)
     val listState = rememberLazyListState()
     val selectedItem = rememberSaveable {
         mutableIntStateOf(-1)
@@ -96,6 +102,10 @@ fun MyApp(
         SnackbarHostState()
     }
 
+    val coroutineScope = rememberCoroutineScope()
+
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+
     createNotificationChannel(context.applicationContext)
     // setup settings store
     val settingsStore = SettingsStore(context)
@@ -108,138 +118,198 @@ fun MyApp(
         else -> {true}
         }
     ) {
-        Scaffold(
-            snackbarHost = {SnackbarHost(hostState = snackBarHostState)},
-            topBar = {
-                TopAppBar(
-                    title = {
-                        Row(
-                            modifier = modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(
-                                text = stringResource(id = R.string.app_name),
-                                fontSize = 25.sp
-                            )
-                            SearchBarTop(searchText) { searchText = it }
-                            Spacer(modifier = modifier.width(0.dp))
+        ModalNavigationDrawer(
+            drawerState = drawerState,
+            gesturesEnabled = true,
+            drawerContent = {
+                ModalDrawerSheet {
+                   Row(
+                       modifier = modifier.fillMaxWidth().padding(16.dp),
+                       horizontalArrangement = Arrangement.SpaceBetween,
+                       verticalAlignment = Alignment.CenterVertically
+                   ) {
+                       Text("Tasky")
+                       Text(text = "V${BuildConfig.VERSION_NAME}")
+                   }
+                    HorizontalDivider()
+                    NavigationDrawerItem(
+                        modifier = modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp),
+                        icon = { Icon(imageVector = Icons.Default.Delete, contentDescription = null)},
+                        label = { Text(text = "Deleted Tasks") },
+                        selected = false,
+                        onClick = {
+                            coroutineScope.launch {
+                                drawerState.close()
+                            }
+                            navHostController.navigate(route = Screen.DeletedTodosScreen.route)
+                        }
+                    )
+                    NavigationDrawerItem(
+                        modifier = modifier.padding(start = 16.dp, end = 16.dp),
+                        icon = { Icon(imageVector = Icons.Default.Info, contentDescription = null)},
+                        label = { Text(text = "Guide") },
+                        selected = false,
+                        onClick = {
+                            coroutineScope.launch {
+                                drawerState.close()
+                            }
+                            navHostController.navigate(route = Screen.GuideScreen.route)
+                        }
+                    )
+                    NavigationDrawerItem(
+                        modifier = modifier.padding(bottom = 16.dp,start = 16.dp, end = 16.dp),
+                        icon = { Icon(imageVector = Icons.Default.Settings, contentDescription = null)},
+                        label = { Text(text = "Settings") },
+                        selected = false,
+                        onClick = {
+                            coroutineScope.launch {
+                                drawerState.close()
+                            }
+                            navHostController.navigate(route = Screen.SettingsScreen.route)
+                        }
+                    )
+                }
+            }
+        ) {
+            Scaffold(
+                snackbarHost = {SnackbarHost(hostState = snackBarHostState)},
+                topBar = {
+                    TopAppBar(
+                        navigationIcon = {
                             IconButton(onClick = {
-                                // Implement Navigation to settings
-                                navHostController.navigate(route = Screen.SettingsScreen.route)
-                            }) {
+                                coroutineScope.launch {
+                                    drawerState.apply {
+                                        if(isClosed) open() else close()
+                                    }
+                                }
+                                }) {
+                                    Icon(
+                                        imageVector = Icons.Default.Menu,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.onPrimary
+                                    )
+                                }
+                        },
+                        title = {
+                            Row(
+                                modifier = modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = stringResource(id = R.string.app_name),
+                                    fontSize = 25.sp
+                                )
+                                SearchBarTop(searchText) { searchText = it }
+                            }
+                        },
+                        colors = topAppBarColors.topAppBarColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            titleContentColor = MaterialTheme.colorScheme.onPrimary
+                        )
+                    )
+                },
+                floatingActionButton = {
+                    ExtendedFloatingActionButton(
+                        text = { Text(text = stringResource(R.string.add_task_button)) },
+                        icon = { Icon(painter = painterResource(id = R.drawable.ic_add_task), contentDescription = null) },
+                        onClick = {
+                            openDialog.value = true
+                        },
+                        expanded = listState.isScrollingUp()
+                    )
+                }
+            ) { paddingValues ->
+                enteredText = addTodoDialog(
+                    openDialog,
+                    enteredText,
+                    descriptionText,
+                    dateText,
+                    isDateDialogShowing,
+                    context,
+                    timeText,
+                    isTimeDialogShowing,
+                    todoViewModel,
+                    isRepeatingState.value
+                )
+                Surface(
+                    modifier = modifier
+                        .fillMaxSize()
+                        .padding(paddingValues),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    if(todoListFromFlow.isEmpty()){
+                        Box(modifier = modifier
+                            .fillMaxSize()
+                            .padding(paddingValues),
+                            contentAlignment = Alignment.Center) {
+                            Column(
+                                modifier = modifier,
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
                                 Icon(
-                                    imageVector = Icons.Default.Settings,
-                                    contentDescription = null
+                                    modifier = modifier
+                                        .size(50.dp)
+                                        .alpha(0.8f),
+                                    imageVector = Icons.Filled.Check,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
+                                Text(
+                                    text = stringResource(R.string.empty_list_no_tasks_text),
+                                    fontSize = 30.sp,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    fontWeight = FontWeight.Light
                                 )
                             }
                         }
+                    }else {
+                        TaskList(
+                            state = listState,
+                            list = todoListFromFlow,
+                            todoViewModel = todoViewModel,
+                            deletedTodoViewModel = deletedTodoViewModel,
+                            onClick = {index->
+                                selectedItem.intValue = index
+                                openEditDialog.value = true
                             },
-                    colors = topAppBarColors.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        titleContentColor = MaterialTheme.colorScheme.onPrimary
-                    )
-                )
-            },
-            floatingActionButton = {
-                ExtendedFloatingActionButton(
-                    text = { Text(text = stringResource(R.string.add_task_button)) },
-                    icon = { Icon(painter = painterResource(id = R.drawable.ic_add_task), contentDescription = null) },
-                    onClick = {
-                        openDialog.value = true
-                    },
-                    expanded = listState.isScrollingUp()
-                )
+                            searchText = searchText,
+                            coroutineScope = rememberCoroutineScope(),
+                            snackbarHostState = snackBarHostState
+                        )
+                    }
+                    if (openEditDialog.value){
+                        OpenEditTodoDialog(
+                            todoListFromFlow,
+                            selectedItem,
+                            openEditDialog,
+                            todoViewModel,
+                            enteredText,
+                            todoListFromFlow[selectedItem.intValue].todoDescription!!,
+                            context
+                        )
+                    }
+                }
+
             }
-        ) { paddingValues ->
-            enteredText = addTodoDialog(
-                openDialog,
-                enteredText,
-                descriptionText,
-                dateText,
-                isDateDialogShowing,
-                context,
-                timeText,
-                isTimeDialogShowing,
-                todoViewModel,
-                isRepeatingState.value
-            )
-            Surface(
-                modifier = modifier
-                    .fillMaxSize()
-                    .padding(paddingValues),
-                color = MaterialTheme.colorScheme.background
-            ) {
-                if(todoListFromFlow.isEmpty()){
-                    Box(modifier = modifier
-                        .fillMaxSize()
-                        .padding(paddingValues),
-                        contentAlignment = Alignment.Center) {
-                        Column(
-                            modifier = modifier,
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            Icon(
-                                modifier = modifier
-                                    .size(50.dp)
-                                    .alpha(0.8f),
-                                imageVector = Icons.Filled.Check,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.primary
-                            )
-                            Text(
-                                text = stringResource(R.string.empty_list_no_tasks_text),
-                                fontSize = 30.sp,
-                                color = MaterialTheme.colorScheme.primary,
-                                fontWeight = FontWeight.Light
-                            )
+            if(todoViewModel.isAnimationPlayingState.value && (savedAnimationKey.value == true || savedAnimationKey.value == null)){
+                Column(modifier = modifier.fillMaxSize()) {
+                    TaskCompleteAnimations(
+                        isLottiePlaying = isLottiePlaying,
+                        modifier = modifier.fillMaxSize()
+                    )
+                    LaunchedEffect(Unit){
+                        delay(2200)
+                        withContext(Dispatchers.Main){
+                            todoViewModel.isAnimationPlayingState.value = false
                         }
-                    }
-                }else {
-                    TaskList(
-                        state = listState,
-                        list = todoListFromFlow,
-                        todoViewModel = todoViewModel,
-                        onClick = {index->
-                            selectedItem.intValue = index
-                            openEditDialog.value = true
-                        },
-                        searchText = searchText,
-                        coroutineScope = rememberCoroutineScope(),
-                        snackbarHostState = snackBarHostState
-                    )
-                }
-                if (openEditDialog.value){
-                    OpenEditTodoDialog(
-                        todoListFromFlow,
-                        selectedItem,
-                        openEditDialog,
-                        todoViewModel,
-                        enteredText,
-                        todoListFromFlow[selectedItem.intValue].todoDescription!!,
-                        context
-                    )
-                }
-            }
 
-        }
-        if(todoViewModel.isAnimationPlayingState.value && (savedAnimationKey.value == true || savedAnimationKey.value == null)){
-            Column(modifier = modifier.fillMaxSize()) {
-                TaskCompleteAnimations(
-                    isLottiePlaying = isLottiePlaying,
-                    modifier = modifier.fillMaxSize()
-                )
-                LaunchedEffect(Unit){
-                    delay(2200)
-                    withContext(Dispatchers.Main){
-                        todoViewModel.isAnimationPlayingState.value = false
                     }
-
                 }
             }
         }
-    }
+        }
 }
 
 
@@ -251,8 +321,6 @@ fun createNotificationChannel(context: Context){
     channel.description = desc
     channel.enableLights(true)
     channel.enableVibration(true)
-//    val attributes = AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_NOTIFICATION_EVENT).build()
-//    channel.setSound(Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + context.packageName + "/raw/notifications"),attributes)
     val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     if(notificationManager.getNotificationChannel("Reminder Channel") != null){
         notificationManager.deleteNotificationChannel("Reminder Channel")
@@ -370,4 +438,37 @@ fun CurrentDateTimeComparator(
     if(calendar >= currentDate && calendar.timeInMillis >= currentTime){
         onTruePerform()
     }
+}
+
+
+fun currentDateTimeComparator(
+    inputDate:String,
+    inputTime:String,
+    onTruePerform: () -> Unit
+) {
+    val calendarInstance = Calendar.getInstance()
+    val currentDate = calendarInstance.apply {
+        set(Calendar.HOUR_OF_DAY, 0)
+        set(Calendar.MINUTE, 0)
+        set(Calendar.SECOND, 0)
+    }
+    val format = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+    val parsedDate = format.parse(inputDate)
+    val calendar = calendarInstance.apply {
+        time = parsedDate!!
+        set(Calendar.HOUR_OF_DAY, inputTime.substringBefore(":").toInt())
+        set(Calendar.MINUTE, inputTime.substringAfter(":").toInt())
+        set(Calendar.SECOND, 0)
+    }
+    val currentTime = Calendar.getInstance().timeInMillis
+    if(calendar >= currentDate && calendar.timeInMillis >= currentTime){
+        onTruePerform()
+    }
+}
+
+
+@Preview
+@Composable
+fun DisplayAppScreen() {
+    MyApp(navHostController = rememberNavController())
 }

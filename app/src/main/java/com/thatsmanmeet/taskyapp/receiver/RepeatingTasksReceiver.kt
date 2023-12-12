@@ -10,6 +10,7 @@ import androidx.room.Room
 import com.thatsmanmeet.taskyapp.constants.Constants
 import com.thatsmanmeet.taskyapp.room.Todo
 import com.thatsmanmeet.taskyapp.room.TodoDatabase
+import com.thatsmanmeet.taskyapp.room.deletedtodo.DeletedTodoDatabase
 import com.thatsmanmeet.taskyapp.screens.scheduleNotification
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,6 +28,11 @@ class RepeatingTasksReceiver : BroadcastReceiver() {
                 context!!.applicationContext,
                 TodoDatabase::class.java,
                 "todo_database"
+            ).build()
+            val deletedTodoDatabase = Room.databaseBuilder(
+                context!!.applicationContext,
+                DeletedTodoDatabase::class.java,
+                "deleted_todo_database"
             ).build()
             coroutineScope.launch {
                 withTimeout(10000) {
@@ -55,6 +61,21 @@ class RepeatingTasksReceiver : BroadcastReceiver() {
                                     todo = newTodo
                                 )
                                 todoDatabase.todoDao().updateTodo(newTodo)
+                            }
+                        }
+                    }
+                }
+            }
+            coroutineScope.launch {
+                withTimeout(10000){
+                    deletedTodoDatabase.deletedTodoDao().getAllTodosFlow().collect{deletedTodos->
+                        val currentDate =
+                            SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(
+                                Date()
+                            )
+                        for(todo in deletedTodos){
+                            if(currentDate == todo.todoDeletionDate){
+                                deletedTodoDatabase.deletedTodoDao().deleteTodo(todo)
                             }
                         }
                     }

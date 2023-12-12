@@ -23,7 +23,7 @@
     <string name="separate_tasks_using_dates_title">Görevleri tarihlerine göre ayır</string>
     <string name="use_task_complete_animations_title">Görev tamamlama animasyonunu etkinleştir</string>
     <string name="enable_autostart_title">Otomatik Başlatmayı Etkinleştir</string>
-    <string name="enable_autostart_information_text">Bazı cihazlarda bildirimler zamanında alınmayabilir veya yeniden başlatıldıktan sonra çalışmayabilir. Otomatik başlatmayı etkinleştirmek için buraya tıklayın. \n\n(Stok rom çalıştıran Xiaomi, vivo, Oppo gibi cihazlar için kullanışlıdır)</string>
+    <string name="enable_autostart_information_text">Bazı cihazlarda bildirimler zamanında alınmayabilir veya yeniden başlatıldıktan sonra çalışmayabilir. Otomatik başlatmayı etkinleştirmek için buraya tıklayın. Stok rom çalıştıran Xiaomi, vivo, Oppo gibi cihazlar için kullanışlıdır</string>
     <string name="view_source_title">Kaynak kodunu görüntüle</string>
     <string name="view_source_information_text">Tasky tamamen açık kaynak kodludur. Bir geri bildiriminiz mi var veya geliştirme sürecine dahil olmak mı istiyorsunuz? Github\'ı ziyaret edin! Ve bir de ⭐️ vermeyi unutmayın ;)</string>
     <string name="use_24_hour_clock">24 Saat Formatı</string>

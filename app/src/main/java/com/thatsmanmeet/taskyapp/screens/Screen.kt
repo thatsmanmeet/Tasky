@@ -5,4 +5,7 @@ sealed class Screen(val route:String){
     object PermissionScreen: Screen("permission_screen")
     object SettingsScreen : Screen("settings_screen")
     object SearchScreen: Screen("search_screen")
+    object DeletedTodosScreen:Screen("deleted_todo_screen")
+
+    object GuideScreen:Screen("guide_screen")
 }

@@ -18,5 +18,4 @@ class TodoRepository(private val todoDao: TodoDao) {
     }
 
     fun getAllTodosFlow() : Flow<List<Todo>> = todoDao.getAllTodosFlow()
-
 }

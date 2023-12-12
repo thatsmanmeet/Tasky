@@ -23,6 +23,7 @@ import androidx.core.net.toUri
 import androidx.navigation.NavHostController
 import com.thatsmanmeet.taskyapp.MainActivity
 import com.thatsmanmeet.taskyapp.R
+import com.thatsmanmeet.taskyapp.components.ActionDialogBox
 import com.thatsmanmeet.taskyapp.components.SettingsComponent
 import com.thatsmanmeet.taskyapp.components.ThemeChangerDialog
 import com.thatsmanmeet.taskyapp.datastore.SettingsStore
@@ -46,9 +47,6 @@ fun SettingsScreen(
     val scope = rememberCoroutineScope()
     val settingStore = SettingsStore(context)
     val savedThemeKey = settingStore.getThemeModeKey.collectAsState(initial = "")
-    val isCheckedState = remember {
-        mutableStateOf(isChecked.value)
-    }
     val shouldShowAnimationState = remember {
         mutableStateOf(shouldShowAnimation.value)
     }
@@ -58,7 +56,7 @@ fun SettingsScreen(
     val is24HourClockState = remember {
         mutableStateOf(is24HourClockKey.value)
     }
-    var isDialogShowingState by rememberSaveable {
+    val isBackupDialogShowingState  = rememberSaveable {
         mutableStateOf(false)
     }
     val isThemeChangerShowing = rememberSaveable {
@@ -245,7 +243,7 @@ fun SettingsScreen(
                         settingText = stringResource(id = R.string.settings_backup_restore_information_text),
                         painterResourceID = R.drawable.ic_history
                     ) {
-                        isDialogShowingState = true
+                        isBackupDialogShowingState.value = true
                     }
                     // Visit Github Card
                     SettingsComponent(
@@ -257,34 +255,19 @@ fun SettingsScreen(
                 }
             }
         }
-        if(isDialogShowingState){
-         AlertDialog(
-             onDismissRequest = {
-             isDialogShowingState = false
-            },
-             title = {
-                 Text(text = stringResource(R.string.settings_backup_restore))
-             },
-             text = {
-                 Text(text = stringResource(R.string.settings_backup_restore_information_text))
-             },
-             confirmButton = {
-                 OutlinedButton(onClick = {
+        if(isBackupDialogShowingState.value){
+            ActionDialogBox(
+                isDialogShowing = isBackupDialogShowingState,
+                title = stringResource(id = R.string.settings_backup_restore) ,
+                message = stringResource(id = R.string.settings_backup_restore_information_text) ,
+                confirmButtonText = "Restore",
+                dismissButtonText = "Backup",
+                onConfirmClick = {
                      MainActivity().restoreFile(context = activity,dbPath.toUri())
-                     isDialogShowingState = false
-                 }) {
-                     Text(text = "Restore")
-                 }
-             },
-             dismissButton = {
-                 OutlinedButton(onClick = {
-                     MainActivity().writeFile(context = activity,dbPath.toUri())
-                     isDialogShowingState = false
-                 }) {
-                     Text(text = "Backup")
-                 }
-             }
-         )
+                },
+                onDismissClick = {
+                    MainActivity().writeFile(context = activity,dbPath.toUri())
+                })
         }
         // Backup dialog ends here
         ThemeChangerDialog(
