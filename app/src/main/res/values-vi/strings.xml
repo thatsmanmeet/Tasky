@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Tasky</string>
+    <string name="add_task_button">Thêm nhiệm vụ</string>
+    <string name="add_task_dialog_title">Thêm nhiệm vụ</string>
+    <string name="add_edit_text_placeholder">Bạn đang nghĩ gì?</string>
+    <string name="add_edit_dialog_select_date_button">Chọn ngày</string>
+    <string name="add_edit_dialog_select_time_button">Chọn giờ</string>
+    <string name="add_edit_dialog_repeat_everyday">Lặp lại hàng ngày</string>
+    <string name="add_edit_dialog_set_reminder_title">Đặt lời nhắc (tùy chọn)</string>
+    <string name="add_edit_dialog_add_button_text">Thêm</string>
+    <string name="add_edit_dialog_cancel_button_text">Hủy</string>
+    <string name="edit_task_dialog_title">Chỉnh sửa nhiệm vụ</string>
+    <string name="add_edit_dialog_edit_reminder_title">Chỉnh sửa lời nhắc</string>
+    <string name="add_edit_dialog_save_button_text">Lưu</string>
+    <string name="add_edit_dialog_delete_button_text">Xóa</string>
+    <string name="task_complete_notification_message">Bạn đã hoàn thành nhiệm vụ hôm nay chưa?</string>
+    <string name="empty_list_no_tasks_text">Không có nhiệm vụ</string>
+    <string name="permission_screen_title">Cần có sự cho phép</string>
+    <string name="permission_screen_information_text">Bắt đầu từ Android 13+, các ứng dụng cần có Quyền thông báo để hiển thị thông báo.</string>
+    <string name="permission_screen_request_permission_button">Yêu cầu quyền</string>
+    <string name="settings_screen_appbar_title">Thiết đặt</string>
+    <string name="separate_tasks_using_dates_title">Phân tách các nhiệm vụ bằng cách sử dụng ngày</string>
+    <string name="use_task_complete_animations_title">Sử dụng hình ảnh động hoàn thành nhiệm vụ</string>
+    <string name="enable_autostart_title">Bật Tự khởi động</string>
+    <string name="enable_autostart_information_text">Đối với một số thiết bị, thông báo có thể không được nhận kịp thời hoặc có thể không hoạt động sau khi khởi động lại. Nhấn vào đây để kích hoạt tính năng Tự khởi động. Hữu ích cho Xiaomi, Oppo, Vivo và các máy chạy ROM stock</string>
+    <string name="view_source_title">Xem nguồn</string>
+    <string name="view_source_information_text">Tasky hoàn toàn là nguồn mở. Bạn có phản hồi hoặc muốn bắt tay vào phát triển? Hãy ghé thăm Github! Ồ và đừng quên tặng ⭐️ ;)</string>
+    <string name="use_24_hour_clock">Sử dụng đồng hồ 24 giờ</string>
+    <string name="settings_backup_restore">Sao lưu/Khôi phục</string>
+    <string name="settings_backup_restore_information_text">Sao lưu hoặc Khôi phục nhiệm vụ của bạn từ tệp zip cục bộ.</string>
+    <string name="use_task_complete_sounds_title">Sử dụng âm thanh hoàn thành nhiệm vụ</string>
+    <string name="select_app_theme_text">Chọn chủ đề ứng dụng</string>
+    <string name="set_app_theme_settings_text">Đặt chủ đề ứng dụng</string>
+    <string name="set_app_theme_info_text">Thay đổi chủ đề hiện tại của ứng dụng thành sáng, tối hoặc mặc định của hệ thống.</string>
+    <string name="delete_task_button_text">xóa</string>
+    <string name="delete_task_title">Xóa nhiệm vụ?</string>
+    <string name="delete_task_description">Bạn có muốn xóa nhiệm vụ này không?</string>
+</resources>
