@@ -111,12 +111,14 @@ fun MyApp(
     val settingsStore = SettingsStore(context)
     val savedAnimationKey = settingsStore.getAnimationKey.collectAsState(initial = true)
     val savedThemeKey = settingsStore.getThemeModeKey.collectAsState(initial = "0")
+    val savedFontKey = settingsStore.getUseSystemFontKey.collectAsState(initial = false)
     TaskyTheme(darkTheme = when (savedThemeKey.value.toString()) {
         "null" -> {isSystemInDarkTheme()}
         "0" -> {isSystemInDarkTheme()}
         "1" -> {false}
         else -> {true}
-        }
+        },
+        useSystemFont = savedFontKey.value!!
     ) {
         ModalNavigationDrawer(
             drawerState = drawerState,

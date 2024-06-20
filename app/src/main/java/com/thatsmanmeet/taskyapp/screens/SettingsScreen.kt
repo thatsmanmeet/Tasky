@@ -41,7 +41,8 @@ fun SettingsScreen(
     isChecked:State<Boolean?>,
     shouldShowAnimation:State<Boolean?>,
     is24HourClockKey:State<Boolean?>,
-    shouldPlaySound:State<Boolean?>
+    shouldPlaySound:State<Boolean?>,
+    useSystemFont:State<Boolean?>
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -62,6 +63,9 @@ fun SettingsScreen(
     val isThemeChangerShowing = rememberSaveable {
         mutableStateOf(false)
     }
+    val isSystemFontState = remember {
+        mutableStateOf(useSystemFont.value)
+    }
     val mainViewModel = MainViewModel()
     val activity = LocalContext.current as Activity
     val dbPath = activity.getDatabasePath("todo_database").absolutePath
@@ -71,7 +75,8 @@ fun SettingsScreen(
         }
         "1" -> {false}
         else -> {true}
-    }
+    },
+        useSystemFont = isSystemFontState.value!!
     ){
         Scaffold(
             modifier = modifier.fillMaxSize(),
@@ -225,6 +230,40 @@ fun SettingsScreen(
                                         is24HourClockState.value = isToggleChecked
                                         scope.launch {
                                             settingStore.saveClockKey(isToggleChecked)
+                                        }
+                                    })
+                            }
+                        }
+                    }
+                    Spacer(modifier = modifier.height(12.dp))
+                    // Default Font
+                    Card(
+                        modifier = modifier
+                            .clip(RoundedCornerShape(15.dp))
+                            .fillMaxWidth()
+                            .background(MaterialTheme.colorScheme.inverseOnSurface),
+                        elevation = CardDefaults.cardElevation(0.dp)
+                    ) {
+                        Row(
+                            modifier = modifier
+                                .padding(10.dp)
+                                .fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = "Use System Font",
+                                fontSize = 18.sp,
+                                modifier = modifier.weight(1f)
+                            )
+                            isSystemFontState.value?.let { it1 ->
+                                Switch(
+                                    modifier = modifier.weight(0.2f),
+                                    checked = it1,
+                                    onCheckedChange = { isToggleChecked->
+                                        isSystemFontState.value = isToggleChecked
+                                        scope.launch {
+                                            settingStore.saveSystemFontsKey(isToggleChecked)
                                         }
                                     })
                             }

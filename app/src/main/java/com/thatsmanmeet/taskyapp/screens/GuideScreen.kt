@@ -38,6 +38,7 @@ fun GuideScreen(
     val context = LocalContext.current
     val settingStore = SettingsStore(context)
     val savedThemeKey = settingStore.getThemeModeKey.collectAsState(initial = "")
+    val savedFontKey = settingStore.getUseSystemFontKey.collectAsState(initial = false)
     val height = 12.dp
     TaskyTheme(
         darkTheme = when (savedThemeKey.value) {
@@ -46,7 +47,8 @@ fun GuideScreen(
             }
             "1" -> {false}
             else -> {true}
-        }
+        },
+        useSystemFont = savedFontKey.value!!
     ) {
         Scaffold(
             topBar = {

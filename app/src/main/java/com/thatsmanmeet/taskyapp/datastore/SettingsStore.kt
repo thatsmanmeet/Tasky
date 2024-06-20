@@ -20,6 +20,7 @@ class SettingsStore(
         val SHOW_24_HOUR_CLOCK_KEY = booleanPreferencesKey("show_24_hour_clock_preference")
         val TASK_COMPLETION_SOUNDS = booleanPreferencesKey("sound_list_preference")
         val THEME_MODE_KEY = stringPreferencesKey("theme_mode_preference")
+        val USE_SYSTEM_FONT = booleanPreferencesKey("use_system_font_preference")
     }
 
     val getTaskListKey : Flow<Boolean?> = context.dataStore.data.map {preference->
@@ -41,6 +42,10 @@ class SettingsStore(
         preference[THEME_MODE_KEY] ?: ""
     }
 
+    val getUseSystemFontKey : Flow<Boolean?> = context.dataStore.data.map {preference ->
+        preference[USE_SYSTEM_FONT] ?: false
+    }
+
     suspend fun saveTaskListKey(isEnabled:Boolean) {
         context.dataStore.edit {preferences->
             preferences[TASK_LIST_KEY] = isEnabled
@@ -55,6 +60,12 @@ class SettingsStore(
     suspend fun saveSoundPlayKey(isEnabled: Boolean){
         context.dataStore.edit {preferences->
             preferences[TASK_COMPLETION_SOUNDS] = isEnabled
+        }
+    }
+
+    suspend fun saveSystemFontsKey(isEnabled: Boolean){
+        context.dataStore.edit {preferences->
+            preferences[USE_SYSTEM_FONT] = isEnabled
         }
     }
 

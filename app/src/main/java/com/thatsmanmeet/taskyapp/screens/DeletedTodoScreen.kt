@@ -50,14 +50,15 @@ fun DeletedTodoScreen(
     val deletedTodoViewModel = DeletedTodoViewModel(activity.application)
     val todoViewModel = TodoViewModel(activity.application)
     val deletedTodoList = deletedTodoViewModel.getAllDeletedTodos.collectAsState(initial = emptyList())
-
+    val savedFontKey = settingStore.getUseSystemFontKey.collectAsState(initial = false)
     TaskyTheme(darkTheme = when (savedThemeKey.value) {
         "0" -> {
             isSystemInDarkTheme()
         }
         "1" -> {false}
         else -> {true}
-    }) {
+    },
+        useSystemFont = savedFontKey.value!!) {
         Scaffold(
             modifier = modifier.fillMaxSize(),
             topBar = {
