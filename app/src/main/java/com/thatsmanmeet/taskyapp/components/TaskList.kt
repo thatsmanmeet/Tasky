@@ -17,20 +17,17 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material3.DismissDirection
-import androidx.compose.material3.DismissValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.SwipeToDismiss
-import androidx.compose.material3.rememberDismissState
+import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxValue
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.movableContentOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,18 +54,18 @@ import java.util.*
 fun TaskList(
     modifier: Modifier = Modifier,
     state: LazyListState,
-    list : List<Todo>,
+    list: List<Todo>,
     todoViewModel: TodoViewModel,
     deletedTodoViewModel: DeletedTodoViewModel,
-    onClick : (Int) -> Unit,
+    onClick: (Int) -> Unit,
     searchText: String,
     coroutineScope: CoroutineScope,
     snackbarHostState: SnackbarHostState
 ) {
     val context = LocalContext.current
-    //Filter list for search operation.
-    val regex =  Regex(searchText, RegexOption.IGNORE_CASE)
-    val searchedList = if(searchText.isEmpty()) list
+    // Filter list for search operation.
+    val regex = Regex(searchText, RegexOption.IGNORE_CASE)
+    val searchedList = if (searchText.isEmpty()) list
     else list.filter {
         regex.containsMatchIn(it.title.toString())
                 || regex.containsMatchIn(it.todoDescription.toString())
@@ -77,13 +74,11 @@ fun TaskList(
     val grouped = searchedList.groupBy {
         SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(it.date!!)
     }.entries.sortedByDescending { it.key }
-    val isSwipeDeleteDialogShowing = remember {
-        mutableStateOf(false)
-    }
+
     LazyColumn(
         state = state,
         modifier = modifier.padding(16.dp)
-    ){
+    ) {
         grouped.forEach { (date, groupedList) ->
             stickyHeader(DateFormat.getDateInstance(DateFormat.MEDIUM).format(date!!)) {
                 val currentDate = date.toString().split(" ")
@@ -92,55 +87,20 @@ fun TaskList(
                 val year = currentDate[5]
                 DateHeader(date = "$month $dateOfMonth, $year")
             }
-            itemsIndexed(groupedList){_,item->
+            itemsIndexed(groupedList) { _, item ->
                 val movableContent = movableContentOf {
                     val currentItem by rememberUpdatedState(item)
-                    val dismissState = rememberDismissState()
+                    val dismissState = rememberSwipeToDismissBoxState()
 
-
-                    if(dismissState.isDismissed(direction = DismissDirection.EndToStart)){
-                        isSwipeDeleteDialogShowing.value = true
-                        deletedTodoViewModel.insertDeletedTodo(DeletedTodo(
-                            ID = currentItem.ID,
-                            title = currentItem.title,
-                            todoDescription = currentItem.todoDescription,
-                            isCompleted = currentItem.isCompleted,
-                            date = currentItem.date,
-                            time = currentItem.time,
-                            isRecurring = currentItem.isRecurring,
-                            notificationID = currentItem.notificationID,
-                            todoDeletionDate = getDate30DaysLater(currentItem.date!!)
-                        ))
-                        todoViewModel.deleteTodo(currentItem)
-                        cancelNotification(context,currentItem)
-//                        ActionDialogBox(
-//                            isDialogShowing = isSwipeDeleteDialogShowing,
-//                            title = "Delete Task?",
-//                            message = "Do you want to delete this task?",
-//                            confirmButtonText = "Delete",
-//                            dismissButtonText = "Cancel",
-//                            onConfirmClick = {
-//                                todoViewModel.deleteTodo(currentItem)
-//                            },
-//                            onDismissClick = {
-//                                isSwipeDeleteDialogShowing.value = false
-//                                coroutineScope.launch {
-//                                    dismissState.reset()
-//                                }
-//                            },
-//                            confirmButtonColor = Color(0xFFF75F5F),
-//                            confirmButtonContentColor = Color.White
-//                            )
-                    }
-
-                    if(dismissState.isDismissed(direction = DismissDirection.StartToEnd)){
+                    if (dismissState.currentValue == SwipeToDismissBoxValue.StartToEnd) {
                         todoViewModel.updateTodo(currentItem.copy(isCompleted = !currentItem.isCompleted))
                         val currentCompletionCondition = !currentItem.isCompleted
-                        if(!currentCompletionCondition){
-                            if(currentItem.time!! != ""){
+                        if (!currentCompletionCondition) {
+                            if (currentItem.time!! != "") {
                                 CurrentDateTimeComparator(
                                     inputDate = currentItem.date!!,
-                                    inputTime = currentItem.time!!) {
+                                    inputTime = currentItem.time!!
+                                ) {
                                     scheduleNotification(
                                         context = context,
                                         titleText = currentItem.title,
@@ -150,38 +110,59 @@ fun TaskList(
                                     )
                                 }
                             }
-                        }else{
+                        } else {
                             // cancel notification
-                            cancelNotification(context,currentItem)
+                            cancelNotification(context, currentItem)
                         }
+                    } else if (dismissState.currentValue == SwipeToDismissBoxValue.EndToStart) {
+                       LaunchedEffect(Unit) {
+                           coroutineScope.launch {
+                               deletedTodoViewModel.insertDeletedTodo(
+                                   DeletedTodo(
+                                       ID = currentItem.ID,
+                                       title = currentItem.title,
+                                       todoDescription = currentItem.todoDescription,
+                                       isCompleted = currentItem.isCompleted,
+                                       date = currentItem.date,
+                                       time = currentItem.time,
+                                       isRecurring = currentItem.isRecurring,
+                                       notificationID = currentItem.notificationID,
+                                       todoDeletionDate = getDate30DaysLater(currentItem.date!!)
+                                   )
+                               )
+                               todoViewModel.deleteTodo(currentItem)
+                               cancelNotification(context, currentItem)
+                           }
+
+                       }
                     }
 
-                    SwipeToDismiss(
+                    SwipeToDismissBox(
                         state = dismissState,
-                        background = {
+                        backgroundContent = {
                             // background color
                             val backgroundColor by animateColorAsState(
                                 when (dismissState.targetValue) {
-                                    DismissValue.DismissedToStart -> Color(0xFFF44336)
-                                    DismissValue.DismissedToEnd -> Color(0xFF4CAF50)
+                                    SwipeToDismissBoxValue.EndToStart -> Color(0xFFF44336)
+                                    SwipeToDismissBoxValue.StartToEnd -> Color(0xFF4CAF50)
                                     else -> MaterialTheme.colorScheme.inverseOnSurface
                                 }, label = ""
                             )
                             // icon
                             val iconImageVector = when (dismissState.targetValue) {
-                                DismissValue.DismissedToEnd -> Icons.Outlined.Check
+                                SwipeToDismissBoxValue.StartToEnd -> Icons.Outlined.Check
                                 else -> Icons.Outlined.Delete
                             }
 
                             // icon placement
                             val iconAlignment = when (dismissState.targetValue) {
-                                DismissValue.DismissedToEnd -> Alignment.CenterStart
+                                SwipeToDismissBoxValue.StartToEnd -> Alignment.CenterStart
                                 else -> Alignment.CenterEnd
                             }
 
                             // icon size
                             val iconScale by animateFloatAsState(
-                                targetValue = if (dismissState.targetValue == DismissValue.Default) 0.5f else 1.3f,
+                                targetValue = 1f,
                                 label = ""
                             )
                             Box(
@@ -191,7 +172,7 @@ fun TaskList(
                                     .background(backgroundColor)
                                     .padding(start = 16.dp, end = 16.dp),
                                 contentAlignment = iconAlignment
-                            ){
+                            ) {
                                 Icon(
                                     modifier = Modifier.scale(iconScale),
                                     imageVector = iconImageVector,
@@ -200,9 +181,9 @@ fun TaskList(
                                 )
                             }
                         },
-                        dismissContent = {
+                        content = {
                             TodoItemCard(
-                                todo = item ,
+                                todo = item,
                                 viewModel = todoViewModel,
                                 modifier = modifier.clickable {
                                     onClick(list.indexOf(item))
@@ -218,11 +199,11 @@ fun TaskList(
     }
 }
 
-fun getDate30DaysLater(enteredDate:String):String{
-    val sdf = SimpleDateFormat("dd/MM/yyyy",Locale.getDefault())
+fun getDate30DaysLater(enteredDate: String): String {
+    val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
     val date = sdf.parse(enteredDate)
     val calendar = Calendar.getInstance()
     calendar.time = date!!
-    calendar.add(Calendar.DAY_OF_MONTH,30)
-   return sdf.format(calendar.time)
+    calendar.add(Calendar.DAY_OF_MONTH, 30)
+    return sdf.format(calendar.time)
 }
