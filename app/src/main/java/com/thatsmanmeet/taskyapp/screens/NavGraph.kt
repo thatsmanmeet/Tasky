@@ -4,8 +4,10 @@ package com.thatsmanmeet.taskyapp.screens
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.thatsmanmeet.taskyapp.datastore.SettingsStore
 
 
@@ -57,5 +59,23 @@ fun SetupNavGraph(
         composable(route = Screen.GuideScreen.route){
             GuideScreen(navHostController = navController)
         }
+
+        composable(route = Screen.NotesScreen.route){
+            NotesScreen(navHostController = navController)
+        }
+        composable(route = Screen.AddNotesScreen.route){
+            AddNoteScreen(navHostController = navController)
+        }
+
+        composable(
+            route = Screen.EditNotesScreen.route,
+            arguments = listOf(navArgument("noteID"){
+                type = NavType.LongType
+            })
+        ){
+            val noteId = it.arguments?.getLong("noteID")
+            EditNoteScreen(navHostController = navController, noteID = noteId)
+        }
+
     }
 }

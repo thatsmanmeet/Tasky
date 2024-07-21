@@ -19,15 +19,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
-import com.thatsmanmeet.taskyapp.BuildConfig
 import com.thatsmanmeet.taskyapp.R
+import com.thatsmanmeet.taskyapp.components.MyTopAppBar
+import com.thatsmanmeet.taskyapp.components.NavigationDrawer
 import com.thatsmanmeet.taskyapp.components.OpenEditTodoDialog
-import com.thatsmanmeet.taskyapp.components.SearchBarTop
 import com.thatsmanmeet.taskyapp.components.TaskCompleteAnimations
 import com.thatsmanmeet.taskyapp.components.TaskList
 import com.thatsmanmeet.taskyapp.components.addTodoDialog
@@ -42,7 +40,6 @@ import com.thatsmanmeet.taskyapp.room.deletedtodo.DeletedTodoViewModel
 import com.thatsmanmeet.taskyapp.ui.theme.TaskyTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.*
@@ -106,7 +103,6 @@ fun MyApp(
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
-    createNotificationChannel(context.applicationContext)
     // setup settings store
     val settingsStore = SettingsStore(context)
     val savedAnimationKey = settingsStore.getAnimationKey.collectAsState(initial = true)
@@ -120,96 +116,11 @@ fun MyApp(
         },
         useSystemFont = savedFontKey.value!!
     ) {
-        ModalNavigationDrawer(
-            drawerState = drawerState,
-            gesturesEnabled = true,
-            drawerContent = {
-                ModalDrawerSheet {
-                   Row(
-                       modifier = modifier.fillMaxWidth().padding(16.dp),
-                       horizontalArrangement = Arrangement.SpaceBetween,
-                       verticalAlignment = Alignment.CenterVertically
-                   ) {
-                       Text("Tasky")
-                       Text(text = "V${BuildConfig.VERSION_NAME}")
-                   }
-                    HorizontalDivider()
-                    NavigationDrawerItem(
-                        modifier = modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp),
-                        icon = { Icon(imageVector = Icons.Default.Delete, contentDescription = null)},
-                        label = { Text(text = "Deleted Tasks") },
-                        selected = false,
-                        onClick = {
-                            coroutineScope.launch {
-                                drawerState.close()
-                            }
-                            navHostController.navigate(route = Screen.DeletedTodosScreen.route)
-                        }
-                    )
-                    NavigationDrawerItem(
-                        modifier = modifier.padding(start = 16.dp, end = 16.dp),
-                        icon = { Icon(imageVector = Icons.Default.Info, contentDescription = null)},
-                        label = { Text(text = "Guide") },
-                        selected = false,
-                        onClick = {
-                            coroutineScope.launch {
-                                drawerState.close()
-                            }
-                            navHostController.navigate(route = Screen.GuideScreen.route)
-                        }
-                    )
-                    NavigationDrawerItem(
-                        modifier = modifier.padding(bottom = 16.dp,start = 16.dp, end = 16.dp),
-                        icon = { Icon(imageVector = Icons.Default.Settings, contentDescription = null)},
-                        label = { Text(text = "Settings") },
-                        selected = false,
-                        onClick = {
-                            coroutineScope.launch {
-                                drawerState.close()
-                            }
-                            navHostController.navigate(route = Screen.SettingsScreen.route)
-                        }
-                    )
-                }
-            }
-        ) {
+        NavigationDrawer(navHostController = navHostController, coroutineScope = coroutineScope, drawerState = drawerState) {
             Scaffold(
                 snackbarHost = {SnackbarHost(hostState = snackBarHostState)},
                 topBar = {
-                    TopAppBar(
-                        navigationIcon = {
-                            IconButton(onClick = {
-                                coroutineScope.launch {
-                                    drawerState.apply {
-                                        if(isClosed) open() else close()
-                                    }
-                                }
-                                }) {
-                                    Icon(
-                                        imageVector = Icons.Default.Menu,
-                                        contentDescription = null,
-                                        tint = MaterialTheme.colorScheme.onPrimary
-                                    )
-                                }
-                        },
-                        title = {
-                            Row(
-                                modifier = modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Text(
-                                    text = stringResource(id = R.string.app_name),
-                                    fontSize = 25.sp
-                                )
-                                SearchBarTop(searchText) { searchText = it }
-                            }
-                        },
-                        colors = topAppBarColors.topAppBarColors(
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            titleContentColor = MaterialTheme.colorScheme.onPrimary
-                        )
-                    )
+                    MyTopAppBar(title = "Tasky",coroutineScope, drawerState, modifier, searchText, topAppBarColors)
                 },
                 floatingActionButton = {
                     ExtendedFloatingActionButton(
@@ -466,11 +377,4 @@ fun currentDateTimeComparator(
     if(calendar >= currentDate && calendar.timeInMillis >= currentTime){
         onTruePerform()
     }
-}
-
-
-@Preview
-@Composable
-fun DisplayAppScreen() {
-    MyApp(navHostController = rememberNavController())
 }
