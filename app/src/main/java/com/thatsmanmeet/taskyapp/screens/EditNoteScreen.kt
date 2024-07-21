@@ -31,8 +31,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -77,6 +79,10 @@ fun EditNoteScreen(
         mutableStateOf(false)
     }
 
+    var isChangeOccur by remember {
+        mutableStateOf(false)
+    }
+
 
     fun getCurrentDate(): String{
         val zoneId = ZoneId.systemDefault()
@@ -104,6 +110,7 @@ fun EditNoteScreen(
                     title = { Text(text = if(titleText.value.isNullOrEmpty()) {"Empty Note"} else {titleText.value!!}, maxLines = 1)},
                     actions = {
                         IconButton(onClick = {
+                            isChangeOccur = true
                             isSavingIndicator.value = true
                             isPinned.value = !isPinned.value
                         }) {
@@ -150,17 +157,19 @@ fun EditNoteScreen(
             }
         ) {paddingValues->
                 LaunchedEffect(key1 = titleText.value, key2 = bodyText.value, key3 = isPinned.value) {
-                    notesViewModel.upsertNote(
-                        Note(
-                            ID = noteID,
-                            title = titleText.value,
-                            body = bodyText.value,
-                            isFavourite = isPinned.value,
-                            date = getCurrentDate()
-                        )
-                    ).also {
-                        delay(500)
-                        isSavingIndicator.value = false
+                    if(isChangeOccur){
+                        notesViewModel.upsertNote(
+                            Note(
+                                ID = noteID,
+                                title = titleText.value,
+                                body = bodyText.value,
+                                isFavourite = isPinned.value,
+                                date = getCurrentDate()
+                            )
+                        ).also {
+                            delay(500)
+                            isSavingIndicator.value = false
+                        }
                     }
                 }
 
@@ -180,6 +189,7 @@ fun EditNoteScreen(
                         modifier = modifier.fillMaxWidth(),
                         value = titleText.value!!,
                         onValueChange = {
+                            isChangeOccur = true
                             titleText.value = it
                             isSavingIndicator.value = true
                         },
@@ -198,6 +208,7 @@ fun EditNoteScreen(
                         modifier = modifier.fillMaxSize(),
                         value = bodyText.value!!,
                         onValueChange = {
+                            isChangeOccur = true
                             bodyText.value = it
                             isSavingIndicator.value = true
                         },

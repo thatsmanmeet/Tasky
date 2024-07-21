@@ -2,15 +2,19 @@ package com.thatsmanmeet.taskyapp.screens
 
 
 import android.app.*
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -22,12 +26,13 @@ import androidx.navigation.compose.rememberNavController
 import com.thatsmanmeet.taskyapp.R
 import com.thatsmanmeet.taskyapp.components.MyTopAppBar
 import com.thatsmanmeet.taskyapp.components.NavigationDrawer
+import com.thatsmanmeet.taskyapp.components.NotesHeader
 import com.thatsmanmeet.taskyapp.components.NotesItem
 import com.thatsmanmeet.taskyapp.datastore.SettingsStore
 import com.thatsmanmeet.taskyapp.room.notes.NoteViewModel
 import com.thatsmanmeet.taskyapp.ui.theme.TaskyTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun NotesScreen(
     navHostController: NavHostController,
@@ -47,7 +52,7 @@ fun NotesScreen(
 
     val topAppBarColors = TopAppBarDefaults
 
-    var searchText by rememberSaveable {
+    val searchText by rememberSaveable {
         mutableStateOf("")
     }
 
@@ -123,12 +128,39 @@ fun NotesScreen(
                     }else {
                         LazyColumn(
                             state = listState,
-                            modifier = modifier.fillMaxSize().padding(16.dp)
+                            modifier = modifier
+                                .fillMaxSize()
+                                .padding(16.dp)
                         ) {
-                            items(notesListFlow){note->
-                               NotesItem(note = note, navHostController = navHostController)
+                            groupedList.forEach{ (fav, list) ->
+                                stickyHeader(fav) {
+                                    if(fav!!){
+                                        NotesHeader(text = "Favourites"){
+                                            Icon(
+                                                imageVector = Icons.Filled.Favorite,
+                                                contentDescription = null,
+                                                tint = Color.Red
+                                            )
+                                        }
+                                    }else{
+                                        NotesHeader(text = "Notes"){
+                                            Icon(
+                                                painter = painterResource(id = R.drawable.ic_notes),
+                                                contentDescription = null,
+                                                tint = MaterialTheme.colorScheme.primary,
+                                                modifier = modifier.size(24.dp)
+                                            )
+                                        }
+                                    }
+
+                                }
+
+                            itemsIndexed(list.sortedByDescending { it.date!! }){_,item ->
+                                NotesItem(note = item, navHostController = navHostController)
+                            }
                             }
                         }
+                        //end
                     }
 
                 }
