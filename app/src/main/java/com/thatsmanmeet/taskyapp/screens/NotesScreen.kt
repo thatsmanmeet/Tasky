@@ -44,8 +44,10 @@ fun NotesScreen(
 
     val notesListFlow by notesViewModel.getAllNotesFlow.collectAsState(initial = emptyList())
 
-    val groupedList = notesListFlow.groupBy {
-        it.isFavourite
+    // Group and sort notes
+    val groupedList = notesListFlow.groupBy { it.isFavourite }.toSortedMap(compareByDescending { it })
+    val sortedGroupedNotes = groupedList.mapValues { (_, notes) ->
+        notes.sortedByDescending { it.date }
     }
 
     val listState = rememberLazyListState()
@@ -80,7 +82,7 @@ fun NotesScreen(
             Scaffold(
                 snackbarHost = {SnackbarHost(hostState = snackBarHostState)},
                 topBar = {
-                    MyTopAppBar(title = "Notes",coroutineScope, drawerState, modifier, searchText, topAppBarColors)
+                    MyTopAppBar(title = "Notes", coroutineScope, drawerState, modifier, searchText, topAppBarColors)
                 },
                 floatingActionButton = {
                     ExtendedFloatingActionButton(
@@ -132,18 +134,18 @@ fun NotesScreen(
                                 .fillMaxSize()
                                 .padding(16.dp)
                         ) {
-                            groupedList.forEach{ (fav, list) ->
-                                stickyHeader(fav) {
-                                    if(fav!!){
-                                        NotesHeader(text = "Favourites"){
+                            sortedGroupedNotes.forEach { (fav, notes) ->
+                                stickyHeader {
+                                    if (fav!!) {
+                                        NotesHeader(text = "Favourites") {
                                             Icon(
                                                 imageVector = Icons.Filled.Favorite,
                                                 contentDescription = null,
                                                 tint = Color.Red
                                             )
                                         }
-                                    }else{
-                                        NotesHeader(text = "Notes"){
+                                    } else {
+                                        NotesHeader(text = "Notes") {
                                             Icon(
                                                 painter = painterResource(id = R.drawable.ic_notes),
                                                 contentDescription = null,
@@ -152,22 +154,20 @@ fun NotesScreen(
                                             )
                                         }
                                     }
-
                                 }
 
-                            itemsIndexed(list.sortedByDescending { it.date!! }){_,item ->
-                                NotesItem(note = item, navHostController = navHostController)
-                            }
+                                items(notes) { note ->
+                                    NotesItem(note = note, navHostController = navHostController)
+                                }
                             }
                         }
-                        //end
                     }
-
                 }
             }
         }
     }
 }
+
 
 
 @Composable
