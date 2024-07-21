@@ -13,8 +13,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -23,6 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
@@ -83,6 +84,10 @@ fun EditNoteScreen(
         mutableStateOf(false)
     }
 
+    val isDeleteDialogVisible = remember {
+        mutableStateOf(false)
+    }
+
 
     fun getCurrentDate(): String{
         val zoneId = ZoneId.systemDefault()
@@ -122,21 +127,44 @@ fun EditNoteScreen(
                         }
 
                         IconButton(onClick = {
-                            notesViewModel.deleteNote(Note(
-                                ID = currentNote.ID,
-                                title = currentNote.title,
-                                body = currentNote.body,
-                                isFavourite = currentNote.isFavourite,
-                                date = currentNote.date
-                            )).also {
-                                navHostController.navigate(Screen.NotesScreen.route) {
-                                    popUpTo(Screen.NotesScreen.route) { inclusive = true }
-                                }
-                            }
-
+                            isDeleteDialogVisible.value = true
                         }) {
-                            Icon(imageVector = Icons.Filled.Delete , contentDescription = "", tint = Color.Red
-                            )
+                            Icon(imageVector = Icons.Filled.Delete , contentDescription = "", tint = Color.Red)
+                            if(isDeleteDialogVisible.value){
+                                AlertDialog(
+                                    onDismissRequest = {
+                                        isDeleteDialogVisible.value = false
+                                    },
+                                    dismissButton = {
+                                        TextButton(onClick = {
+                                            isDeleteDialogVisible.value = false
+                                        }) {
+                                            Text(text = "Cancel")
+                                        }
+                                    },
+                                    confirmButton = {
+                                        TextButton(onClick = {
+                                            isDeleteDialogVisible.value = false
+                                            notesViewModel.deleteNote(Note(
+                                                ID = currentNote.ID,
+                                                title = currentNote.title,
+                                                body = currentNote.body,
+                                                isFavourite = currentNote.isFavourite,
+                                                date = currentNote.date
+                                            )).also {
+                                                navHostController.navigate(Screen.NotesScreen.route) {
+                                                    popUpTo(Screen.NotesScreen.route) { inclusive = true }
+                                                }
+                                            }
+                                        }) {
+                                            Text(text = "Delete")
+                                        }
+                                    },
+                                    title = { Text(text = "Delete Note")},
+                                    text = { Text(text = "Would you like to delete this note?")
+                                    }
+                                )
+                            }
                         }
 
                         if(isSavingIndicator.value){

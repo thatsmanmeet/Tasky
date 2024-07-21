@@ -14,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
@@ -27,10 +28,9 @@ fun MyTopAppBar(
     coroutineScope: CoroutineScope,
     drawerState: DrawerState,
     modifier: Modifier,
-    searchText: String,
+    searchText: MutableState<String>,
     topAppBarColors: TopAppBarDefaults
 ) {
-    var searchText1 = searchText
     TopAppBar(
         navigationIcon = {
             IconButton(onClick = {
@@ -57,7 +57,7 @@ fun MyTopAppBar(
                     text = title,
                     fontSize = 25.sp
                 )
-                SearchBarTop(searchText1) { searchText1 = it }
+                SearchBarTop(searchText.value) { searchText.value = it }
             }
         },
         colors = topAppBarColors.topAppBarColors(

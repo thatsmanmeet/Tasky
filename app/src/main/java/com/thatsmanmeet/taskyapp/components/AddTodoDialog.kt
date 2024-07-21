@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.sp
 import com.thatsmanmeet.taskyapp.R
 import com.thatsmanmeet.taskyapp.room.Todo
 import com.thatsmanmeet.taskyapp.room.TodoViewModel
+import com.thatsmanmeet.taskyapp.screens.getCurrentDate
 import com.thatsmanmeet.taskyapp.screens.scheduleNotification
 import com.thatsmanmeet.taskyapp.screens.setRepeatingAlarm
 import java.text.SimpleDateFormat
@@ -100,7 +101,9 @@ fun addTodoDialog(
                         }) {
                             Text(text = stringResource(R.string.add_edit_dialog_select_date_button), fontSize = 10.sp)
                             val date = showDatePicker(context = context, isDateDialogShowing)
-                            dateText.value = date
+                            dateText.value = if(date != ""){date} else {
+                                getCurrentDate()
+                            }
                             isDateDialogShowing.value = false
                         }
                     }

@@ -44,18 +44,28 @@ fun NotesScreen(
 
     val notesListFlow by notesViewModel.getAllNotesFlow.collectAsState(initial = emptyList())
 
-    // Group and sort notes
-    val groupedList = notesListFlow.groupBy { it.isFavourite }.toSortedMap(compareByDescending { it })
-    val sortedGroupedNotes = groupedList.mapValues { (_, notes) ->
-        notes.sortedByDescending { it.date }
-    }
-
     val listState = rememberLazyListState()
 
     val topAppBarColors = TopAppBarDefaults
 
-    val searchText by rememberSaveable {
+    val searchText = rememberSaveable {
         mutableStateOf("")
+    }
+    val regex = Regex(searchText.value, RegexOption.IGNORE_CASE)
+    // Group and sort notes
+
+    val searchList = if(searchText.value.isEmpty()) {
+        notesListFlow
+    } else {
+        notesListFlow.filter {
+            regex.containsMatchIn(it.title.toString()) || regex.containsMatchIn(it.body.toString())
+        }
+    }
+
+    val groupedList = searchList.groupBy { it.isFavourite }.toSortedMap(compareByDescending { it })
+
+    val sortedGroupedNotes = groupedList.mapValues { (_, notes) ->
+        notes.sortedByDescending { it.date }
     }
 
     val snackBarHostState = remember {

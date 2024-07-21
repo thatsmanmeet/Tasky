@@ -52,6 +52,7 @@ fun MyApp(
 ) {
     val activity = LocalContext.current as Activity
     val context = LocalContext.current
+    createNotificationChannel(context)
     val todoViewModel = TodoViewModel(activity.application)
     val deletedTodoViewModel = DeletedTodoViewModel(activity.application)
     val listState = rememberLazyListState()
@@ -91,7 +92,7 @@ fun MyApp(
         mutableStateOf(true)
     }
 
-    var searchText by rememberSaveable {
+    val searchText = rememberSaveable {
         mutableStateOf("")
     }
 
@@ -187,7 +188,7 @@ fun MyApp(
                                 selectedItem.intValue = index
                                 openEditDialog.value = true
                             },
-                            searchText = searchText,
+                            searchText = searchText.value,
                             coroutineScope = rememberCoroutineScope(),
                             snackbarHostState = snackBarHostState
                         )
@@ -353,6 +354,11 @@ fun CurrentDateTimeComparator(
     }
 }
 
+fun getCurrentDate(): String{
+    return SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH).format(
+        Calendar.getInstance().time
+    ).toString()
+}
 
 fun currentDateTimeComparator(
     inputDate:String,

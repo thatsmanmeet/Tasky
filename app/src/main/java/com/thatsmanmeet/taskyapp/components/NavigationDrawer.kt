@@ -87,7 +87,7 @@ fun NavigationDrawer(
                 NavigationDrawerItem(
                     modifier = modifier.padding(start = 16.dp, end = 16.dp),
                     icon = { Icon(imageVector = Icons.Default.Delete, contentDescription = null) },
-                    label = { Text(text = "Deleted Tasks") },
+                    label = { Text(text = "Recycle Bin") },
                     selected = false,
                     onClick = {
                         coroutineScope.launch {
@@ -99,13 +99,13 @@ fun NavigationDrawer(
                 NavigationDrawerItem(
                     modifier = modifier.padding(start = 16.dp, end = 16.dp),
                     icon = { Icon(imageVector = Icons.Default.Info, contentDescription = null) },
-                    label = { Text(text = "Guide") },
+                    label = { Text(text = "About") },
                     selected = false,
                     onClick = {
                         coroutineScope.launch {
                             drawerState.close()
                         }
-                        navHostController.navigate(route = Screen.GuideScreen.route)
+                        navHostController.navigate(route = Screen.AboutScreen.route)
                     }
                 )
                 NavigationDrawerItem(

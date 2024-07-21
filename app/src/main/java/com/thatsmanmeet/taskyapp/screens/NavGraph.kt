@@ -56,8 +56,8 @@ fun SetupNavGraph(
             DeletedTodoScreen(navHostController = navController)
         }
 
-        composable(route = Screen.GuideScreen.route){
-            GuideScreen(navHostController = navController)
+        composable(route = Screen.AboutScreen.route){
+            AboutScreen(navHostController = navController)
         }
 
         composable(route = Screen.NotesScreen.route){
