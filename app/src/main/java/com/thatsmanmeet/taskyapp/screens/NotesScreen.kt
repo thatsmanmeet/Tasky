@@ -2,20 +2,15 @@ package com.thatsmanmeet.taskyapp.screens
 
 
 import android.app.*
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -27,6 +22,7 @@ import androidx.navigation.compose.rememberNavController
 import com.thatsmanmeet.taskyapp.R
 import com.thatsmanmeet.taskyapp.components.MyTopAppBar
 import com.thatsmanmeet.taskyapp.components.NavigationDrawer
+import com.thatsmanmeet.taskyapp.components.NotesItem
 import com.thatsmanmeet.taskyapp.datastore.SettingsStore
 import com.thatsmanmeet.taskyapp.room.notes.NoteViewModel
 import com.thatsmanmeet.taskyapp.ui.theme.TaskyTheme
@@ -42,6 +38,10 @@ fun NotesScreen(
     val notesViewModel = NoteViewModel(activity.application)
 
     val notesListFlow by notesViewModel.getAllNotesFlow.collectAsState(initial = emptyList())
+
+    val groupedList = notesListFlow.groupBy {
+        it.isFavourite
+    }
 
     val listState = rememberLazyListState()
 
@@ -82,7 +82,6 @@ fun NotesScreen(
                         text = { Text(text = "Add Note") },
                         icon = { Icon(painter = painterResource(id = R.drawable.ic_add_task), contentDescription = null) },
                         onClick = {
-                           // TODO
                             navHostController.navigate(Screen.AddNotesScreen.route)
                         },
                         expanded = listState.isScrollingUp()
@@ -123,40 +122,11 @@ fun NotesScreen(
                         }
                     }else {
                         LazyColumn(
-                            modifier = modifier.padding(16.dp)
+                            state = listState,
+                            modifier = modifier.fillMaxSize().padding(16.dp)
                         ) {
-                            items(notesListFlow){
-                               Card (
-                                   modifier = modifier.fillMaxWidth().clickable {
-                                       navHostController.navigate(route = "edit_notes_screen/" + it.ID)
-                                   }
-                                   .clip(RoundedCornerShape(10.dp))
-                                   .background(MaterialTheme.colorScheme.inverseOnSurface)
-                                   .heightIn(min = 60.dp),
-                               ) {
-                                   Column(
-                                       modifier = modifier.padding(10.dp)
-                                   ) {
-                                       Text(
-                                           text = if (it.title.isNullOrEmpty()) "Empty Title" else it.title!!,
-                                           fontSize = 16.sp,
-                                           fontWeight = FontWeight.Bold,
-                                           maxLines = 1
-                                       )
-                                       Spacer(modifier = modifier.height(8.dp))
-                                       Text(
-                                           text = if (it.body.isNullOrEmpty()) {
-                                               "Empty Body"
-                                           } else if (it.body!!.length < 50) {
-                                               it.body!!
-                                           } else {
-                                           it.body!!.slice(0..49) + "..."
-                                       }, fontSize = 12.sp)
-                                       Spacer(modifier = modifier.height(8.dp))
-                                       Text(text = "Last updated: ${it.date!!}", fontSize = 10.sp)
-                                   }
-                               }
-                                Spacer(modifier = modifier.height(10.dp))
+                            items(notesListFlow){note->
+                               NotesItem(note = note, navHostController = navHostController)
                             }
                         }
                     }
