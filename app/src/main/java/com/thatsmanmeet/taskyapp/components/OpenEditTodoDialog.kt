@@ -19,6 +19,8 @@ import com.thatsmanmeet.taskyapp.R
 import com.thatsmanmeet.taskyapp.datastore.SettingsStore
 import com.thatsmanmeet.taskyapp.room.Todo
 import com.thatsmanmeet.taskyapp.room.TodoViewModel
+import com.thatsmanmeet.taskyapp.room.deletedtodo.DeletedTodo
+import com.thatsmanmeet.taskyapp.room.deletedtodo.DeletedTodoViewModel
 import com.thatsmanmeet.taskyapp.screens.cancelNotification
 import com.thatsmanmeet.taskyapp.screens.scheduleNotification
 import com.thatsmanmeet.taskyapp.screens.setRepeatingAlarm
@@ -33,10 +35,12 @@ fun OpenEditTodoDialog(
     selectedItem: MutableState<Int>,
     openEditDialog: MutableState<Boolean>,
     todoViewModel: TodoViewModel,
+    deletedTodoViewModel: DeletedTodoViewModel,
     enteredText: String,
     descriptionText:String,
     context: Context,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onDeleteAction: () -> Unit
 ) {
     var enteredText1 by remember {
         mutableStateOf(enteredText)
@@ -64,7 +68,7 @@ fun OpenEditTodoDialog(
     }
 
     val currentTodoNotificationId = remember {
-        mutableStateOf(todosList[selectedItem.value].notificationID)
+        mutableIntStateOf(todosList[selectedItem.value].notificationID)
     }
 
     val isDateDialogShowing = remember {
@@ -88,6 +92,7 @@ fun OpenEditTodoDialog(
     val settingsStore = SettingsStore(context = context)
     val savedSoundKey = settingsStore.getSoundKey.collectAsState(initial = true)
     var todo : Todo
+    var deletedTodo: DeletedTodo
     AlertDialog(
         onDismissRequest = {
             openEditDialog.value = false
@@ -284,7 +289,21 @@ fun OpenEditTodoDialog(
                     )
                     todoViewModel.deleteTodo(
                         todo
-                    )
+                    ).also {
+                        val currentTodo = todoViewModel.getOneTodo(currentTodoID.value!!)
+                        deletedTodo = DeletedTodo(
+                            currentTodo.ID,
+                            currentTodo.title,
+                            currentTodo.isCompleted,
+                            currentTodo.date,
+                            currentTodo.time,
+                            currentTodo.notificationID,
+                            currentTodo.isRecurring,
+                            currentTodo.todoDescription,
+                            ""
+                        )
+                        deletedTodoViewModel.insertDeletedTodo(deletedTodo)
+                    }
                     cancelNotification(
                         context = context,
                         todo = todo
@@ -294,6 +313,7 @@ fun OpenEditTodoDialog(
                     if(savedSoundKey.value == true){
                         todoViewModel.playDeletedSound(context)
                     }
+                    onDeleteAction()
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(

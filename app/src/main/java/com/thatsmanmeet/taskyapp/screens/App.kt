@@ -40,6 +40,7 @@ import com.thatsmanmeet.taskyapp.room.deletedtodo.DeletedTodoViewModel
 import com.thatsmanmeet.taskyapp.ui.theme.TaskyTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.*
@@ -189,8 +190,7 @@ fun MyApp(
                                 openEditDialog.value = true
                             },
                             searchText = searchText.value,
-                            coroutineScope = rememberCoroutineScope(),
-                            snackbarHostState = snackBarHostState
+                            coroutineScope = rememberCoroutineScope()
                         )
                     }
                     if (openEditDialog.value){
@@ -199,10 +199,13 @@ fun MyApp(
                             selectedItem,
                             openEditDialog,
                             todoViewModel,
+                            deletedTodoViewModel,
                             enteredText,
                             todoListFromFlow[selectedItem.intValue].todoDescription!!,
                             context
-                        )
+                        ){
+
+                        }
                     }
                 }
 

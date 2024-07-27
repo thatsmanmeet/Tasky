@@ -59,8 +59,7 @@ fun TaskList(
     deletedTodoViewModel: DeletedTodoViewModel,
     onClick: (Int) -> Unit,
     searchText: String,
-    coroutineScope: CoroutineScope,
-    snackbarHostState: SnackbarHostState
+    coroutineScope: CoroutineScope
 ) {
     val context = LocalContext.current
     // Filter list for search operation.

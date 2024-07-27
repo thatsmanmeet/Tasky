@@ -17,5 +17,7 @@ class TodoRepository(private val todoDao: TodoDao) {
         todoDao.deleteTodo(todo)
     }
 
+    fun getOneTodo(id:Long) : Todo = todoDao.getOneTodo(id)
+
     fun getAllTodosFlow() : Flow<List<Todo>> = todoDao.getAllTodosFlow()
 }

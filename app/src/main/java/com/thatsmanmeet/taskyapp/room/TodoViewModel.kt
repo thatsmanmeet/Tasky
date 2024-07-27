@@ -41,6 +41,10 @@ class TodoViewModel(application: Application) : ViewModel() {
         }
     }
 
+    fun getOneTodo(id:Long) : Todo{
+       return repository.getOneTodo(id)
+    }
+
     fun playCompletedSound(context: Context){
         mediaPlayer?.release()
         mediaPlayer = MediaPlayer.create(context,R.raw.completed)
