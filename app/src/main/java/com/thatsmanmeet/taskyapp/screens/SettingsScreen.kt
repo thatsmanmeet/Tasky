@@ -42,7 +42,8 @@ fun SettingsScreen(
     shouldShowAnimation:State<Boolean?>,
     is24HourClockKey:State<Boolean?>,
     shouldPlaySound:State<Boolean?>,
-    useSystemFont:State<Boolean?>
+    useSystemFont:State<Boolean?>,
+    useLegacyDateTimePickers:State<Boolean?>
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -65,6 +66,9 @@ fun SettingsScreen(
     }
     val isSystemFontState = remember {
         mutableStateOf(useSystemFont.value)
+    }
+    val isLegacyDateTimeState = remember {
+        mutableStateOf(useLegacyDateTimePickers.value)
     }
     val mainViewModel = MainViewModel()
     val activity = LocalContext.current as Activity
@@ -236,6 +240,41 @@ fun SettingsScreen(
                         }
                     }
                     Spacer(modifier = modifier.height(12.dp))
+                    // Legacy Date Time Pickers
+                    Card(
+                        modifier = modifier
+                            .clip(RoundedCornerShape(15.dp))
+                            .fillMaxWidth()
+                            .background(MaterialTheme.colorScheme.inverseOnSurface),
+                        elevation = CardDefaults.cardElevation(0.dp)
+                    ) {
+                        Row(
+                            modifier = modifier
+                                .padding(10.dp)
+                                .fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = "Use legacy Date & Time Pickers",
+                                fontSize = 18.sp,
+                                modifier = modifier.weight(1f)
+                            )
+                            isLegacyDateTimeState.value?.let { it1 ->
+                                Switch(
+                                    modifier = modifier.weight(0.2f),
+                                    checked = it1,
+                                    onCheckedChange = { isToggleChecked->
+                                        isLegacyDateTimeState.value = isToggleChecked
+                                        scope.launch {
+                                            settingStore.saveUseLegacyDateTimePickers(isToggleChecked)
+                                        }
+                                    })
+                            }
+                        }
+                    }
+                    Spacer(modifier = modifier.height(12.dp))
+
                     // Default Font
                     Card(
                         modifier = modifier

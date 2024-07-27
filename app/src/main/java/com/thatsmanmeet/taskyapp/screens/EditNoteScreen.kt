@@ -170,10 +170,10 @@ fun EditNoteScreen(
                         if(isSavingIndicator.value){
                             CircularProgressIndicator(
                                 color = MaterialTheme.colorScheme.onPrimary,
-                                modifier = modifier.size(24.dp)
+                                modifier = modifier.size(24.dp).padding(end = 2.dp)
                             )
                         }else{
-                            Icon(imageVector = Icons.Default.Check, contentDescription = "",tint = MaterialTheme.colorScheme.onPrimary)
+                            Icon(imageVector = Icons.Default.Check, contentDescription = "",tint = MaterialTheme.colorScheme.onPrimary, modifier = modifier.padding(end = 2.dp))
                         }
 
                     },

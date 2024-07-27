@@ -16,6 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.thatsmanmeet.taskyapp.R
+import com.thatsmanmeet.taskyapp.datastore.SettingsStore
 import com.thatsmanmeet.taskyapp.room.Todo
 import com.thatsmanmeet.taskyapp.room.TodoViewModel
 import com.thatsmanmeet.taskyapp.screens.getCurrentDate
@@ -50,6 +51,18 @@ fun addTodoDialog(
     var timeTextState by remember {
         mutableStateOf(timeText.value)
     }
+    var date  by remember {
+        mutableStateOf("")
+    }
+    var selectTime by remember {
+        mutableStateOf("")
+    }
+    val settingsStore = SettingsStore(context)
+    val is24HoursEnabled = settingsStore.getClockKey.collectAsState(initial = true).value!!
+    val isLegacyDateTimePickersEnabled = settingsStore.getUseLegacyDateTimePickers.collectAsState(
+        initial = false
+    ).value!!
+
     if (openDialog.value) {
         AlertDialog(
             onDismissRequest = {
@@ -100,7 +113,13 @@ fun addTodoDialog(
                             isDateDialogShowing.value = true
                         }) {
                             Text(text = stringResource(R.string.add_edit_dialog_select_date_button), fontSize = 10.sp)
-                            val date = showDatePicker(context = context, isDateDialogShowing)
+                            if (isLegacyDateTimePickersEnabled){
+                             date = showDatePicker(context = context, isDateDialogShowing) // old date
+                            }else{
+                                MaterialDatePicker(isShowing = isDateDialogShowing){ selectedDate->
+                                    date = selectedDate
+                                }
+                            }
                             dateText.value = if(date != ""){date} else {
                                 getCurrentDate()
                             }
@@ -129,9 +148,17 @@ fun addTodoDialog(
                             isTimeDialogShowing.value = true
                         }) {
                             Text(text = stringResource(R.string.add_edit_dialog_select_time_button), fontSize = 10.sp)
-                            val date = showTimePickerDialog(context = context, isTimeDialogShowing)
-                            timeText.value = date
-                            timeTextState = date
+                            if(isLegacyDateTimePickersEnabled){
+                                val time = showTimePickerDialog(context = context, isTimeDialogShowing)
+                                timeText.value = time
+                                timeTextState = time
+                            }else{
+                                MaterialTimePicker(context,isShowing = isTimeDialogShowing, is24HourField = is24HoursEnabled) {selectedTime->
+                                    selectTime = selectedTime
+                                }
+                                timeText.value = selectTime
+                                timeTextState = selectTime
+                            }
                             isTimeDialogShowing.value = false
                         }
                     }
@@ -217,6 +244,8 @@ fun addTodoDialog(
                         enteredText1 = ""
                         descriptionText = ""
                         isRepeating = false
+                        selectTime = ""
+                        date = ""
                     }
                     else{
                         Toast.makeText(context,"Task name is required.",Toast.LENGTH_SHORT).show()
@@ -231,6 +260,8 @@ fun addTodoDialog(
                     openDialog.value = false
                     enteredText1 = ""
                     descriptionText = ""
+                    selectTime = ""
+                    date = ""
                 },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color(0xFFF1574C),

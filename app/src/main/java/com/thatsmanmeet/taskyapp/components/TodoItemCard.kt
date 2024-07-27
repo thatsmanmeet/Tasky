@@ -116,7 +116,7 @@ fun TodoItemCard(
                 fontSize = 16.sp
             )
         }
-        if(todo.time!!.isNotEmpty()){
+        if(todo.time!!.isNotEmpty() && !todo.isCompleted){
             Icon(
                 modifier = modifier
                     .padding(end = 5.dp)

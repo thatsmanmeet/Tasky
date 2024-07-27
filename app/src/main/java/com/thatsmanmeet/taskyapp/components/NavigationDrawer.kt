@@ -10,16 +10,13 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.DrawerState
-import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -75,7 +72,11 @@ fun NavigationDrawer(
                 NavigationDrawerItem(
                     modifier = modifier.padding(start = 16.dp, end = 16.dp),
                     icon = { Icon(painter = painterResource(id = R.drawable.ic_notes),modifier = modifier.size(20.dp), contentDescription = null) },
-                    label = { Text(text = "Notes", modifier = modifier.padding(start = 4.dp)) },
+                    label = {
+                        Row {
+                            Text(text = "Notes (Beta)", modifier = modifier.padding(start = 4.dp))
+                        }
+                            },
                     selected = false,
                     onClick = {
                         coroutineScope.launch {

@@ -21,6 +21,7 @@ class SettingsStore(
         val TASK_COMPLETION_SOUNDS = booleanPreferencesKey("sound_list_preference")
         val THEME_MODE_KEY = stringPreferencesKey("theme_mode_preference")
         val USE_SYSTEM_FONT = booleanPreferencesKey("use_system_font_preference")
+        val USE_LEGACY_DATE_TIME_PICKERS = booleanPreferencesKey("use_legacy_date_time_pickers")
     }
 
     val getTaskListKey : Flow<Boolean?> = context.dataStore.data.map {preference->
@@ -44,6 +45,17 @@ class SettingsStore(
 
     val getUseSystemFontKey : Flow<Boolean?> = context.dataStore.data.map {preference ->
         preference[USE_SYSTEM_FONT] ?: false
+    }
+
+    val getUseLegacyDateTimePickers: Flow<Boolean?> = context.dataStore.data.map {preference ->
+        preference[USE_LEGACY_DATE_TIME_PICKERS] ?: false
+    }
+
+
+    suspend fun saveUseLegacyDateTimePickers(isEnabled: Boolean){
+        context.dataStore.edit {preferences->
+            preferences[USE_LEGACY_DATE_TIME_PICKERS] = isEnabled
+        }
     }
 
     suspend fun saveTaskListKey(isEnabled:Boolean) {
