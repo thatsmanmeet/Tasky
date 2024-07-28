@@ -1,7 +1,6 @@
 package com.thatsmanmeet.taskyapp.screens
 
 import android.app.Activity
-import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -12,19 +11,19 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import androidx.navigation.NavHostController
 import com.thatsmanmeet.taskyapp.MainActivity
 import com.thatsmanmeet.taskyapp.R
 import com.thatsmanmeet.taskyapp.components.ActionDialogBox
 import com.thatsmanmeet.taskyapp.components.SettingsComponent
+import com.thatsmanmeet.taskyapp.components.SettingsHeader
+import com.thatsmanmeet.taskyapp.components.SettingsToggleItem
 import com.thatsmanmeet.taskyapp.components.ThemeChangerDialog
 import com.thatsmanmeet.taskyapp.datastore.SettingsStore
 import com.thatsmanmeet.taskyapp.ui.theme.TaskyTheme
@@ -130,6 +129,9 @@ fun SettingsScreen(
                         )
                         .verticalScroll(rememberScrollState()),
                 ) {
+                    SettingsHeader(text = "App Settings") {
+
+                    }
                     SettingsComponent(
                         settingHeaderText = stringResource(R.string.set_app_theme_settings_text),
                         settingText = stringResource(R.string.set_app_theme_info_text),
@@ -138,176 +140,49 @@ fun SettingsScreen(
                         isThemeChangerShowing.value = true
                     }
                     Spacer(modifier = modifier.height(12.dp))
-                    // Use Animations Toggle
-                    Card(
-                        modifier = modifier
-                            .clip(RoundedCornerShape(15.dp))
-                            .fillMaxWidth()
-                            .background(MaterialTheme.colorScheme.inverseOnSurface),
-                        elevation = CardDefaults.cardElevation(0.dp)
-                    ) {
-                        Row(
-                            modifier = modifier
-                                .padding(10.dp)
-                                .fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(
-                                text = stringResource(R.string.use_task_complete_animations_title),
-                                fontSize = 18.sp,
-                                modifier = modifier.weight(1f)
-                            )
-                            shouldShowAnimationState.value?.let { it1 ->
-                                Switch(
-                                    modifier = modifier.weight(0.2f),
-                                    checked = it1,
-                                    onCheckedChange = { isToggleChecked->
-                                        shouldShowAnimationState.value = isToggleChecked
-                                        scope.launch {
-                                            settingStore.saveAnimationShowKey(isToggleChecked)
-                                        }
-                                    })
-                            }
-                        }
-                    }
-                    Spacer(modifier = modifier.height(12.dp))
-                    // Use sound Toggle
-                    Card(
-                        modifier = modifier
-                            .clip(RoundedCornerShape(15.dp))
-                            .fillMaxWidth()
-                            .background(MaterialTheme.colorScheme.inverseOnSurface),
-                        elevation = CardDefaults.cardElevation(0.dp)
-                    ) {
-                        Row(
-                            modifier = modifier
-                                .padding(10.dp)
-                                .fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(
-                                text = stringResource(R.string.use_task_complete_sounds_title),
-                                fontSize = 18.sp,
-                                modifier = modifier.weight(1f)
-                            )
-                            shouldPlaySoundState.value?.let { it1 ->
-                                Switch(
-                                    modifier = modifier.weight(0.2f),
-                                    checked = it1,
-                                    onCheckedChange = { isToggleChecked->
-                                        shouldPlaySoundState.value = isToggleChecked
-                                        scope.launch {
-                                            settingStore.saveSoundPlayKey(isToggleChecked)
-                                        }
-                                    })
-                            }
-                        }
-                    }
-                    Spacer(modifier = modifier.height(12.dp))
-                    // 24 Hour Clock
-                    Card(
-                        modifier = modifier
-                            .clip(RoundedCornerShape(15.dp))
-                            .fillMaxWidth()
-                            .background(MaterialTheme.colorScheme.inverseOnSurface),
-                        elevation = CardDefaults.cardElevation(0.dp)
-                    ) {
-                        Row(
-                            modifier = modifier
-                                .padding(10.dp)
-                                .fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(
-                                text = stringResource(R.string.use_24_hour_clock),
-                                fontSize = 18.sp,
-                                modifier = modifier.weight(1f)
-                            )
-                            is24HourClockState.value?.let { it1 ->
-                                Switch(
-                                    modifier = modifier.weight(0.2f),
-                                    checked = it1,
-                                    onCheckedChange = { isToggleChecked->
-                                        is24HourClockState.value = isToggleChecked
-                                        scope.launch {
-                                            settingStore.saveClockKey(isToggleChecked)
-                                        }
-                                    })
-                            }
-                        }
-                    }
-                    Spacer(modifier = modifier.height(12.dp))
-                    // Legacy Date Time Pickers
-                    Card(
-                        modifier = modifier
-                            .clip(RoundedCornerShape(15.dp))
-                            .fillMaxWidth()
-                            .background(MaterialTheme.colorScheme.inverseOnSurface),
-                        elevation = CardDefaults.cardElevation(0.dp)
-                    ) {
-                        Row(
-                            modifier = modifier
-                                .padding(10.dp)
-                                .fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(
-                                text = "Use legacy Date & Time Pickers",
-                                fontSize = 18.sp,
-                                modifier = modifier.weight(1f)
-                            )
-                            isLegacyDateTimeState.value?.let { it1 ->
-                                Switch(
-                                    modifier = modifier.weight(0.2f),
-                                    checked = it1,
-                                    onCheckedChange = { isToggleChecked->
-                                        isLegacyDateTimeState.value = isToggleChecked
-                                        scope.launch {
-                                            settingStore.saveUseLegacyDateTimePickers(isToggleChecked)
-                                        }
-                                    })
-                            }
-                        }
-                    }
-                    Spacer(modifier = modifier.height(12.dp))
-
                     // Default Font
-                    Card(
-                        modifier = modifier
-                            .clip(RoundedCornerShape(15.dp))
-                            .fillMaxWidth()
-                            .background(MaterialTheme.colorScheme.inverseOnSurface),
-                        elevation = CardDefaults.cardElevation(0.dp)
-                    ) {
-                        Row(
-                            modifier = modifier
-                                .padding(10.dp)
-                                .fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(
-                                text = "Use System Font",
-                                fontSize = 18.sp,
-                                modifier = modifier.weight(1f)
-                            )
-                            isSystemFontState.value?.let { it1 ->
-                                Switch(
-                                    modifier = modifier.weight(0.2f),
-                                    checked = it1,
-                                    onCheckedChange = { isToggleChecked->
-                                        isSystemFontState.value = isToggleChecked
-                                        scope.launch {
-                                            settingStore.saveSystemFontsKey(isToggleChecked)
-                                        }
-                                    })
-                            }
+                    SettingsToggleItem(cardText = "Use System Font",cardToggleState = isSystemFontState) {isToggleChecked->
+                        scope.launch {
+                            settingStore.saveSystemFontsKey(isToggleChecked)
                         }
                     }
+
+                    // Tasks Settings
+                    SettingsHeader(text = "Tasks Settings") {
+
+                    }
+                    Spacer(modifier = modifier.height(3.dp))
+                    // Use Animations Toggle
+                    SettingsToggleItem(cardText = stringResource(R.string.use_task_complete_animations_title) ,cardToggleState = shouldShowAnimationState) {isToggleChecked->
+                        scope.launch {
+                            settingStore.saveAnimationShowKey(isToggleChecked)
+                        }
+                    }
+                    // Use sound Toggle
+                    SettingsToggleItem(cardText = stringResource(id = R.string.use_task_complete_sounds_title), cardToggleState = shouldPlaySoundState) {isToggleChecked->
+                        scope.launch {
+                            settingStore.saveSoundPlayKey(isToggleChecked)
+                        }
+                    }
+                    // 24 Hour Clock
+                    SettingsToggleItem(cardText = stringResource(R.string.use_24_hour_clock), cardToggleState = is24HourClockState) {isToggleChecked->
+                        scope.launch {
+                            settingStore.saveClockKey(isToggleChecked)
+                        }
+                    }
+                    // Legacy Date Time Pickers
+                    SettingsToggleItem(cardText = "Use legacy Date & Time Pickers", cardToggleState = isLegacyDateTimeState) {isToggleChecked->
+                        scope.launch {
+                            settingStore.saveUseLegacyDateTimePickers(isToggleChecked)
+                        }
+                    }
+
+                    // miscellaneous Settings
+
+                    SettingsHeader(text = "Miscellaneous Settings") {
+
+                    }
+
                     // Auto Start card
                     SettingsComponent(
                         settingHeaderText = stringResource(R.string.enable_autostart_title),
