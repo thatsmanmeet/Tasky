@@ -15,9 +15,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.thatsmanmeet.taskyapp.R
 import com.thatsmanmeet.taskyapp.datastore.SettingsStore
 import com.thatsmanmeet.taskyapp.room.Todo
 import com.thatsmanmeet.taskyapp.room.TodoViewModel
@@ -116,15 +118,26 @@ fun TodoItemCard(
                 fontSize = 16.sp
             )
         }
-        if(todo.time!!.isNotEmpty() && !todo.isCompleted){
-            Icon(
-                modifier = modifier
-                    .padding(end = 5.dp)
-                    .size(24.dp),
-                imageVector = Icons.Default.Notifications,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary
-            )
+        if(todo.time!!.isNotEmpty()){
+            if(todo.isRecurring){
+                Icon(
+                    modifier = modifier
+                        .padding(end = 5.dp)
+                        .size(24.dp),
+                    painter = painterResource(id = R.drawable.ic_refresh),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }else if(!todo.isCompleted){
+                Icon(
+                    modifier = modifier
+                        .padding(end = 5.dp)
+                        .size(24.dp),
+                    imageVector = Icons.Default.Notifications,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
         }
     }
     Spacer(modifier = modifier.height(12.dp))

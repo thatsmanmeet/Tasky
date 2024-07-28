@@ -91,6 +91,17 @@ fun OpenEditTodoDialog(
     }
     val settingsStore = SettingsStore(context = context)
     val savedSoundKey = settingsStore.getSoundKey.collectAsState(initial = true)
+    val is24HoursEnabled = settingsStore.getClockKey.collectAsState(initial = true).value!!
+    val isLegacyDateTimePickersEnabled = settingsStore.getUseLegacyDateTimePickers.collectAsState(
+        initial = false
+    ).value!!
+    var date = "";
+    var selectedDateData by remember {
+        mutableStateOf("")
+    }
+    var selectedTimeData by remember {
+        mutableStateOf("")
+    }
     var todo : Todo
     var deletedTodo: DeletedTodo
     AlertDialog(
@@ -146,9 +157,18 @@ fun OpenEditTodoDialog(
                         isDateDialogShowing.value = true
                     }) {
                         Text(text = stringResource(id = R.string.add_edit_dialog_select_date_button), fontSize = 10.sp)
-                        val date = showDatePicker(context = context, isShowing = isDateDialogShowing)
-                        currentTodoDateValue.value = date
-                        isTimeDialogShowing.value = false
+                        if(isLegacyDateTimePickersEnabled){
+                            date = showDatePicker(context = context, isShowing = isDateDialogShowing)
+                            currentTodoDateValue.value = date
+                            isTimeDialogShowing.value = false
+                        }else{
+                            MaterialDatePicker(isShowing = isDateDialogShowing) {selected->
+                                selectedDateData = selected
+                            }
+                            currentTodoDateValue.value = selectedDateData
+                            isTimeDialogShowing.value = false
+                        }
+
                     }
                 }
                 Spacer(modifier = modifier.height(10.dp))
@@ -180,10 +200,20 @@ fun OpenEditTodoDialog(
                         }
                     ) {
                         Text(text = stringResource(id = R.string.add_edit_dialog_select_time_button), fontSize = 10.sp)
-                        val time = showTimePickerDialog(context = context, isShowing = isTimeDialogShowing)
-                        currentTodoTimeValue.value = time
-                        if(time.isNotEmpty()){
-                            timeTextState = time
+                        if(isLegacyDateTimePickersEnabled){
+                            val time = showTimePickerDialog(context = context, isShowing = isTimeDialogShowing)
+                            currentTodoTimeValue.value = time
+                            if(time.isNotEmpty()){
+                                timeTextState = time
+                            }
+                        }else{
+                            MaterialTimePicker(context = context, isShowing = isTimeDialogShowing, is24HourField = is24HoursEnabled ) {selectedTime->
+                                selectedTimeData = selectedTime
+                            }
+                            currentTodoTimeValue.value = selectedTimeData
+                            if(selectedTimeData.isNotEmpty()){
+                                timeTextState = selectedTimeData
+                            }
                         }
                         isTimeDialogShowing.value = false
                     }
@@ -269,6 +299,8 @@ fun OpenEditTodoDialog(
                 }
                 enteredText1 = ""
                 currentDescriptionText = ""
+                selectedDateData = ""
+                selectedTimeData = ""
             }) {
                 Text(text = stringResource(R.string.add_edit_dialog_save_button_text))
             }
@@ -314,6 +346,8 @@ fun OpenEditTodoDialog(
                         todoViewModel.playDeletedSound(context)
                     }
                     onDeleteAction()
+                    selectedDateData = ""
+                    selectedTimeData = ""
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(
