@@ -1,6 +1,7 @@
     
-## ⚠️Development Status
-As of Aug 18, 2024, Tasky is being no longer officially maintained. However this project may receive one or more update to just fix some small issues. Thanks for your support to this project!
+## ⚠️ Development Status
+As of Aug 18, 2024, Tasky is being no longer officially maintained. However this project may **(not sure)** receive one or more update to just fix some small issues. Thanks for your support to this project!
+
 
 ![Banner](./images/banner.png)
 # Tasky
