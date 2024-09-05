@@ -1,7 +1,7 @@
 
 # ⚠️ Development Update
 
-Tasky is reaching EOL soon and hence I'm dropping all the issues in the app as not planned. The app will only receive dependencies, security updates and bug fixes only with exception of feature updates **very rarely**, so you can continue to keep using the app for little longer. Remaining updates will arrive only on PlayStore and Github, while other stores are no longer supported for remaining updates.
+Tasky is reaching EOL soon and hence I'm dropping all the issues & pull requests on github as not planned. The app **may** receive dependencies, security updates and bug fixes only with exception of feature updates **very rarely**, so you can continue to keep using the app for little longer. Remaining updates will arrive only on PlayStore and Github, while other stores are no longer supported for remaining updates.
 #
     
 ![Banner](./images/banner.png)
