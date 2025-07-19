@@ -4,7 +4,6 @@ package com.thatsmanmeet.taskyapp
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -26,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.thatsmanmeet.taskyapp.misc.Recursor
@@ -59,7 +59,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             Scaffold(contentWindowInsets = ScaffoldDefaults.contentWindowInsets) {paddingValues->
                 val context = LocalContext.current
-                val viewModel = MainViewModel()
+                val viewModel = viewModel<MainViewModel>()
                 val pageState = remember {
                     mutableStateOf(ContextCompat.checkSelfPermission(context,Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED)
                 }
@@ -184,26 +184,6 @@ class MainActivity : ComponentActivity() {
                     e.printStackTrace()
                 }
             }
-        }
-    }
-    @Deprecated("Deprecated in Java")
-    override fun onBackPressed() {
-        val currentRoute = navController.currentBackStackEntry?.destination?.route
-        if(currentRoute == Screen.MyApp.route){
-            AlertDialog.Builder(this,android.R.style.Theme_DeviceDefault_Dialog)
-                .setTitle("Confirm Exit ?")
-                .setMessage("Are you sure you want to exit?")
-                .setPositiveButton("Yes") { _, _ ->
-                    //super.onBackPressed()
-                    finish()
-                }
-                .setNegativeButton("No") { dialog, _ ->
-                    dialog.cancel()
-                }
-                .show()
-        }
-        else{
-            super.onBackPressed()
         }
     }
 

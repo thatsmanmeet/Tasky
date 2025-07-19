@@ -1,6 +1,7 @@
 package com.thatsmanmeet.taskyapp.screens
 
 import android.app.Activity
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -40,6 +41,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.thatsmanmeet.taskyapp.datastore.SettingsStore
 import com.thatsmanmeet.taskyapp.room.notes.Note
@@ -56,9 +60,16 @@ fun EditNoteScreen(
     noteID: Long?,
     modifier: Modifier = Modifier
 ) {
+    val activity = LocalActivity.current as Activity
     val context = LocalContext.current
-    val activity = context as Activity
-    val notesViewModel = NoteViewModel(activity.application)
+    val notesViewModel = viewModel<NoteViewModel>(
+        factory = object : ViewModelProvider.Factory{
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return NoteViewModel(application = activity.application) as T
+            }
+        }
+    )
+
     val currentNote = notesViewModel.getOneNote(noteID!!)
     val settingsStore = SettingsStore(context)
     val savedThemeKey = settingsStore.getThemeModeKey.collectAsState(initial = "0")

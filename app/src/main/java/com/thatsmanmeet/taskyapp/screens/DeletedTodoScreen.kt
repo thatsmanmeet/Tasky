@@ -1,6 +1,7 @@
 package com.thatsmanmeet.taskyapp.screens
 
 import android.app.Activity
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,12 +30,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.thatsmanmeet.taskyapp.components.DeletedTodoItem
 import com.thatsmanmeet.taskyapp.datastore.SettingsStore
 import com.thatsmanmeet.taskyapp.room.TodoViewModel
 import com.thatsmanmeet.taskyapp.room.deletedtodo.DeletedTodoViewModel
+import com.thatsmanmeet.taskyapp.room.notes.NoteViewModel
 import com.thatsmanmeet.taskyapp.ui.theme.TaskyTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -43,12 +48,24 @@ fun DeletedTodoScreen(
     navHostController: NavHostController,
     modifier: Modifier = Modifier
 ) {
+    val activity = LocalActivity.current as Activity
     val context = LocalContext.current
-    val activity = context as Activity
     val settingStore = SettingsStore(context)
     val savedThemeKey = settingStore.getThemeModeKey.collectAsState(initial = "")
-    val deletedTodoViewModel = DeletedTodoViewModel(activity.application)
-    val todoViewModel = TodoViewModel(activity.application)
+    val deletedTodoViewModel = viewModel<DeletedTodoViewModel>(
+        factory = object : ViewModelProvider.Factory{
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return DeletedTodoViewModel(application = activity.application) as T
+            }
+        }
+    )
+    val todoViewModel = viewModel<TodoViewModel>(
+        factory = object : ViewModelProvider.Factory{
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return TodoViewModel(application = activity.application) as T
+            }
+        }
+    )
     val deletedTodoList = deletedTodoViewModel.getAllDeletedTodos.collectAsState(initial = emptyList())
     val savedFontKey = settingStore.getUseSystemFontKey.collectAsState(initial = false)
     TaskyTheme(darkTheme = when (savedThemeKey.value) {

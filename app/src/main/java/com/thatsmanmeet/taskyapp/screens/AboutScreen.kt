@@ -27,6 +27,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.thatsmanmeet.taskyapp.BuildConfig
 import com.thatsmanmeet.taskyapp.datastore.SettingsStore
@@ -43,7 +44,7 @@ fun AboutScreen(
     val settingStore = SettingsStore(context)
     val savedThemeKey = settingStore.getThemeModeKey.collectAsState(initial = "")
     val savedFontKey = settingStore.getUseSystemFontKey.collectAsState(initial = false)
-    val mainViewModel = MainViewModel()
+    val mainViewModel = viewModel<MainViewModel>()
     val height = 12.dp
     TaskyTheme(
         darkTheme = when (savedThemeKey.value) {

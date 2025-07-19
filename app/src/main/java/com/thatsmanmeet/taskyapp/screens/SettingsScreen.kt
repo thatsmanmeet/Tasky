@@ -1,6 +1,7 @@
 package com.thatsmanmeet.taskyapp.screens
 
 import android.app.Activity
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -17,6 +18,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.thatsmanmeet.taskyapp.MainActivity
 import com.thatsmanmeet.taskyapp.R
@@ -69,8 +71,8 @@ fun SettingsScreen(
     val isLegacyDateTimeState = remember {
         mutableStateOf(useLegacyDateTimePickers.value)
     }
-    val mainViewModel = MainViewModel()
-    val activity = LocalContext.current as Activity
+    val mainViewModel = viewModel<MainViewModel>()
+    val activity = LocalActivity.current as Activity
     val dbPath = activity.getDatabasePath("todo_database").absolutePath
     TaskyTheme(darkTheme = when (savedThemeKey.value) {
         "0" -> {
