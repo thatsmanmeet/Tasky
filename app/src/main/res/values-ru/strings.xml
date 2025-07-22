@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Tasky</string>
+    <string name="add_task_button">Добавить задачу</string>
+    <string name="add_task_dialog_title">Добавить задачу</string>
+    <string name="add_edit_text_placeholder">Какие мысли?</string>
+    <string name="add_edit_dialog_select_date_button">Выбрать дату</string>
+    <string name="add_edit_dialog_select_time_button">Выбрать время</string>
+    <string name="add_edit_dialog_repeat_everyday">Повторять ежедневно</string>
+    <string name="add_edit_dialog_set_reminder_title">Настроить напоминание (необязательно)</string>
+    <string name="add_edit_dialog_add_button_text">Добавить</string>
+    <string name="add_edit_dialog_cancel_button_text">Отмена</string>
+    <string name="edit_task_dialog_title">Редактировать задачу</string>
+    <string name="add_edit_dialog_edit_reminder_title">Редактировать напоминание</string>
+    <string name="add_edit_dialog_save_button_text">Сохранить</string>
+    <string name="add_edit_dialog_delete_button_text">Удалить</string>
+    <string name="task_complete_notification_message">Вы выполнили своё сегодняшнее задание?</string>
+    <string name="empty_list_no_tasks_text">Задач нет</string>
+    <string name="permission_screen_title">Требуется разрешение</string>
+    <string name="permission_screen_information_text">Начиная с Android 13+, приложениям требуется разрешение на отображение уведомлений.</string>
+    <string name="permission_screen_request_permission_button">Запрос разрешения</string>
+    <string name="settings_screen_appbar_title">Настройки</string>
+    <string name="separate_tasks_using_dates_title">Разделяйте задачи с использованием дат</string>
+    <string name="use_task_complete_animations_title">Включить анимацию завершения задачи</string>
+    <string name="enable_autostart_title">Включить автозапуск</string>
+    <string name="enable_autostart_information_text">Для некоторых устройств уведомления могут не приходить вовремя или не работать после перезагрузки. Нажмите здесь, чтобы включить автозапуск. Полезно для Xiaomi, Oppo, vivo и устройств со стандартным ПЗУ.</string>
+    <string name="view_source_title">Просмотр исходного кода</string>
+    <string name="view_source_information_text">Tasky имеет полностью открытый исходный код. У вас есть пожелания или вы хотите заняться разработкой? Посетите Github! И не забудьте поставить ⭐️ ;)</string>
+    <string name="use_24_hour_clock">Использовать 24-часовой формат времени</string>
+    <string name="settings_backup_restore">Резервное копирование/Восстановление</string>
+    <string name="settings_backup_restore_information_text">Создайте резервную копию или восстановите ваши задачи из локального zip-файла.</string>
+    <string name="use_task_complete_sounds_title">Включить звуки завершения задачи</string>
+    <string name="select_app_theme_text">Выбор темы приложения</string>
+    <string name="set_app_theme_settings_text">Установите тему приложения</string>
+    <string name="set_app_theme_info_text">Измените текущую тему приложения на светлую, тёмную или системную по умолчанию.</string>
+    <string name="delete_task_button_text">Удалить</string>
+    <string name="delete_task_title">Удалить задачу?</string>
+    <string name="delete_task_description">Вы хотите удалить эту задачу?</string>
+</resources>
