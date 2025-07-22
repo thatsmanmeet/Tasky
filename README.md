@@ -1,7 +1,7 @@
 
-# ⚠️ Development Update : EOL
+# ✅ Development Update : Minor Updates
 
-Tasky is now EOL and hence I'm dropping all the issues & pull requests on github as not planned.
+Tasky was declared EOL last year, however now I'm picking it's development again, however currently only few updates with minor changes will be released.
     
 ![Banner](./images/banner.png)
 # Tasky
